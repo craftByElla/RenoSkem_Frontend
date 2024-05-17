@@ -9,7 +9,10 @@ import ConnectionScreen from './screens/connection/ConnectionScreen';
 import ProjectsScreen from './screens/projects/ProjectsScreen';
 import NewProjectScreen from './screens/projects/NewProjectScreen';
 import HomeScreen from './screens/home/HomeScreen';
-import MyTeamScreen from './screens/team/MyTeam';
+import MyTeamScreen from './screens/team/MyTeamSceen'
+import NewArtisanScreen from './screens/team/NewArtisanScreen';
+import NewCoworkerScreen from './screens/team/NewCoworkerScreen';
+import ConfigureExpertiseScreen from './screens/team/ConfigureExpertiseScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -17,8 +20,8 @@ const Tab = createBottomTabNavigator();
 const ProjectsStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Projects" component={ProjectsScreen} />
-      <Stack.Screen name="NewProject" component={NewProjectScreen} />
+      <Stack.Screen name="ProjectsScreen" component={ProjectsScreen} />
+      <Stack.Screen name="NewProjectScreen" component={NewProjectScreen} />
     </Stack.Navigator>
   );
 };
@@ -29,15 +32,14 @@ const TabNavigator = () => {
       tabBarIcon: ({ color, size }) => {
         let iconName = '';
         let IconComponent = FontAwesome;
-        if (route.name === 'MyTeam') {
+        if (route.name === 'MyTeamScreen') {
           iconName = 'group';
-        } else if (route.name === 'Home') {
+        } else if (route.name === 'HomeScreen') {
           iconName = 'home';
         } else if (route.name === 'ProjectsStack') {
           IconComponent = Ionicons;
           iconName = 'library';
         }
-
         return <IconComponent name={iconName} size={size} color={color} />;
       },
       tabBarActiveTintColor: '#194852',
@@ -45,8 +47,8 @@ const TabNavigator = () => {
       headerShown: false,
     })}>
       <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="MyTeam" component={MyTeamScreen} />
+      <Tab.Screen name="HomeScreen" component={HomeScreen} />
+      <Tab.Screen name="MyTeamScreen" component={MyTeamScreen} />
     </Tab.Navigator>
   );
 };
@@ -55,8 +57,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Connection" component={ConnectionScreen} />
+        <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
+        <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />
+        <Stack.Screen name="ConfigureExpertiseScreen" component={ConfigureExpertiseScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

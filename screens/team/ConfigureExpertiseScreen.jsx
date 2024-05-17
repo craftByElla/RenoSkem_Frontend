@@ -1,16 +1,16 @@
 import React from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
 
-function NewArtisanScreen({ navigation }) {
+function ConfigureExpertiseScreen({ navigation }) {
     return (
         <View style={styles.main}>
-            <Text>NewArtisanScreen</Text>
+            <Text>ConfigureExpertiseScreen</Text>
             <TouchableOpacity onPress={() => navigation.navigate('MyTeamScreen')}><Text>go to MyTeamScreen</Text></TouchableOpacity>
         </View>
     )
 }
 
-export default NewArtisanScreen;
+export default ConfigureExpertiseScreen;
 
 const styles = StyleSheet.create({
     main: {

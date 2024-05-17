@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 function NewProjectScreen({ navigation  }) {
     return (
         <View style={styles.main}>
-            <TouchableOpacity onPress={() => navigation.navigate('Projects')}><Text>go to Project</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ProjectsScreen')}><Text>go to Project</Text></TouchableOpacity>
         </View>
     )
 }
