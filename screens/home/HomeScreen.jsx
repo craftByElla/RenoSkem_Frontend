@@ -9,7 +9,7 @@ function HomeScreen({ navigation }) {
     )
 }
 
-export default HomeScreen
+export default HomeScreen;
 
 const styles = StyleSheet.create({
     main: {

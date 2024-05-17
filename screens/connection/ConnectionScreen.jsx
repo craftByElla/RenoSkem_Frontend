@@ -10,7 +10,7 @@ function ConnectionScreen({ navigation }) {
     )
 }
 
-export default ConnectionScreen
+export default ConnectionScreen;
 
 const styles = StyleSheet.create({
     main: {
