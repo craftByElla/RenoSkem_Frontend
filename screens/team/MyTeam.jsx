@@ -1,15 +1,15 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native'
+import { StyleSheet, View, Text, TextInput } from 'react-native'
 
-function HomeScreen({ navigation }) {
+function MyTeam() {
     return (
         <View style={styles.main}>
-            <Text>Home</Text>
+            <Text>MyTeam</Text>
         </View>
     )
 }
 
-export default HomeScreen
+export default MyTeam;
 
 const styles = StyleSheet.create({
     main: {
