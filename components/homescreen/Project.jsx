@@ -29,13 +29,13 @@ const createStyles = (colors) => StyleSheet.create({
         backgroundColor: colors.modalBackgroundColor,
     },
     title: {
-        color: colors.deepGreen,
+        color: colors.deepGrey,
         letterSpacing: 0.5,
         lineHeight: 19,
     }, 
     projectName: {
         fontWeight: 'bold',
-        color: colors.deepGreen,
+        color: colors.deepGrey,
         letterSpacing: 0.5,
         lineHeight: 19 
     }

@@ -14,15 +14,15 @@ function HomeScreen({ navigation }) {
         return <Project key={i} name={data}/> 
     })
     return (
-        <SafeAreaView style={{flex: 1,}}>
+        <SafeAreaView style={{flex: 1}}>
             <View style={styles.main}>
                 <View style={styles.userContainer}>
-                    <Image /> 
+                    <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture}/> 
                     <Text style={styles.helloText}>Hey Leyla !</Text>
                 </View>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>Mes Projets</Text>
-                    <TouchableOpacity style={styles.nouveauBtn}><Text>Nouveau</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('CreateProjectStack')}><Text>Nouveau</Text></TouchableOpacity>
                 </View>
                 <View style={styles.projects}>
                     {projectName}
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     main: {
         flex: 1,
         alignItems: 'center',
+        justifyContent: 'space-around',
         paddingHorizontal: 22,
     },
     userContainer: {
@@ -49,7 +50,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
+    profilePicture: {
+        height: 50,
+        width: 50,
+    },
     helloText: {
+        paddingLeft: 10,
         fontSize: 24,
         lineHeight: 23,
         letterSpacing: 0.15,
@@ -84,8 +90,6 @@ const styles = StyleSheet.create({
         display: 'flex', 
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderColor: 'red',
-        borderWidth: 1,
     }, 
     titleDashboard: {
         fontWeight: 'bold',
@@ -97,7 +101,7 @@ const styles = StyleSheet.create({
     },
     dashboard: {
         width: '100%',
-        height: '50%',  
+        height: '60%',  
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',
