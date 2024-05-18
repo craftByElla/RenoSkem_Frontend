@@ -13,9 +13,12 @@ import MyTeamScreen from './screens/team/MyTeamSceen'
 import NewArtisanScreen from './screens/team/NewArtisanScreen';
 import NewCoworkerScreen from './screens/team/NewCoworkerScreen';
 import ConfigureExpertiseScreen from './screens/team/ConfigureExpertiseScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { MyLightTheme, MyDarkTheme } from './components/Theme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 const ProjectsStack = () => {
   return (
@@ -55,15 +58,17 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
-        <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
-        <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />
-        <Stack.Screen name="ConfigureExpertiseScreen" component={ConfigureExpertiseScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <SafeAreaProvider>
+      <NavigationContainer theme={MyLightTheme}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
+          <Stack.Screen name="TabNavigator" component={TabNavigator} />
+          <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
+          <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />
+          <Stack.Screen name="ConfigureExpertiseScreen" component={ConfigureExpertiseScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      </SafeAreaProvider>
   );
 }
 
