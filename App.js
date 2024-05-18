@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ConnectionScreen from './screens/connection/ConnectionScreen';
@@ -13,7 +14,13 @@ import MyTeamScreen from './screens/team/MyTeamSceen'
 import NewArtisanScreen from './screens/team/NewArtisanScreen';
 import NewCoworkerScreen from './screens/team/NewCoworkerScreen';
 import ConfigureExpertiseScreen from './screens/team/ConfigureExpertiseScreen';
+import TutoStack from './components/navigation/TutoStack';
+import ArtisanScreen from './screens/createProject/ArtisansScreen';
+import DIYorProScreen from './screens/createProject/DIYorPro';
+import PlanningScreen from './screens/createProject/Planning';
+import RoomsScreen from './screens/createProject/RoomsScreen';
 import { MyLightTheme, MyDarkTheme } from './components/Theme';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -26,6 +33,8 @@ const ProjectsStack = () => {
     </Stack.Navigator>
   );
 };
+
+
 
 const TabNavigator = () => {
   return (
@@ -58,11 +67,12 @@ export default function App() {
   return (
     <NavigationContainer theme={MyLightTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name='TutoStack' component={TutoStack} />
         <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
         <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
         <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />
         <Stack.Screen name="ConfigureExpertiseScreen" component={ConfigureExpertiseScreen} />
+        <Stack.Screen name="TabNavigator" component={TabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
