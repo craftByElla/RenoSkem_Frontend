@@ -5,6 +5,7 @@ function NewProjectScreen({ navigation  }) {
     return (
         <View style={styles.main}>
             <TouchableOpacity onPress={() => navigation.navigate('ProjectsScreen')}><Text>go to Project</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('CreateProjectStack')}><Text>Go to createProjectSceen</Text></TouchableOpacity>
         </View>
     )
 }
