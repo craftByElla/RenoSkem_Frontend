@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ConnectionScreen from './screens/connection/ConnectionScreen';
+import ConnectionStack from './components/navigation/ConnectionStack';
 import NewArtisanScreen from './screens/team/NewArtisanScreen';
 import NewCoworkerScreen from './screens/team/NewCoworkerScreen';
 import ConfigureExpertiseScreen from './screens/team/ConfigureExpertiseScreen';
@@ -17,7 +17,7 @@ export default function App() {
   return (
     <NavigationContainer theme={MyLightTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
+        <Stack.Screen name="ConnectionStack" component={ConnectionStack} />
         <Stack.Screen name='TutoStack' component={TutoStack} />
         <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
         <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />

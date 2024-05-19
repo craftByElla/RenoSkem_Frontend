@@ -3,7 +3,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProjectsStack from './ProjectsStack';
 import HomeScreen from '../../screens/home/HomeScreen';
-import MyTeamScreen from '../../screens/team/MyTeamSceen';
+import MyTeamScreen from '../../screens/team/MyTeamScreen';
 import CreateProjectStack from './CreateProjectStack';
 
 export default function TabNavigator() {
