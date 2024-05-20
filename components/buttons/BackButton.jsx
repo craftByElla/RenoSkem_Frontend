@@ -16,10 +16,9 @@ const styles = StyleSheet.create({
     height: 44,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightgray',
   },
   icon: {
-    fontSize: 24,
+    fontSize: 15,
     color: 'black',
   },
 });

@@ -1,40 +1,59 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
 import BackButton from "../../components/buttons/BackButton";
+import TwoStep from "../../components/progressIndicator/twoStep";
+import ScreenTitle from "../../components/text/screenTitle";
+import UserPicture from "../../components/images/userPicture";
+import CustomInput from "../../components/inputs/CustomInput";
 
 function CreateAccount({ navigation }) {
     return (
-        <View style={styles.main}>
-            <BackButton 
-                style={styles.BackButton}
-                onPress={() => navigation.navigate('ConnectionScreen')}
-            />
-            <Text style={styles.title}>Create Account</Text>
-            <Text 
-                style={styles.title}
-                onPress={() => navigation.navigate('SetSkills')}
-            >
-                Go to setSkills
-            </Text>
-        </View>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}
+        >
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <BackButton 
+                    style={styles.BackButton}
+                    onPress={() => navigation.navigate('ConnectionScreen')}
+                />
+                <TwoStep step={1} /> 
+                <ScreenTitle text="Create Account" />
+                <UserPicture />
+                <CustomInput placeholder="Prénom" />
+                <CustomInput placeholder="Email" />
+                <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                <Text 
+                    style={styles.subtitle}
+                    onPress={() => navigation.navigate('SetSkills')}
+                >
+                    Go to setSkills
+                </Text>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 export default CreateAccount;
 
 const styles = StyleSheet.create({
-    main: {
+    container: {
         flex: 1,
+    },
+    scrollContainer: {
+        flexGrow: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: 'pink',
-        paddingTop: 20, // Ajout de padding pour un meilleur espacement en haut
+        backgroundColor: '#EFECEA',
+        paddingTop: 50, // Ajout de padding pour un meilleur espacement en haut
     },
-    BackButton: {
-        marginTop: 200,
+    backButton: {
+        position: 'absolute',
+        top: 40, // Ajustez selon vos besoins pour un meilleur espacement en haut
+        left: 20, // Ajustez selon vos besoins pour un meilleur espacement à gauche
     },
-    title: {
-        fontSize: 24,
+    subtitle: {
+        fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 20, // Ajout de marge pour espacer du bouton
         color: 'black',
