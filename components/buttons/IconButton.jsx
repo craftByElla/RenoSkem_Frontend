@@ -3,7 +3,7 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 
-const IconButton = ({ onPress, style, iconName, color }) => {
+const IconButton = ({ onPress, style, iconName, color = '#194852' }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
       <FontAwesome name={iconName} style={[styles.icon, { color }]} />
@@ -16,10 +16,6 @@ IconButton.propTypes = {
   style: PropTypes.object,
   iconName: PropTypes.string.isRequired,
   color: PropTypes.string,
-};
-
-IconButton.defaultProps = {
-  color: '#194852', // couleur par défaut
 };
 
 const styles = StyleSheet.create({
