@@ -24,7 +24,6 @@ const createStyles = (colors) => StyleSheet.create({
         height: 40,
         width: 40,
         borderRadius: 10,
-        backgroundColor: colors.background,
     },
     logo: {
         width: 35.341,
