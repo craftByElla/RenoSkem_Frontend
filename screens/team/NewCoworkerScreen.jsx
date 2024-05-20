@@ -5,7 +5,7 @@ function NewCoworkerScreen({ navigation }) {
     return (
         <View style={styles.main}>
             <Text>NewCoworkerScreen</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('MyTeamScreen')}><Text>go to MyTeamScreen</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('TeamScreen')}><Text>go to MyTeamScreen</Text></TouchableOpacity>
         </View>
     )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
 
-function MyTeamScreen({ navigation }) {
+function TeamScreen({ navigation }) {
     return (
         <View style={styles.main}>
             <TouchableOpacity onPress={() => navigation.navigate('NewArtisanScreen')}><Text>go to NewArtisanScreen</Text></TouchableOpacity>
@@ -11,7 +11,7 @@ function MyTeamScreen({ navigation }) {
     )
 }
 
-export default MyTeamScreen;
+export default TeamScreen;
 
 const styles = StyleSheet.create({
     main: {

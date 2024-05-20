@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { MyLightTheme, MyDarkTheme } from '../Theme';
 import RoomsScreen from '../../screens/createProject/RoomsScreen';
@@ -11,7 +11,9 @@ export default function CreateProjectStack() {
     const Scroll = createMaterialTopTabNavigator();
     return (
         <SafeAreaView style={{flex:1}}>
-            <LogoTransparent />
+        <View style={{display: 'flex', alignItems: 'center'}}>
+        <LogoTransparent />
+        </View>
         <Scroll.Navigator 
             screenOptions={{ 
             headerShown: false, 
@@ -19,7 +21,6 @@ export default function CreateProjectStack() {
             tabBarActiveTintColor: 'rgba(231, 111, 81, 1)',
             tabBarInactiveTintColor: 'rgba(231, 111, 81, 0.2)', // Couleur des étiquettes d'onglet non sélectionnées
             tabBarIndicatorStyle: { backgroundColor: 'rgba(231, 111, 81, 1)', height: 2 }, // Pour ne pas afficher l'indicateur
-            tabBarIndicatorContainerStyle: {borderLeftWidth: 0}
             }}
             
         > 
