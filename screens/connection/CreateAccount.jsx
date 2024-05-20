@@ -28,9 +28,13 @@ function CreateAccount({ navigation }) {
                                 <LogoTransparent />
                             </View>
                         </View>
-                        <TwoStep step={2} /> 
-                        <ScreenTitle text="Create Account" />
-                        <UserPicture />
+                        <View style={styles.progressIndicatorWrapper}>
+                            <TwoStep step={2} /> 
+                        </View>
+                        <ScreenTitle text="Créer votre compte" />
+                        <View style={styles.UserPictureWrapper}>
+                            <UserPicture  />
+                        </View>
                         <CustomInput placeholder="Prénom" />
                         <CustomInput placeholder="Email" />
                         <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
@@ -54,7 +58,6 @@ export default CreateAccount;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#EFECEA',
     },
     container: {
         flex: 1,
@@ -63,7 +66,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start', // Aligner les éléments en haut
         alignItems: 'center',
-        backgroundColor: '#EFECEA',
     },
     header: {
         width: '100%',
@@ -85,11 +87,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
-    subtitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: 'black',
+    progressIndicatorWrapper: {
+        marginTop: 20,
+        marginBottom: 30,
+    },
+    UserPictureWrapper: {
+        marginTop: 10,
+        marginBottom: 10,
     },
     buttonContainer: {
         width: '100%', 

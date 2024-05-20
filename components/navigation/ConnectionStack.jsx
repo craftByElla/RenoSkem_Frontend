@@ -8,7 +8,7 @@ import Login_password from '../../screens/connection/Login_password'
 
 import { MyLightTheme, MyDarkTheme } from '../Theme';
 
-export default function ProjectsStack() {
+export default function ConnectionStack() {
     const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
