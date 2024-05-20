@@ -22,7 +22,6 @@ export default function App() {
         <Stack.Screen name='TutoStack' component={TutoStack} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
         <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );

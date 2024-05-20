@@ -2,7 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Avatar from "../../components/avatar";
-
+import IconButton from "../../components/buttons/IconButton";
+import PageTitle from "../../components/text/ScreenTitle"
+import LogoTransparent from "../../components/logos/LogoTransparent"
 const logo = require("../../assets/splash.png");
 
 export default function TeamScreen({ navigation }) {
@@ -21,17 +23,17 @@ export default function TeamScreen({ navigation }) {
     return (
         <View style={styles.Teammates}>
             <View>
-                <Image source={logo} style={styles.logo} />
+                <LogoTransparent/>
             </View>
             <View>
-                <Text style={styles.h1}>Mon équipe</Text>
+                <PageTitle text="Mon équipe" style={styles.h1}/>
             </View>
             <View style={styles.iconsContainer}>
-                <FontAwesome name="plus-circle" style={styles.plusCircle} />
-                <FontAwesome name="filter" style={styles.filter} />
+                <IconButton iconName='plus-circle'/>
+                <IconButton iconName='filter'/>
             </View>
             <View style={styles.searchContainer}>
-                <FontAwesome name="search" style={styles.search} />
+                <IconButton iconName='search'/>
                 <TextInput
                     placeholder="Rechercher"
                     style={styles.inputSearch}
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
         top: 54,
     },
     h1: {
+        
         position: "absolute",
         width: 321,
         height: 46,
