@@ -17,7 +17,7 @@ function CreateAccount({ navigation }) {
                     style={styles.BackButton}
                     onPress={() => navigation.navigate('ConnectionScreen')}
                 />
-                <TwoStep step={1} /> 
+                <TwoStep step={2} /> 
                 <ScreenTitle text="Create Account" />
                 <UserPicture />
                 <CustomInput placeholder="Prénom" />
