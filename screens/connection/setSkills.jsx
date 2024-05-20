@@ -1,14 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import BackButton from "../../components/buttons/BackButton";
+import IconButton from "../../components/buttons/IconButton";
 
 function SetSkills({ navigation }) {
     return (
     <View style={styles.main}>
-         <BackButton 
-             style={styles.BackButton}
-             onPress={() => navigation.navigate('CreateAccount')}
-         />
+         <IconButton
+                        style={styles.iconButton}
+                        onPress={() => navigation.navigate('ConnectionScreen')}
+                        iconName="arrow-left"
+            />
          <Text style={styles.title}>Set Skills</Text>
          <Text 
              style={styles.title}
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         paddingTop: 20, // Ajout de padding pour un meilleur espacement en haut
     },
-    BackButton: {
+    iconButton: {
         marginTop: 200,
     },
     title: {

@@ -7,13 +7,22 @@ import CustomInput from '../../components/inputs/CustomInput';
 import UserPicture from '../../components/images/UserPicture';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import LogoTransparent from '../../components/logos/LogoTransparent';
+import IconButton from '../../components/buttons/IconButton';
 
 function ChangeInformationsScreen({ navigation }) {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            
-            <LogoTransparent /> 
+            <View style={styles.header}>
+                <IconButton
+                    style={styles.iconButton}
+                    onPress={() => navigation.navigate('ConnectionScreen')}
+                    iconName="arrow-left"
+                />
+                <View style={styles.logoWrapper}>
+                    <LogoTransparent />
+                </View>
+            </View>
             <ScreenTitle text='Modifier mes infomations'/>
             <UserPicture />
             <CustomInput placeholder='Prénom'/>
@@ -21,7 +30,6 @@ function ChangeInformationsScreen({ navigation }) {
             <CustomInput placeholder='Nouveau mot de passe'/>
             <FilledButton text='Enregistrer' background={MyLightTheme.colors.deepGreen} full={true} />
             <FilledButton text='Supprimer mon compte' background={MyLightTheme.colors.orange} full={true} />
-
         </SafeAreaView>
     )
 }
@@ -29,6 +37,26 @@ function ChangeInformationsScreen({ navigation }) {
 export default ChangeInformationsScreen;
 
 const styles = StyleSheet.create({
+    header: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        position: 'relative',
+    },
+    iconButton: {
+        position: 'absolute', 
+        left: 20, 
+        top: '50%', 
+        marginTop: -25, 
+    },
+    logoWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    },
     main: {
         flex: 1,
         alignItems: 'center',
