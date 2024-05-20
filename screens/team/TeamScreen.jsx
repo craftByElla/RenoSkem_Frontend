@@ -5,6 +5,8 @@ import Avatar from "../../components/avatar";
 import IconButton from "../../components/buttons/IconButton";
 import PageTitle from "../../components/text/ScreenTitle"
 import LogoTransparent from "../../components/logos/LogoTransparent"
+import CustomInput from "../../components/inputs/CustomInput";
+
 const logo = require("../../assets/splash.png");
 
 export default function TeamScreen({ navigation }) {
@@ -22,24 +24,23 @@ export default function TeamScreen({ navigation }) {
 
     return (
         <View style={styles.Teammates}>
-            <View>
+            <View style={styles.logo}>
                 <LogoTransparent/>
             </View>
-            <View>
-                <PageTitle text="Mon équipe" style={styles.h1}/>
+            <View style={styles.h1}>
+                <PageTitle text="Mon équipe"/>
             </View>
             <View style={styles.iconsContainer}>
                 <IconButton iconName='plus-circle'/>
                 <IconButton iconName='filter'/>
             </View>
-            <View style={styles.searchContainer}>
-                <IconButton iconName='search'/>
-                <TextInput
+            <View style={styles.searchContainer}>              
+                <CustomInput
                     placeholder="Rechercher"
-                    style={styles.inputSearch}
-                />
+                    search={true}
+                />              
             </View>
-            <View>
+            <View style={styles.avatarContainer}>
                 {avatars}
             </View>
         </View>
@@ -54,13 +55,17 @@ const styles = StyleSheet.create({
         backgroundColor: "#EFECEA",
         borderRadius: 50,
     },
+
+    
     logo: {
-        position: "absolute",
-        width: 35.34,
-        height: 40.77,
-        left: 171,
-        top: 54,
+        marginTop:60,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
     },
+
+
     h1: {
         
         position: "absolute",
@@ -69,45 +74,34 @@ const styles = StyleSheet.create({
         left: 34,
         top: 126,
         fontFamily: 'Inter',
-        fontStyle: "normal",
-        fontWeight: '800',
+        fontStyle:"normal",
+        fontWeight: 800,
         fontSize: 24,
         lineHeight: 36,
         letterSpacing: 0.15,
         color: "#194852",
+
+
     },
+
     iconsContainer: {
         flexDirection: 'row',
         position: "absolute",
         top: 118,
         right: 20,
     },
-    plusCircle: {
-        width: 48,
-        height: 48,
-        marginRight: 10,
-    },
-    filter: {
-        width: 48,
-        height: 48,
-    },
+    
     searchContainer: {
-        position: "absolute",
-        width: 313,
-        height: 49,
-        left: 32,
-        top: 166,
-        flexDirection: 'row',
-        alignItems: 'center',
+        marginTop:50,
+        marginLeft:35,
+      
     },
-    search: {
-        width: 24,
-        height: 24,
-        marginRight: 10,
-    },
-    inputSearch: {
-        flex: 1,
-        height: 49,
-        paddingLeft: 10,
-    },
+    
+
+    avatarContainer: {
+        marginTop:50,
+        flexDirection:"row",
+        flexWrap:"wrap"
+    }
+  
 });

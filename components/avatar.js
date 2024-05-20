@@ -18,11 +18,11 @@ export default Avatar;
 
 const styles = StyleSheet.create({
   container: {
+      marginTop:10,
+      marginLeft:15,
       flexDirection: "column",
       alignItems: "center",
-      padding: 16,
       gap: 4,
-      position: "absolute",
       width: 128,
       height: 125,
       left: 44,
