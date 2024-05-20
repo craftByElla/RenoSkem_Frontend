@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter',
     fontSize: 15,
     fontStyle: 'normal',
-    fontWeight: '600',
+    fontWeight: "600",
     lineHeight: 21,
     letterSpacing: 0.25
   }

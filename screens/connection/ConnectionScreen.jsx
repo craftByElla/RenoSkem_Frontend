@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter',  
         fontSize: 36,
         fontStyle: 'normal',
-        fontWeight: '800',
+        fontWeight: "800",
         lineHeight: 36, 
         letterSpacing: 0.15, 
         textTransform: 'uppercase', 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter',
         fontSize: 15,
         fontStyle: 'normal',
-        fontWeight: '400',
+        fontWeight: "400",
         lineHeight: 21, 
         marginLeft: 12,
     },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter',
         fontSize: 12,
         fontStyle: 'normal',
-        fontWeight: '400',
+        fontWeight: "400",
         lineHeight: 19,
         marginTop: 5, // Ajouter un espacement vertical pour séparer du bouton
     },
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter',
         fontSize: 15,
         fontStyle: 'normal',
-        fontWeight: '400',
+        fontWeight: "400",
         lineHeight: 21, // 150%
     },
     footerLinkText: {
