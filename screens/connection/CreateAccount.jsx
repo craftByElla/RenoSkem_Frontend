@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
@@ -15,22 +15,25 @@ function CreateAccount({ navigation }) {
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
+                keyboardVerticalOffset={20}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.main}>
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.header}>
                             <IconButton
                                 style={styles.iconButton}
                                 onPress={() => navigation.navigate('ConnectionScreen')}
                                 iconName="arrow-left"
                             />
-                            <View style={styles.logoWrapper}>
-                                <LogoTransparent />
-                            </View>
+                            <LogoTransparent />
                         </View>
-                        <TwoStep step={2} /> 
-                        <ScreenTitle text="Create Account" />
-                        <UserPicture />
+                        <View style={styles.progressIndicatorWrapper}>
+                            <TwoStep step={1} /> 
+                        </View>
+                        <ScreenTitle style={styles.ScreenTitle} text="Créer votre compte" />
+                        <View style={styles.UserPictureWrapper}>
+                            <UserPicture />
+                        </View>
                         <CustomInput placeholder="Prénom" />
                         <CustomInput placeholder="Email" />
                         <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
@@ -42,7 +45,7 @@ function CreateAccount({ navigation }) {
                                 onPress={() => navigation.navigate('SetSkills')}
                             /> 
                         </View>
-                    </View>
+                    </ScrollView>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -54,16 +57,15 @@ export default CreateAccount;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#EFECEA',
     },
     container: {
         flex: 1,
     },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-start', // Aligner les éléments en haut
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#EFECEA',
+        paddingHorizontal: 20, // Ajoutez du padding horizontal pour éviter que le clavier couvre les inputs
     },
     header: {
         width: '100%',
@@ -79,23 +81,18 @@ const styles = StyleSheet.create({
         top: '50%', 
         marginTop: -25, 
     },
-    logoWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
+    progressIndicatorWrapper: {
+        marginTop: 20,
+        marginBottom: 30,
     },
-    subtitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: 'black',
+    UserPictureWrapper: {
+        marginTop: 10,
+        marginBottom: 10,
     },
     buttonContainer: {
-        width: '100%', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        marginTop: 20, 
+        width: "100%",
+        alignItems: 'center',
+        marginVertical: 20,
     },
     filledButton: {
         marginVertical: 10, 
