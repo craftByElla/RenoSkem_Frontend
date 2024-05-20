@@ -3,7 +3,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProjectsStack from './ProjectsStack';
 import HomeScreen from '../../screens/home/HomeScreen';
-import MyTeamScreen from '../../screens/team/MyTeamScreen';
+import TeamStack from './TeamStack';
 import CreateProjectStack from './CreateProjectStack';
 
 export default function TabNavigator() {
@@ -13,7 +13,7 @@ export default function TabNavigator() {
         tabBarIcon: ({ color, size }) => {
             let iconName = '';
             let IconComponent = FontAwesome;
-            if (route.name === 'MyTeamScreen') {
+            if (route.name === 'TeamStack') {
             iconName = 'group';
             } else if (route.name === 'HomeScreen') {
             iconName = 'home';
@@ -29,7 +29,7 @@ export default function TabNavigator() {
         })}>
         <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
         <Tab.Screen name="HomeScreen" component={HomeScreen} />
-        <Tab.Screen name="MyTeamScreen" component={MyTeamScreen} />
+        <Tab.Screen name="TeamStack" component={TeamStack} />
         <Tab.Screen
             name="CreateProjectStack"
             component={CreateProjectStack}
