@@ -1,14 +1,14 @@
 
 import {StyleSheet,Text, View, Image,Button,} from "react-native";
 
-function Avatar(props) {
+function Avatar(props,{navigation}) {
   return (
     <View style={styles.container}>                                   
       <View>                                                           
         <Text style={styles.avatarName}>{props.name}</Text>
       </View>
       <View>                                                         
-        <Image source={props.image} style={styles.avatarPicture} />
+        <Image source={props.image} style={styles.avatarPicture} onPress={() => navigation.navigate('TeammateSkillsScreen')}/>
       </View>
     </View>
   );
@@ -18,7 +18,7 @@ export default Avatar;
 
 const styles = StyleSheet.create({
   container: {
-      marginTop:10,
+      marginTop:15,
       marginLeft:15,
       flexDirection: "column",
       alignItems: "center",

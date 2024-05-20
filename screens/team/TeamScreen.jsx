@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
 
     
     logo: {
-        marginTop:60,
+        marginTop:50,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
