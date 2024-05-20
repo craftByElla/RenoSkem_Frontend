@@ -3,12 +3,25 @@ import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 're
 import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
+import CustomInput from '../../components/inputs/CustomInput';
+import UserPicture from '../../components/images/UserPicture';
+import ScreenTitle from '../../components/text/ScreenTitle';
+import LogoTransparent from '../../components/logos/LogoTransparent';
 
 function ChangeInformationsScreen({ navigation }) {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <FilledButton text='test' background={MyLightTheme.colors.deepGreen} borderColor={MyLightTheme.colors.deepGreen} full={true} />
+            
+            <LogoTransparent /> 
+            <ScreenTitle text='Modifier mes infomations'/>
+            <UserPicture />
+            <CustomInput placeholder='Prénom'/>
+            <CustomInput placeholder='Mot de passe actuel'/>
+            <CustomInput placeholder='Nouveau mot de passe'/>
+            <FilledButton text='Enregistrer' background={MyLightTheme.colors.deepGreen} full={true} />
+            <FilledButton text='Supprimer mon compte' background={MyLightTheme.colors.orange} full={true} />
+
         </SafeAreaView>
     )
 }

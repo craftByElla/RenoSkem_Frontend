@@ -20,12 +20,10 @@ PlainButton.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const createStyles = (background, borderColor) => StyleSheet.create({
+const createStyles = (background) => StyleSheet.create({
   button: {
     backgroundColor: background,
     borderRadius: 100,
-    borderWidth: 1,
-    borderColor: borderColor,
     paddingVertical: 14,
     paddingHorizontal: 24,
     justifyContent: 'center',
