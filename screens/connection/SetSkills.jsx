@@ -1,13 +1,35 @@
 import React from 'react';
-import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
-import UserPicture from "../../components/images/UserPicture";
-import CustomInput from "../../components/inputs/CustomInput";
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
+import TextWithRadioButtons from '../../components/buttons/TextWithRadioButtons'; 
+import Stars from '../../components/buttons/Stars';
 import { MyLightTheme } from '../../components/Theme';
+
+const postesTravaux = [
+    "Chauffage",
+    "Cloisonnement/Plâtrage",
+    "Démolition",
+    "Électricité",
+    "Étanchéité",
+    "Façade",
+    "Fondations",
+    "Installation cuisine/SDB",
+    "Isolation",
+    "Maçonnerie",
+    "Menuiserie",
+    "Montage de meuble",
+    "Peinture",
+    "Plomberie",
+    "Revêtements muraux",
+    "Revêtements sol",
+    "Revêtements extérieurs",
+    "Toiture",
+    "Ventilation"
+];
 
 function SetSkills({ navigation }) {
     return (
@@ -29,18 +51,20 @@ function SetSkills({ navigation }) {
                         <View style={styles.progressIndicatorWrapper}>
                             <TwoStep step={2} /> 
                         </View>
-                        <ScreenTitle text="Paramétrer votre niveau d’expertise" /> 
-                        <View style={styles.UserPictureWrapper}>
-                            <UserPicture />
-                        </View>
-                        <CustomInput placeholder="Prénom" />
-                        <CustomInput placeholder="Email" />
-                        <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                        <ScreenTitle text="Paramétrer votre niveau d’expertise" />
+                        <Stars style={styles.stars}  />
+                        {/* Ajout des composants radio pour chaque compétence */}
+                        <ScrollView style={styles.scrollableSection} contentContainerStyle={styles.scrollableContent}>
+                            {postesTravaux.map((poste, index) => (
+                                <TextWithRadioButtons key={index} text={poste} />
+                            ))}
+                        </ScrollView>
+
                         <View style={styles.buttonContainer}>
                             <FilledButton 
-                                text='Suivant' 
+                                text='Enregistrer' 
                                 background={MyLightTheme.colors.deepGreen} 
-                                full={false}
+                                full={true}
                                 onPress={() => navigation.navigate('TabNavigator')}
                             /> 
                         </View>
@@ -62,7 +86,7 @@ const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        justifyContent: 'flex-start', // Aligner les éléments en haut
+        justifyContent: 'flex-start',
         alignItems: 'center',
     },
     header: {
@@ -87,11 +111,19 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    stars: {
+    
+    },
+    scrollableSection: {
+        flexGrow: 1, // Permettre à la section de grandir pour occuper l'espace disponible
+    },
+    scrollableContent: {
+        alignItems: 'center', // Centrer le contenu horizontalement
+    },
     buttonContainer: {
-        position: 'absolute',
-        bottom: -10, // Positionné à 30 unités du bas
-        right: -150,
-        width: "90%",
+        alignItems: 'center',
+        width: "100%",
+        marginVertical: 20,
     },
     filledButton: {
         marginVertical: 10, 
