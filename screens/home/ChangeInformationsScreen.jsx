@@ -1,13 +1,14 @@
 import React from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
 import PlainButton from '../../components/buttons/PlainButton';
+import FilledButton from '../../components/buttons/FilledButton';
+import { MyLightTheme } from '../../components/Theme';
 
 function ChangeInformationsScreen({ navigation }) {
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Text>test</Text>
-            <PlainButton text='test'/>
+            <FilledButton text='test' background={MyLightTheme.colors.deepGreen} borderColor={MyLightTheme.colors.deepGreen} full={true} />
         </SafeAreaView>
     )
 }
