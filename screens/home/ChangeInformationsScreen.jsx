@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
-import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import CustomInput from '../../components/inputs/CustomInput';
@@ -8,13 +7,12 @@ import UserPicture from '../../components/images/UserPicture';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import IconButton from '../../components/buttons/IconButton';
-import ModalTest from '../../components/modal/ModalTest';
+import SimpleModal from '../../components/modal/SimpleModal';
 import PageTitle from '../../components/text/ScreenTitle'
 
 
 function ChangeInformationsScreen({ navigation }) {
     const styles = createStyles(MyLightTheme)
-    // const button1 = <FilledButton text='test' background='red'/>
     const [isShowModal, setIsShowModal] = useState(false);
     const toggleModal = () => {
         setIsShowModal(!isShowModal);
@@ -54,7 +52,7 @@ function ChangeInformationsScreen({ navigation }) {
                     />
                 </View>
             </View>
-            <ModalTest 
+            <SimpleModal
                 isShow={isShowModal} 
                 toggleModal={toggleModal}
                 title='Suppression de compte'

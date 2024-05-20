@@ -4,12 +4,8 @@ import { MyLightTheme } from '../Theme';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 
-function ModalTest(props) {
+function SimpleModal(props) {
     const styles = createStyles(MyLightTheme, props)
-
-    const toggleModal = () => {
-        setIsShowModal(!isShowModal);
-    };
 
     return (
         <Modal
@@ -43,7 +39,7 @@ function ModalTest(props) {
     )
 }
 
-export default ModalTest;
+export default SimpleModal;
 
 const createStyles = (MyLightTheme, props) => StyleSheet.create({
     modalContainer: {
