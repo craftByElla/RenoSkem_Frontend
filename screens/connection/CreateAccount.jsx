@@ -24,13 +24,15 @@ function CreateAccount({ navigation }) {
                                 onPress={() => navigation.navigate('ConnectionScreen')}
                                 iconName="arrow-left"
                             />
-                            <View style={styles.logoWrapper}>
-                                <LogoTransparent />
-                            </View>
+                            <LogoTransparent />
                         </View>
-                        <TwoStep step={2} /> 
-                        <ScreenTitle text="Create Account" />
-                        <UserPicture />
+                        <View style={styles.progressIndicatorWrapper}>
+                            <TwoStep step={1} /> 
+                        </View>
+                        <ScreenTitle style={styles.ScreenTitle}  text="Créer votre compte" />
+                        <View style={styles.UserPictureWrapper}>
+                            <UserPicture />
+                        </View>
                         <CustomInput placeholder="Prénom" />
                         <CustomInput placeholder="Email" />
                         <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
@@ -54,7 +56,6 @@ export default CreateAccount;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#EFECEA',
     },
     container: {
         flex: 1,
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start', // Aligner les éléments en haut
         alignItems: 'center',
-        backgroundColor: '#EFECEA',
     },
     header: {
         width: '100%',
@@ -79,23 +79,19 @@ const styles = StyleSheet.create({
         top: '50%', 
         marginTop: -25, 
     },
-    logoWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
+    progressIndicatorWrapper: {
+        marginTop: 20,
+        marginBottom: 30,
     },
-    subtitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: 'black',
+    UserPictureWrapper: {
+        marginTop: 10,
+        marginBottom: 10,
     },
     buttonContainer: {
-        width: '100%', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        marginTop: 20, 
+        position: 'absolute',
+        bottom: -10, // Positionné à 30 unités du bas
+        right: -150,
+        width: "90%",
     },
     filledButton: {
         marginVertical: 10, 

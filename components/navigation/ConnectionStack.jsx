@@ -8,10 +8,10 @@ import Login_password from '../../screens/connection/Login_password'
 
 import { MyLightTheme, MyDarkTheme } from '../Theme';
 
-export default function ProjectsStack() {
+export default function ConnectionStack() {
     const Stack = createNativeStackNavigator();
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
             <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />
             <Stack.Screen name="CreateAccount" component={CreateAccount} />
             <Stack.Screen name="SetSkills" component={SetSkills} />

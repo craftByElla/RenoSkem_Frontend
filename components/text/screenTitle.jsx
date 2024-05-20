@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
-const PageTitle = ({ text }) => {
+const ScreenTitle = ({ text }) => {
   return (
     <Text style={styles.title}>
       {text}
@@ -10,23 +10,23 @@ const PageTitle = ({ text }) => {
   );
 };
 
-PageTitle.propTypes = {
+ScreenTitle.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
   title: {
-    width: 321,
-    height: 46,
-    flexShrink: 0,
+    width: '80%', // Occupe toute la largeur disponible
     color: '#194852',
     fontFamily: 'Inter',
     fontSize: 24,
     fontStyle: 'normal',
     fontWeight: '800',
-    lineHeight: 36, // 150%
+    lineHeight: 36, 
     letterSpacing: 0.15,
+    flexWrap: 'wrap', // Permet de faire passer le texte à la ligne
+    justifyContent: 'center',
   },
 });
 
-export default PageTitle;
+export default ScreenTitle;
