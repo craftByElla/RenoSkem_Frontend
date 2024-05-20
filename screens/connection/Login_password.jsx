@@ -45,7 +45,7 @@ function Login_password({ navigation }) {
                                 text='Se connecter' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={true}
-                                onPress={() => navigation.navigate('TabNavigator', { screen: 'HomeScreen' })}
+                                onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                             /> 
                         </View>
                     </ScrollView>

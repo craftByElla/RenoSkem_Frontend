@@ -13,11 +13,11 @@ export default function TabNavigator() {
         tabBarIcon: ({ color, size }) => {
             let iconName = '';
             let IconComponent = FontAwesome;
-            if (route.name === 'TeamStack') {
+            if (route.name === "Main-d'œuvre") {
             iconName = 'group';
-            } else if (route.name === 'HomeStack') {
+            } else if (route.name === 'Accueil') {
             iconName = 'home';
-            } else if (route.name === 'ProjectsStack') {
+            } else if (route.name === 'Projets') {
             IconComponent = Ionicons;
             iconName = 'library';
             }
@@ -27,9 +27,9 @@ export default function TabNavigator() {
         tabBarInactiveTintColor: '#b2b2b2',
         headerShown: false,
         })}>
-        <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
-        <Tab.Screen name="HomeStack" component={HomeStack} />
-        <Tab.Screen name="TeamStack" component={TeamStack} />
+        <Tab.Screen name="Projets" component={ProjectsStack} />
+        <Tab.Screen name="Accueil" component={HomeStack} />
+        <Tab.Screen name="Main-d'œuvre" component={TeamStack} />
         <Tab.Screen
             name="CreateProjectStack"
             component={CreateProjectStack}
