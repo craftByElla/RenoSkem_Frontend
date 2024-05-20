@@ -18,10 +18,10 @@ export default function App() {
   return (
     <NavigationContainer theme={MyLightTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} />
         <Stack.Screen name="ConnectionStack" component={ConnectionStack} />
         <Stack.Screen name='TutoStack' component={TutoStack} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

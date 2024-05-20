@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import BackButton from "../../components/buttons/BackButton";
+import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import UserPicture from "../../components/images/UserPicture";
@@ -15,9 +15,10 @@ function CreateAccount({ navigation }) {
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.main}>
-                    <BackButton 
-                        style={styles.backButton}
+                    <IconButton
+                        style={styles.iconButton}
                         onPress={() => navigation.navigate('ConnectionScreen')}
+                        iconName="arrow-left"
                     />
                     <LogoTransparent />
                     <TwoStep step={2} /> 
@@ -50,14 +51,14 @@ const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        justifyContent: 'center', // Center vertically
-        alignItems: 'center', // Center horizontally
+        justifyContent: 'center', 
+        alignItems: 'center',
         backgroundColor: '#EFECEA',
     },
-    backButton: {
+    iconButtonButton: {
         position: 'absolute',
-        top: 40, // Adjust as needed for better top spacing
-        left: 20, // Adjust as needed for better left spacing
+        top: 40, 
+        left: 20, 
     },
     subtitle: {
         fontSize: 18,
@@ -66,12 +67,12 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     buttonContainer: {
-        width: '100%', // Take full width of the parent container
-        justifyContent: 'center', // Center vertically within the container
-        alignItems: 'center', // Center horizontally within the container
-        marginTop: 20, // Add margin to separate from other elements
+        width: '100%', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginTop: 20, 
     },
     filledButton: {
-        marginVertical: 10, // Add space between buttons
+        marginVertical: 10, 
     }
 });
