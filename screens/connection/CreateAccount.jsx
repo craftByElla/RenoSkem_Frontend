@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
@@ -15,9 +15,10 @@ function CreateAccount({ navigation }) {
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
+                keyboardVerticalOffset={20}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.main}>
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.header}>
                             <IconButton
                                 style={styles.iconButton}
@@ -29,7 +30,7 @@ function CreateAccount({ navigation }) {
                         <View style={styles.progressIndicatorWrapper}>
                             <TwoStep step={1} /> 
                         </View>
-                        <ScreenTitle style={styles.ScreenTitle}  text="Créer votre compte" />
+                        <ScreenTitle style={styles.ScreenTitle} text="Créer votre compte" />
                         <View style={styles.UserPictureWrapper}>
                             <UserPicture />
                         </View>
@@ -44,7 +45,7 @@ function CreateAccount({ navigation }) {
                                 onPress={() => navigation.navigate('SetSkills')}
                             /> 
                         </View>
-                    </View>
+                    </ScrollView>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -60,10 +61,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-start', // Aligner les éléments en haut
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        paddingHorizontal: 20, // Ajoutez du padding horizontal pour éviter que le clavier couvre les inputs
     },
     header: {
         width: '100%',
@@ -88,10 +90,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     buttonContainer: {
-        position: 'absolute',
-        bottom: -10, // Positionné à 30 unités du bas
-        right: -150,
-        width: "90%",
+        width: "100%",
+        alignItems: 'center',
+        marginVertical: 20,
     },
     filledButton: {
         marginVertical: 10, 

@@ -65,7 +65,7 @@ function SetSkills({ navigation }) {
                                 text='Enregistrer' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={true}
-                                onPress={() => navigation.navigate('TabNavigator')}
+                                onPress={() => navigation.navigate('TabNavigator', { screen: 'HomeScreen' })}
                             /> 
                         </View>
                     </View>
