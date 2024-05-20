@@ -34,9 +34,11 @@ function CreateAccount({ navigation }) {
                         <View style={styles.UserPictureWrapper}>
                             <UserPicture />
                         </View>
-                        <CustomInput placeholder="Prénom" />
-                        <CustomInput placeholder="Email" />
-                        <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                        <View style={styles.input}>
+                            <CustomInput placeholder="Prénom" />
+                            <CustomInput placeholder="Email" />
+                            <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                        </View>
                         <View style={styles.buttonContainer}>
                             <FilledButton 
                                 text='Suivant' 
@@ -57,6 +59,7 @@ export default CreateAccount;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
+        width: "100%"
     },
     container: {
         flex: 1,
@@ -65,7 +68,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingHorizontal: 20, // Ajoutez du padding horizontal pour éviter que le clavier couvre les inputs
     },
     header: {
         width: '100%',
@@ -89,12 +91,17 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    input : {
+        flexGrow: 1, // Permettre à la section de grandir pour occuper l'espace disponible
+    },
     buttonContainer: {
         width: "100%",
-        alignItems: 'center',
-        marginVertical: 20,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginRight: "10%",
     },
     filledButton: {
         marginVertical: 10, 
+        
     }
 });

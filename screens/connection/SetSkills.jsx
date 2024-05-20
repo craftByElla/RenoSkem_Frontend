@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         width: "100%",
-        marginVertical: 20,
+       
     },
     filledButton: {
         marginVertical: 10, 
