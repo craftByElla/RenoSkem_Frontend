@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
-import Project from '../../components/homescreen/Project';
+import Project from '../../components/homeProject/Project';
 
 function HomeScreen({ navigation }) {
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-function HomeScreen(props) {
+function Project(props) {
     const { colors } = useTheme();
 
     const styles = createStyles(colors);
@@ -16,7 +16,7 @@ function HomeScreen(props) {
     )
 }
 
-export default HomeScreen;
+export default Project;
 
 const createStyles = (colors) => StyleSheet.create({
     projectContainer: {
