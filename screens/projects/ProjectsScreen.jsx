@@ -1,9 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import LogoTransparent from '../../components/logos/LogoTransparent';
 
 function ProjectsScreen({ navigation }) {
     return (
         <View style={styles.main}>
+            <LogoTransparent />
             <TouchableOpacity onPress={() => navigation.navigate('NewProjectScreen')}><Text>go to newProject</Text></TouchableOpacity>
         </View>
     )

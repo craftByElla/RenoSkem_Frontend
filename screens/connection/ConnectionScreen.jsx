@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import LogoConnexionPage from "../../components/logos/LogoConnexionPage";
 import SocialButton from "../../components/buttons/SocialButton";
 import Divider from "../../components/dividers/Divider";
-import PlainButton from "../../components/buttons/PlainButton"; // Assurez-vous que le chemin est correct
+import PlainButton from "../../components/buttons/PlainButton"; 
 
 function ConnectionScreen({ navigation }) {
     return (
@@ -28,7 +28,7 @@ function ConnectionScreen({ navigation }) {
             <Divider text="Ou" style={styles.divider} />
             <View style={styles.plainButtonContainer}>
                 <PlainButton
-                    onPress={() => console.log('Account created')}
+                    onPress={() => navigation.navigate('CreateAccount')}
                     text="Créez un compte"
                 />
                 <PlainButton
@@ -41,7 +41,7 @@ function ConnectionScreen({ navigation }) {
                 En créant un compte, vous acceptez nos <Text style={styles.linkText}>Conditions</Text> et notre <Text style={styles.linkText}>Politique de confidentialité</Text>.
             </Text>
             <Text style={styles.footerText}>
-                Vous avez déjà un compte ? <Text style={styles.footerLinkText} onPress={() => navigation.navigate('Login')}>Connectez-vous</Text>
+                Vous avez déjà un compte ? <Text style={styles.footerLinkText} onPress={() => navigation.navigate('Login_Id')}>Connectez-vous</Text>
             </Text>
         </View>
     );

@@ -1,41 +1,19 @@
 import React from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
-import Project from '../../components/homeProject/Project';
+import PlainButton from '../../components/buttons/PlainButton';
+import FilledButton from '../../components/buttons/FilledButton';
+import { MyLightTheme } from '../../components/Theme';
 
-function HomeScreen({ navigation }) {
+function ChangeInformationsScreen({ navigation }) {
 
-    const projectNames = [
-        'Maison2.0',
-        'Chez Papy', 
-        'Mezzanine',
-    ]
-
-    const projectName = projectNames.map((data, i ) => {
-        return <Project key={i} name={data}/> 
-    })
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={styles.main}>
-                <View style={styles.userContainer}>
-                    <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture}/> 
-                    <Text style={styles.helloText}>Hey Leyla !</Text>
-                </View>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>Mes Projets</Text>
-                    <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('CreateProjectStack')}><Text>Nouveau</Text></TouchableOpacity>
-                </View>
-                <View style={styles.projects}>
-                    {projectName}
-                </View>
-            </View>
-            <Text style={styles.titleDashboard}>Dashboard</Text>
-            <View style={styles.dashboard}>
-            </View>
+            <FilledButton text='test' background={MyLightTheme.colors.deepGreen} borderColor={MyLightTheme.colors.deepGreen} full={true} />
         </SafeAreaView>
     )
 }
 
-export default HomeScreen;
+export default ChangeInformationsScreen;
 
 const styles = StyleSheet.create({
     main: {
