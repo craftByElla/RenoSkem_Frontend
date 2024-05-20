@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start', // Aligner les éléments en haut
         alignItems: 'center',
-        paddingHorizontal: 20, // Ajouter du padding pour éviter que le texte ne touche les bords
     },
     header: {
         width: '100%',

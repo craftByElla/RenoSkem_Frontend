@@ -16,7 +16,7 @@ ScreenTitle.propTypes = {
 
 const styles = StyleSheet.create({
   title: {
-    width: '90%', // Occupe toute la largeur disponible
+    width: '80%', // Occupe toute la largeur disponible
     color: '#194852',
     fontFamily: 'Inter',
     fontSize: 24,
