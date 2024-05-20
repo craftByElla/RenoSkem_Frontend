@@ -36,7 +36,7 @@ function CreateAccount({ navigation }) {
                         </View>
                         <View style={styles.input}>
                             <CustomInput placeholder="Prénom" />
-                            <CustomInput placeholder="Email" />
+                            <CustomInput placeholder="Email" validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} />
                             <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
                         </View>
                         <View style={styles.buttonContainer}>
