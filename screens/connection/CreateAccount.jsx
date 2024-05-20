@@ -24,16 +24,14 @@ function CreateAccount({ navigation }) {
                                 onPress={() => navigation.navigate('ConnectionScreen')}
                                 iconName="arrow-left"
                             />
-                            <View style={styles.logoWrapper}>
-                                <LogoTransparent />
-                            </View>
+                            <LogoTransparent />
                         </View>
                         <View style={styles.progressIndicatorWrapper}>
-                            <TwoStep step={2} /> 
+                            <TwoStep step={1} /> 
                         </View>
-                        <ScreenTitle text="Créer votre compte" />
+                        <ScreenTitle style={styles.ScreenTitle}  text="Créer votre compte" />
                         <View style={styles.UserPictureWrapper}>
-                            <UserPicture  />
+                            <UserPicture />
                         </View>
                         <CustomInput placeholder="Prénom" />
                         <CustomInput placeholder="Email" />
@@ -81,12 +79,6 @@ const styles = StyleSheet.create({
         top: '50%', 
         marginTop: -25, 
     },
-    logoWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-    },
     progressIndicatorWrapper: {
         marginTop: 20,
         marginBottom: 30,
@@ -96,10 +88,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     buttonContainer: {
-        width: '100%', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        marginTop: 20, 
+        position: 'absolute',
+        bottom: -10, // Positionné à 30 unités du bas
+        right: -150,
+        width: "90%",
     },
     filledButton: {
         marginVertical: 10, 
