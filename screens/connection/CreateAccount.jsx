@@ -26,7 +26,7 @@ function CreateAccount({ navigation }) {
                     <CustomInput placeholder="Prénom" />
                     <CustomInput placeholder="Email" />
                     <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
-                    <CustomInput placeholder="Search here" search={true} />
+                    <CustomInput placeholder="Rechercher ici" search={true} />
                     <Text 
                         style={styles.subtitle}
                         onPress={() => navigation.navigate('SetSkills')}
