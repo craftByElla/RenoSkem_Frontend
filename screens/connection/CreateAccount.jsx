@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
 import BackButton from "../../components/buttons/BackButton";
-import TwoStep from "../../components/progressIndicator/twoStep";
-import ScreenTitle from "../../components/text/screenTitle";
-import UserPicture from "../../components/images/userPicture";
+import TwoStep from "../../components/progressIndicator/TwoStep";
+import ScreenTitle from "../../components/text/ScreenTitle";
+import UserPicture from "../../components/images/UserPicture";
 import CustomInput from "../../components/inputs/CustomInput";
 
 function CreateAccount({ navigation }) {
