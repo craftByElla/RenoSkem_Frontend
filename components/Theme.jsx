@@ -8,7 +8,7 @@ export const MyLightTheme = {
     colors: {
         ...DefaultTheme.colors,
         primary: '#264653',
-        background: '#D9D9D9',
+        background: '#EFECEA',
         notification: '#D9D9D9',
         deepGreen: '#264653',
         lightGreen: '#2A9D8F',

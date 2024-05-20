@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#EFECEA',
         paddingTop: 20, // Ajout de padding pour un meilleur espacement en haut
     },
     logoContainer: {

@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
 import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
@@ -8,35 +8,70 @@ import UserPicture from '../../components/images/UserPicture';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import IconButton from '../../components/buttons/IconButton';
+import ModalTest from '../../components/modal/ModalTest';
+import PageTitle from '../../components/text/ScreenTitle'
+
 
 function ChangeInformationsScreen({ navigation }) {
+    const styles = createStyles(MyLightTheme)
+    // const button1 = <FilledButton text='test' background='red'/>
+    const [isShowModal, setIsShowModal] = useState(false);
+    const toggleModal = () => {
+        setIsShowModal(!isShowModal);
+    };
 
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.header}>
                 <IconButton
                     style={styles.iconButton}
-                    onPress={() => navigation.navigate('ConnectionScreen')}
+                    onPress={() => navigation.navigate('HomeScreen')}
                     iconName="arrow-left"
                 />
-                <View style={styles.logoWrapper}>
-                    <LogoTransparent />
+                <LogoTransparent />
+            </View>
+            <View style={styles.mainContainer}>
+            <View style={{ width: '100%', alignItems: 'center'}}>
+                <ScreenTitle text='Modifier mes informations'/>
+                <View style={styles.userContainer}>
+                    <UserPicture />
+                </View>
+                <CustomInput placeholder='Prénom'/>
+                <CustomInput placeholder='Mot de passe actuel'/>
+                <CustomInput placeholder='Nouveau mot de passe'/>
+                </View>
+                <View style={{ width: '100%', alignItems: 'center'}}>
+                    <FilledButton 
+                        text='Enregistrer' 
+                        background={MyLightTheme.colors.deepGreen} 
+                        full={true} 
+                    />
+                    <FilledButton 
+                        text='Supprimer mon compte' 
+                        background={MyLightTheme.colors.orange} 
+                        full={true} 
+                        onPress={() => setIsShowModal(true)}
+                    />
                 </View>
             </View>
-            <ScreenTitle text='Modifier mes infomations'/>
-            <UserPicture />
-            <CustomInput placeholder='Prénom'/>
-            <CustomInput placeholder='Mot de passe actuel'/>
-            <CustomInput placeholder='Nouveau mot de passe'/>
-            <FilledButton text='Enregistrer' background={MyLightTheme.colors.deepGreen} full={true} />
-            <FilledButton text='Supprimer mon compte' background={MyLightTheme.colors.orange} full={true} />
+            <ModalTest 
+                isShow={isShowModal} 
+                toggleModal={toggleModal}
+                title='Suppression de compte'
+                button1={
+                    <FilledButton text='Supprimer' 
+                        background={MyLightTheme.colors.orange} 
+                        full={true} 
+                    />
+                }
+            /> 
         </SafeAreaView>
     )
 }
 
 export default ChangeInformationsScreen;
 
-const styles = StyleSheet.create({
+createStyles = (MyLightTheme) => StyleSheet.create({
     header: {
         width: '100%',
         flexDirection: 'row',
@@ -46,18 +81,12 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     iconButton: {
-        position: 'absolute', 
-        left: 20, 
-        top: '50%', 
-        marginTop: -25, 
+        position: 'absolute',
+        left: 20,
+        top: '50%',
+        marginTop: -25,
     },
-    logoWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-    },
-    main: {
+    mainContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'space-around',
@@ -65,7 +94,7 @@ const styles = StyleSheet.create({
     },
     userContainer: {
         display: 'flex',
-        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
     },
@@ -125,6 +154,5 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',
     },
+
 })
-
-

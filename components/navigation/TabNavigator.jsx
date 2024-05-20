@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProjectsStack from './ProjectsStack';
-import HomeScreen from '../../screens/home/HomeScreen';
+import HomeStack from './HomeStack';
 import TeamStack from './TeamStack';
 import CreateProjectStack from './CreateProjectStack';
 
@@ -15,7 +15,7 @@ export default function TabNavigator() {
             let IconComponent = FontAwesome;
             if (route.name === 'TeamStack') {
             iconName = 'group';
-            } else if (route.name === 'HomeScreen') {
+            } else if (route.name === 'HomeStack') {
             iconName = 'home';
             } else if (route.name === 'ProjectsStack') {
             IconComponent = Ionicons;
@@ -28,7 +28,7 @@ export default function TabNavigator() {
         headerShown: false,
         })}>
         <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
-        <Tab.Screen name="HomeScreen" component={HomeScreen} />
+        <Tab.Screen name="HomeStack" component={HomeStack} />
         <Tab.Screen name="TeamStack" component={TeamStack} />
         <Tab.Screen
             name="CreateProjectStack"
