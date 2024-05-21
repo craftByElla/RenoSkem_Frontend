@@ -88,6 +88,7 @@ export default function TeamScreen({navigation}) {
                 title="Ajout d'un nouveau "                   
                 button1={
                     <FilledButton text='Coéquipier' 
+                        onPress={() => navigation.navigate("NewCoworkerScreen")}
                         background={colors.deepGreen} 
                         full={true} 
                     />
