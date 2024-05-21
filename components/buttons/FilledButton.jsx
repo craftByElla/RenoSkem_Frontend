@@ -29,6 +29,7 @@ const createStyles = (background) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
+   
   },
   text: {
     color: '#FFF', 

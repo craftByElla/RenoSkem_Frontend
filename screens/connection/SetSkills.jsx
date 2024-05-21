@@ -65,7 +65,7 @@ function SetSkills({ navigation }) {
                                 text='Enregistrer' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={true}
-                                onPress={() => navigation.navigate('TabNavigator', { screen: 'HomeScreen' })}
+                                onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                             /> 
                         </View>
                     </View>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         width: "100%",
-        marginVertical: 20,
+       
     },
     filledButton: {
         marginVertical: 10, 

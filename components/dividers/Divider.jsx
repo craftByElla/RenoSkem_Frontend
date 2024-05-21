@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter',
     fontSize: 14,
     fontStyle: 'normal',
-    fontWeight: '400',
+    fontWeight: "400",
     lineHeight: 21 // 150%
   }
 });

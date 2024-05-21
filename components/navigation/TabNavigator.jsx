@@ -17,41 +17,23 @@ export default function TabNavigator() {
         tabBarIcon: ({ color, size }) => {
             let iconName = '';
             let IconComponent = FontAwesome;
-            if (route.name === 'TeamStack') {
+            if (route.name === "Main-d'œuvre") {
             iconName = 'group';
-            } else if (route.name === 'HomeStack') {
+            } else if (route.name === 'Accueil') {
             iconName = 'home';
-            } else if (route.name === 'ProjectsStack') {
+            } else if (route.name === 'Projets') {
             IconComponent = Ionicons;
-            iconName = 'library';
-            }
-            return <IconComponent name={iconName} size={size} color={color} />;
+            iconName = "library";
+          }
+          return <IconComponent name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#194852',
-        tabBarInactiveTintColor: '#b2b2b2',
+        tabBarActiveTintColor: "#194852",
+        tabBarInactiveTintColor: "#b2b2b2",
         headerShown: false,
         })}>
-        <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
-        <Tab.Screen 
-            name="HomeStack" 
-            component={HomeStack} 
-            //problème la 1ère fois qu'on est sur HomeScreen : stack navigate quan don clique sur HomeStack
-            listeners={({ navigation, route }) => ({
-                tabPress: () => {
-                    if (route.state && route.state.index === 0) {
-                        // Already on HomeScreen, no need to reset
-                        return;
-                    }
-                    navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [{ name: 'HomeScreen' }],
-                        })
-                    );
-                },
-            })}
-        />
-        <Tab.Screen name="TeamStack" component={TeamStack} />
+        <Tab.Screen name="Projets" component={ProjectsStack} />
+        <Tab.Screen name="Accueil" component={HomeStack} />
+        <Tab.Screen name="Main-d'œuvre" component={TeamStack} />
         <Tab.Screen
             name="CreateProjectStack"
             component={CreateProjectStack}

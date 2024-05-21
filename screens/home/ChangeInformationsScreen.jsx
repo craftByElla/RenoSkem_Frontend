@@ -8,7 +8,6 @@ import ScreenTitle from '../../components/text/ScreenTitle';
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import IconButton from '../../components/buttons/IconButton';
 import SimpleModal from '../../components/modal/SimpleModal';
-import PageTitle from '../../components/text/ScreenTitle'
 
 
 function ChangeInformationsScreen({ navigation }) {

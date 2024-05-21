@@ -4,7 +4,7 @@ import HomeScreen from '../../screens/home/HomeScreen';
 import ChangeInformationsScreen from '../../screens/home/ChangeInformationsScreen';
 import SkillsScreen from '../../screens/home/SkillsScreen';
 
-export default function ProjectsStack() {
+export default function HomeStack() {
     const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>

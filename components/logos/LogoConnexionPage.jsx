@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Orbitron-Regular', 
     fontSize: 24,
     fontStyle: 'normal',
-    fontWeight: '600', //poids de la police
+    fontWeight: "600", //poids de la police
     lineHeight: 23, 
     letterSpacing: -1.2,
     textAlignVertical: 'center', // Centre le texte verticalement

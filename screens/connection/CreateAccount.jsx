@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
@@ -8,8 +8,84 @@ import CustomInput from "../../components/inputs/CustomInput";
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
+import Toast from 'react-native-toast-message';
 
 function CreateAccount({ navigation }) {
+
+    //---------CONNEXION AU BACK------------------//
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleNext = () => {
+        // Vérification simple des champs 
+        if (!name || !email || !password) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Tous les champs sont obligatoires'
+            });
+            return;
+        }
+    
+        const userData = {
+            name,
+            email,
+            password
+        };
+    
+        // Envoi des données au serveur via fetch
+        fetch('http://192.168.100.227:3000/users/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Gérer la réponse du serveur
+            if (data.message) {
+                if (data.message === 'User successfully registered') {
+                    // Réinitialiser les champs d'entrée
+                    setName('');
+                    setEmail('');
+                    setPassword('');
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Succès',
+                        text2: 'Compte créé avec succès'
+                    });
+                    navigation.navigate('SetSkills');
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: data.message
+                    });
+                }
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: 'Une erreur est survenue sans message spécifique.'
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue'
+            });
+        });
+    };
+    
+
+
+    //----------VISUEL FRONT--------------//
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <KeyboardAvoidingView
@@ -34,15 +110,31 @@ function CreateAccount({ navigation }) {
                         <View style={styles.UserPictureWrapper}>
                             <UserPicture />
                         </View>
-                        <CustomInput placeholder="Prénom" />
-                        <CustomInput placeholder="Email" />
-                        <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                        <View style={styles.input}>
+                            <CustomInput 
+                                placeholder="Prénom" 
+                                value={name} 
+                                onChangeText={setName} 
+                            />
+                            <CustomInput 
+                                placeholder="Email" 
+                                value={email} 
+                                onChangeText={setEmail}
+                                validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} 
+                            />
+                            <CustomInput 
+                                placeholder="Mot de passe" 
+                                secureTextEntry={true} 
+                                value={password}
+                                onChangeText={setPassword}
+                            />
+                        </View>
                         <View style={styles.buttonContainer}>
                             <FilledButton 
                                 text='Suivant' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={false}
-                                onPress={() => navigation.navigate('SetSkills')}
+                                onPress={handleNext}
                             /> 
                         </View>
                     </ScrollView>
@@ -57,6 +149,7 @@ export default CreateAccount;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
+        width: "100%"
     },
     container: {
         flex: 1,
@@ -65,7 +158,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingHorizontal: 20, // Ajoutez du padding horizontal pour éviter que le clavier couvre les inputs
     },
     header: {
         width: '100%',
@@ -89,12 +181,17 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    input : {
+        flexGrow: 1, // Permettre à la section de grandir pour occuper l'espace disponible
+    },
     buttonContainer: {
         width: "100%",
-        alignItems: 'center',
-        marginVertical: 20,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginRight: "10%",
     },
     filledButton: {
         marginVertical: 10, 
+        
     }
 });
