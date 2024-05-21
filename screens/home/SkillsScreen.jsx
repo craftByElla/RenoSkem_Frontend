@@ -6,7 +6,18 @@ import FilledButton from '../../components/buttons/FilledButton'
 import { useTheme } from '@react-navigation/native';
 import SpiderChart from '../../components/homeProject/SpiderChart';
 import SimpleModal from '../../components/modal/SimpleModal';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const isUserConnected = async () => {
+    try {
+        const userToken = await AsyncStorage.getItem('userToken'); // Remplacez 'userToken' par la clé que vous utilisez pour stocker l'état de connexion
+        return userToken !== null;
+    } catch (error) {
+        console.error('Error checking user connection', error);
+        return false;
+    }
+};
 
 function SkillsScreen({ navigation }) {
     const { colors } = useTheme()
@@ -16,6 +27,43 @@ function SkillsScreen({ navigation }) {
     const toggleModal = () => {
         setIsShowModal(!isShowModal);
     };
+
+    const logOut = async() => {
+        const isConnected = await isUserConnected()
+        console.log('test_1')
+        if (isConnected) {
+            console.log('test_2')
+            await AsyncStorage.clear();
+            const token = await AsyncStorage.getItem({key: 'userToken'})
+            if (!token) {
+                const search = await fetch('http://192.168.100.60:/3000/users/logout') 
+                const data = await search.json()
+                if (data.status === 200) {
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Succès',
+                        text2: 'Déconnection avec succès'
+                    });
+                    navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } });
+                }else {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: 'erreur dans la déconnection'
+                    });
+                }
+            }else {
+                console.log('test_3')
+                Toast.show({
+                    type: 'error',
+                        text1: 'Erreur',
+                        text2: 'failed dans la déconnection'
+                });
+            }
+        }else {
+            console.log('not connected, cant disconnect')
+        }
+    }
 
     return (
     <SafeAreaView style={{flex: 1}}>
@@ -53,7 +101,7 @@ function SkillsScreen({ navigation }) {
                     full={true}
                     text='Se Déconnecter'
                     background={colors.deepGreen}
-                    onPress={() => console.log('Disconnect')}
+                    onPress={() => logOut()}
                 />
             }
         />
