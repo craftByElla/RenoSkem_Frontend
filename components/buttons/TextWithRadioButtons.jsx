@@ -16,9 +16,9 @@ const TextWithRadioButtons = ({ text }) => {
     const isSelected = selectedButton === index;
     const iconName = isSelected ? 'dot-circle-o' : 'circle-o';
     const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;
-
+    
     return (
-      <TouchableOpacity key={index} onPress={() => handlePress(index)}>
+      <TouchableOpacity key={index} onPress={() => {handlePress(index), console.log(selectedButton)}}>
         <FontAwesome 
           name={iconName} 
           size={24} 

@@ -1,0 +1,112 @@
+import React from 'react';
+import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView } from 'react-native';
+import IconButton from "../../components/buttons/IconButton";
+import TwoStep from "../../components/progressIndicator/TwoStep";
+import ScreenTitle from "../../components/text/ScreenTitle";
+import LogoTransparent from '../../components/logos/LogoTransparent';
+import FilledButton from '../../components/buttons/FilledButton';
+import TextWithRadioButtons from '../../components/buttons/TextWithRadioButtons'; 
+import Stars from '../../components/buttons/Stars';
+import { useTheme } from '@react-navigation/native';
+
+const postesTravaux = [
+    "Chauffage",
+    "Cloisonnement/Plâtrage",
+    "Démolition",
+    "Électricité",
+    "Étanchéité",
+    "Façade",
+    "Fondations",
+    "Installation cuisine/SDB",
+    "Isolation",
+    "Maçonnerie",
+    "Menuiserie",
+    "Montage de meuble",
+    "Peinture",
+    "Plomberie",
+    "Revêtements muraux",
+    "Revêtements sol",
+    "Revêtements extérieurs",
+    "Toiture",
+    "Ventilation"
+];
+
+function ChangeSkillsScreen({ navigation }) {
+    useThemee()
+    return (
+        <SafeAreaView style={styles.safeArea}>
+                    <View style={styles.main}>
+                        <View style={styles.header}>
+                            <IconButton
+                                style={styles.iconButton}
+                                onPress={() => navigation.navigate('SkillsScreen')}
+                                iconName="arrow-left"
+                            />
+                            <LogoTransparent />
+                        </View>
+                        <ScreenTitle text="Paramétrer votre niveau d’expertise" />
+                        <Stars style={styles.stars}  />
+                        {/* Ajout des composants radio pour chaque compétence */}
+                        <ScrollView style={styles.scrollableSection} contentContainerStyle={styles.scrollableContent}>
+                            {postesTravaux.map((poste, index) => (
+                                <TextWithRadioButtons key={index} text={poste} />
+                            ))}
+                        </ScrollView>
+                        <View style={styles.buttonContainer}>
+                            <FilledButton 
+                                text='Enregistrer' 
+                                background={MyLightTheme.colors.deepGreen} 
+                                full={true}
+                                onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
+                            /> 
+                        </View>
+                    </View>
+        </SafeAreaView>
+    );
+}
+
+export default ChangeSkillsScreen;
+
+const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
+    main: {
+        height: '100%',
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    header: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        position: 'relative',
+    },
+    iconButton: {
+        position: 'absolute', 
+        left: 20, 
+        top: '50%', 
+        marginTop: -25, 
+    },
+    progressIndicatorWrapper: {
+        marginTop: 20,
+        marginBottom: 30,
+    },
+    UserPictureWrapper: {
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    scrollableContent: {
+        alignItems: 'center', // Centrer le contenu horizontalement
+    },
+    buttonContainer: {
+        alignItems: 'center',
+        width: "100%",
+    },
+    filledButton: {
+        marginVertical: 10, 
+    }
+});
