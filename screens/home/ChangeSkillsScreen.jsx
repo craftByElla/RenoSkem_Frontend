@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
@@ -31,8 +31,26 @@ const postesTravaux = [
     "Ventilation"
 ];
 
+
+
 function ChangeSkillsScreen({ navigation }) {
-    useThemee()
+    const { colors } = useTheme();
+
+    const [skills, setSkills] = useState(postesTravaux.reduce((acc, poste) => {
+        acc[poste] = null;
+        return acc;
+    }, {}));
+
+            // Mise à jour de l'état lorsqu'une compétence est sélectionnée
+            const handleSkillChange = (posteIndex, niveau) => {
+                const poste = postesTravaux[posteIndex];
+                setSkills(prevSkills => ({
+                    ...prevSkills,
+                    [poste]: niveau
+                }));
+            };
+
+    
     return (
         <SafeAreaView style={styles.safeArea}>
                     <View style={styles.main}>
@@ -49,13 +67,19 @@ function ChangeSkillsScreen({ navigation }) {
                         {/* Ajout des composants radio pour chaque compétence */}
                         <ScrollView style={styles.scrollableSection} contentContainerStyle={styles.scrollableContent}>
                             {postesTravaux.map((poste, index) => (
-                                <TextWithRadioButtons key={index} text={poste} />
+                                <TextWithRadioButtons
+                                    key={index} 
+                                    text={poste} 
+                                    selectedButton={skills[poste]} 
+                                    handlePress={handleSkillChange} 
+                                    index={index}
+                                />
                             ))}
                         </ScrollView>
                         <View style={styles.buttonContainer}>
                             <FilledButton 
                                 text='Enregistrer' 
-                                background={MyLightTheme.colors.deepGreen} 
+                                background={colors.deepGreen} 
                                 full={true}
                                 onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                             /> 

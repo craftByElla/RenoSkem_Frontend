@@ -21,10 +21,10 @@ function Project(props) {
                 isShow={isShowModal} 
                 toggleModal={toggleModal}
                 title={props.name}
-                button1={<PlainButton text='1 - Périmètre' style={styles.btn}/>}
-                button2={<PlainButton text='2 - Artisans' style={styles.btn}/>}
-                button3={<PlainButton text='3 - DYI ou PRO' style={styles.btn}/>}
-                button4={<PlainButton text='4 - Planification' style={styles.btn}/>}
+                button1={<PlainButton text='1 - Périmètre' style={styles.btn} onPress={() => console.log('clic sur Périmètre')}/>}
+                button2={<PlainButton text='2 - Artisans' style={styles.btn} onPress={() => console.log('clic sur Artisans')}/>}
+                button3={<PlainButton text='3 - DYI ou PRO' style={styles.btn} onPress={() => console.log('clic sur DIY ou PRO')}/>}
+                button4={<PlainButton text='4 - Planification' style={styles.btn} onPress={() => console.log('clic sur Planification')}/>}
             />
         </Pressable>
     )

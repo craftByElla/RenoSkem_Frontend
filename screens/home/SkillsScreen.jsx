@@ -53,6 +53,7 @@ function SkillsScreen({ navigation }) {
                     full={true}
                     text='Se Déconnecter'
                     background={colors.deepGreen}
+                    onPress={() => console.log('Disconnect')}
                 />
             }
         />

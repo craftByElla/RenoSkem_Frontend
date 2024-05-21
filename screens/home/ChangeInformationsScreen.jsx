@@ -42,7 +42,8 @@ function ChangeInformationsScreen({ navigation }) {
                     <FilledButton 
                         text='Enregistrer' 
                         background={MyLightTheme.colors.deepGreen} 
-                        full={true} 
+                        full={true}
+                        onPress={() => console.log('enregistrer')}
                     />
                     </View>
                     <FilledButton 
@@ -61,6 +62,7 @@ function ChangeInformationsScreen({ navigation }) {
                     <FilledButton text='Supprimer' 
                         background={MyLightTheme.colors.orange} 
                         full={true} 
+                        onPress={() => console.log('delete account')}
                     />
                 }
             /> 
