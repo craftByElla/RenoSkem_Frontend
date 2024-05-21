@@ -3,13 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ConnectionStack from './components/navigation/ConnectionStack';
-<<<<<<< HEAD
-import NewArtisanScreen from './screens/team/NewArtisanScreen';
-import NewCoworkerScreen from './screens/team/NewCoworkerScreen';
-import TeammateSkillsScreen from './screens/team/TeammateSkillsScreen';
-=======
 import HomeStack from './components/navigation/HomeStack';
->>>>>>> 0543d0bd3b56af2ec44fa1f429a70810aa802a7f
 import TutoStack from './components/navigation/TutoStack';
 import TabNavigator from './components/navigation/TabNavigator';
 import { MyLightTheme, MyDarkTheme } from './components/Theme';
