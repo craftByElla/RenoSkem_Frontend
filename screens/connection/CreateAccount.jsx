@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
@@ -15,9 +15,10 @@ function CreateAccount({ navigation }) {
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
+                keyboardVerticalOffset={20}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.main}>
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.header}>
                             <IconButton
                                 style={styles.iconButton}
@@ -29,13 +30,15 @@ function CreateAccount({ navigation }) {
                         <View style={styles.progressIndicatorWrapper}>
                             <TwoStep step={1} /> 
                         </View>
-                        <ScreenTitle style={styles.ScreenTitle}  text="Créer votre compte" />
+                        <ScreenTitle style={styles.ScreenTitle} text="Créer votre compte" />
                         <View style={styles.UserPictureWrapper}>
                             <UserPicture />
                         </View>
-                        <CustomInput placeholder="Prénom" />
-                        <CustomInput placeholder="Email" />
-                        <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                        <View style={styles.input}>
+                            <CustomInput placeholder="Prénom" />
+                            <CustomInput placeholder="Email" validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} />
+                            <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                        </View>
                         <View style={styles.buttonContainer}>
                             <FilledButton 
                                 text='Suivant' 
@@ -44,7 +47,7 @@ function CreateAccount({ navigation }) {
                                 onPress={() => navigation.navigate('SetSkills')}
                             /> 
                         </View>
-                    </View>
+                    </ScrollView>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -56,13 +59,14 @@ export default CreateAccount;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
+        width: "100%"
     },
     container: {
         flex: 1,
     },
-    main: {
-        flex: 1,
-        justifyContent: 'flex-start', // Aligner les éléments en haut
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center',
     },
     header: {
@@ -87,13 +91,17 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    input : {
+        flexGrow: 1, // Permettre à la section de grandir pour occuper l'espace disponible
+    },
     buttonContainer: {
-        position: 'absolute',
-        bottom: -10, // Positionné à 30 unités du bas
-        right: -150,
-        width: "90%",
+        width: "100%",
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginRight: "10%",
     },
     filledButton: {
         marginVertical: 10, 
+        
     }
 });

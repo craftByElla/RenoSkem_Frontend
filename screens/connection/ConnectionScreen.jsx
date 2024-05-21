@@ -32,7 +32,7 @@ function ConnectionScreen({ navigation }) {
                     text="Créez un compte"
                 />
                 <PlainButton
-                    onPress={() => navigation.navigate('TabNavigator')}
+                    onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                     text="Go to Home"
                 />
                

@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProjectsStack from './ProjectsStack';
-import HomeScreen from '../../screens/home/HomeScreen';
+import HomeStack from './HomeStack';
 import TeamStack from './TeamStack';
 import CreateProjectStack from './CreateProjectStack';
 
@@ -14,11 +14,11 @@ export default function TabNavigator() {
         tabBarIcon: ({ color, size }) => {
             let iconName = '';
             let IconComponent = FontAwesome;
-            if (route.name === 'TeamStack') {
+            if (route.name === "Main-d'œuvre") {
             iconName = 'group';
-            } else if (route.name === 'HomeScreen') {
+            } else if (route.name === 'Accueil') {
             iconName = 'home';
-            } else if (route.name === 'ProjectsStack') {
+            } else if (route.name === 'Projets') {
             IconComponent = Ionicons;
             iconName = "library";
           }
@@ -28,9 +28,9 @@ export default function TabNavigator() {
         tabBarInactiveTintColor: "#b2b2b2",
         headerShown: false,
         })}>
-        <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
-        <Tab.Screen name="HomeScreen" component={HomeScreen} />
-        <Tab.Screen name="TeamStack" component={TeamStack} />
+        <Tab.Screen name="Projets" component={ProjectsStack} />
+        <Tab.Screen name="Accueil" component={HomeStack} />
+        <Tab.Screen name="Main-d'œuvre" component={TeamStack} />
         <Tab.Screen
             name="CreateProjectStack"
             component={CreateProjectStack}

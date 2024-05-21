@@ -1,22 +1,90 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
-import PlainButton from '../../components/buttons/PlainButton';
+import React, { useState } from 'react'
+import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
+import CustomInput from '../../components/inputs/CustomInput';
+import UserPicture from '../../components/images/UserPicture';
+import ScreenTitle from '../../components/text/ScreenTitle';
+import LogoTransparent from '../../components/logos/LogoTransparent';
+import IconButton from '../../components/buttons/IconButton';
+import SimpleModal from '../../components/modal/SimpleModal';
+import PageTitle from '../../components/text/ScreenTitle'
+
 
 function ChangeInformationsScreen({ navigation }) {
+    const styles = createStyles(MyLightTheme)
+    const [isShowModal, setIsShowModal] = useState(false);
+    const toggleModal = () => {
+        setIsShowModal(!isShowModal);
+    };
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <FilledButton text='test' background={MyLightTheme.colors.deepGreen} borderColor={MyLightTheme.colors.deepGreen} full={true} />
+            <View style={styles.header}>
+                <IconButton
+                    style={styles.iconButton}
+                    onPress={() => navigation.navigate('HomeScreen')}
+                    iconName="arrow-left"
+                />
+                <LogoTransparent />
+            </View>
+            <View style={styles.mainContainer}>
+            <View style={{ width: '100%', alignItems: 'center'}}>
+                <ScreenTitle text='Modifier mes informations'/>
+                <View style={styles.userContainer}>
+                    <UserPicture />
+                </View>
+                <CustomInput placeholder='Prénom'/>
+                <CustomInput placeholder='Mot de passe actuel'/>
+                <CustomInput placeholder='Nouveau mot de passe'/>
+                </View>
+                <View style={{ width: '100%', alignItems: 'center'}}>
+                    <FilledButton 
+                        text='Enregistrer' 
+                        background={MyLightTheme.colors.deepGreen} 
+                        full={true} 
+                    />
+                    <FilledButton 
+                        text='Supprimer mon compte' 
+                        background={MyLightTheme.colors.orange} 
+                        full={true} 
+                        onPress={() => setIsShowModal(true)}
+                    />
+                </View>
+            </View>
+            <SimpleModal
+                isShow={isShowModal} 
+                toggleModal={toggleModal}
+                title='Suppression de compte'
+                button1={
+                    <FilledButton text='Supprimer' 
+                        background={MyLightTheme.colors.orange} 
+                        full={true} 
+                    />
+                }
+            /> 
         </SafeAreaView>
     )
 }
 
 export default ChangeInformationsScreen;
 
-const styles = StyleSheet.create({
-    main: {
+createStyles = (MyLightTheme) => StyleSheet.create({
+    header: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        position: 'relative',
+    },
+    iconButton: {
+        position: 'absolute',
+        left: 20,
+        top: '50%',
+        marginTop: -25,
+    },
+    mainContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'space-around',
@@ -24,7 +92,7 @@ const styles = StyleSheet.create({
     },
     userContainer: {
         display: 'flex',
-        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
     },
@@ -84,6 +152,5 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',
     },
+
 })
-
-

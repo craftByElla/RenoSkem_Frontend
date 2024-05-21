@@ -20,7 +20,7 @@ PlainButton.propTypes = {
   text: PropTypes.string.isRequired,
 };
 
-const createStyles = (background, borderColor) => StyleSheet.create({
+const createStyles = (background) => StyleSheet.create({
   button: {
     backgroundColor: background,
     borderRadius: 100,
@@ -29,7 +29,7 @@ const createStyles = (background, borderColor) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    marginVertical: 8, // Ajout de marge verticale pour espacer les boutons
+   
   },
   text: {
     color: '#FFF', 

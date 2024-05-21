@@ -1,8 +1,9 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable} from 'react-native';
 import Project from '../../components/homeProject/Project';
 
 function HomeScreen({ navigation }) {
+
 
     const projectNames = [
         'Maison2.0',
@@ -13,13 +14,16 @@ function HomeScreen({ navigation }) {
     const projectName = projectNames.map((data, i ) => {
         return <Project key={i} name={data}/> 
     })
+    const click = () => {
+        console.log('click')
+    }
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.main}>
-                <View style={styles.userContainer}>
-                    <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture}/> 
+                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('ChangeInformationsScreen')}>
+                    <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture} /> 
                     <Text style={styles.helloText}>Hey Leyla !</Text>
-                </View>
+                </Pressable>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>Mes Projets</Text>
                     <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('CreateProjectStack')}><Text>Nouveau</Text></TouchableOpacity>

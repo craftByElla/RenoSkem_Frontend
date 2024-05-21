@@ -1,5 +1,5 @@
 
-import {StyleSheet,Text, View, Image,Button,} from "react-native";
+import {StyleSheet,Text, View, Image,TouchableOpacity,} from "react-native";
 
 function Avatar(props,{navigation}) {
   return (
@@ -7,8 +7,10 @@ function Avatar(props,{navigation}) {
       <View>                                                           
         <Text style={styles.avatarName}>{props.name}</Text>
       </View>
-      <View>                                                         
-        <Image source={props.image} style={styles.avatarPicture} onPress={() => navigation.navigate('TeammateSkillsScreen')}/>
+      <View>
+      <TouchableOpacity onPress={() => navigation.navigate('TeammateSkillsScreen')}>                                                         
+        <Image source={props.image} style={styles.avatarPicture}/>
+        </TouchableOpacity>
       </View>
     </View>
   );
