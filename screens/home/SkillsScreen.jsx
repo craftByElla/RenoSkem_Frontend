@@ -27,7 +27,7 @@ function SkillsScreen({ navigation }) {
         </View>
         <View style={styles.titleContainer}>
             <Text style={styles.title}>Mes compétences</Text>
-            <PlainButton text='Modifier'/> 
+            <PlainButton text='Modifier' onPress={() => console.log('clic sur modifier')}/> 
         </View>
         <SpiderChart />
     </SafeAreaView>

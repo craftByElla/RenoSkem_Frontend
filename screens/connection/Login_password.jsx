@@ -8,11 +8,67 @@ import CustomInput from "../../components/inputs/CustomInput";
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Login_password({ navigation }) {
-    // Ajout des états pour stocker les valeurs des champs
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const handleLogin = async () => {
+        // Vérification simple des champs
+        if (!email || !password) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Tous les champs sont obligatoires'
+            });
+            return;
+        }
+
+        const userData = {
+            email,
+            password
+        };
+
+        try {
+            const response = await fetch('http://192.168.100.227:3000/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                // Stocker le token JWT dans AsyncStorage
+                await AsyncStorage.setItem('userToken', data.token);
+                await AsyncStorage.setItem('userName', data.name);
+
+                Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: 'Connexion réussie'
+                });
+                navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la connexion'
+            });
+        }
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -40,13 +96,13 @@ function Login_password({ navigation }) {
                                 placeholder="Email" 
                                 validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i}
                                 value={email}
-                                onChangeText={setEmail} // Passe la fonction de mise à jour de l'état
+                                onChangeText={setEmail} 
                             />
                             <CustomInput 
                                 placeholder="Mot de passe" 
                                 secureTextEntry={true}
                                 value={password}
-                                onChangeText={setPassword} // Passe la fonction de mise à jour de l'état
+                                onChangeText={setPassword} 
                             />
                             <View style={styles.forgotPasswordContainer}>
                                 <TouchableOpacity onPress={() => console.log('clic sur mot de passe oublié')}>
@@ -59,7 +115,7 @@ function Login_password({ navigation }) {
                                 text='Se connecter' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={true}
-                                onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
+                                onPress={handleLogin}
                             /> 
                         </View>
                     </ScrollView>

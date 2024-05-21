@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 
-const PlainButton = ({ onPress, text, background, full }) => {
+const FilledButton = ({ onPress, text, background, full }) => {
     const styles =  createStyles(background)
     let size;
     full ? size = '90%' : size = '50%'
@@ -15,7 +15,7 @@ const PlainButton = ({ onPress, text, background, full }) => {
   );
 };
 
-PlainButton.propTypes = {
+FilledButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired,
 };
@@ -43,4 +43,4 @@ const createStyles = (background) => StyleSheet.create({
   }
 });
 
-export default PlainButton;
+export default FilledButton;
