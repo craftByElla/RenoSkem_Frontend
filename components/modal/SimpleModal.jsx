@@ -66,7 +66,7 @@ const createStyles = (MyLightTheme, props) => StyleSheet.create({
         paddingLeft: props.title ? 24 : 0,
     },
     text: {
-        fontWeight: 600,
+        fontWeight: '600',
         fontSize: 'normal',
         fontSize: 20,
         lineHeight: 21,
