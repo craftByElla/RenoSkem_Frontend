@@ -1,24 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 
-const TextWithRadioButtons = ({ text }) => {
-  const [selectedButton, setSelectedButton] = useState(null);
+const TextWithRadioButtons = ({ text, selectedButton, handlePress, index }) => {
   const { colors } = useTheme();
 
-  const handlePress = (index) => {
-    setSelectedButton(index);
-  };
-
-  const renderButton = (index) => {
-    const isSelected = selectedButton === index;
+  const renderButton = (buttonIndex) => {
+    const isSelected = selectedButton === buttonIndex;
     const iconName = isSelected ? 'dot-circle-o' : 'circle-o';
     const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;
 
     return (
-      <TouchableOpacity key={index} onPress={() => handlePress(index)}>
+      <TouchableOpacity key={buttonIndex} onPress={() => handlePress(index, buttonIndex)}>
         <FontAwesome 
           name={iconName} 
           size={24} 
@@ -33,9 +28,9 @@ const TextWithRadioButtons = ({ text }) => {
     <View style={styles.container}>
       <Text style={[styles.text, { color: colors.deepGreen }]}>{text}</Text>
       <View style={styles.buttonContainer}>
-        {renderButton(0)}
         {renderButton(1)}
         {renderButton(2)}
+        {renderButton(3)}
       </View>
     </View>
   );
@@ -43,6 +38,9 @@ const TextWithRadioButtons = ({ text }) => {
 
 TextWithRadioButtons.propTypes = {
   text: PropTypes.string.isRequired,
+  selectedButton: PropTypes.number,
+  handlePress: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({
