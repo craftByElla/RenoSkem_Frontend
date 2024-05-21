@@ -43,7 +43,7 @@ export default function TeammateSkillsScreen({ navigation }) {
       <View style={styles.header}>
         <IconButton
           style={styles.iconArrow}
-          onPress={() => navigation.navigate("HomeScreen")}
+          onPress={() => navigation.navigate("TeamScreen")}
           iconName="arrow-left"
         />
         
@@ -51,7 +51,7 @@ export default function TeammateSkillsScreen({ navigation }) {
         
         <IconButton
           style={styles.iconTimecircle}
-          onPress={() => navigation.navigate("HomeScreen")}
+          onPress={() => navigation.navigate("TeamScreen")}
           iconName="times-circle"
         />
       </View>
