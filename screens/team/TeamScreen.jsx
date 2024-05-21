@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Avatar from "../../components/avatar";
 import IconButton from "../../components/buttons/IconButton";
-import PageTitle from "../../components/text/ScreenTitle"
+import ScreenTitle from "../../components/text/ScreenTitle"
 import LogoTransparent from "../../components/logos/LogoTransparent"
 import CustomInput from "../../components/inputs/CustomInput";
 
@@ -28,7 +28,7 @@ export default function TeamScreen({ navigation }) {
                 <LogoTransparent/>
             </View>
             <View style={styles.h1}>
-                <PageTitle text="Mon équipe"/>
+                <ScreenTitle text="Mon équipe"/>
             </View>
             <View style={styles.iconsContainer}>
                 <IconButton iconName='plus-circle'/>
