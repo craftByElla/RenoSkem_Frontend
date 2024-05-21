@@ -5,11 +5,15 @@ import ProjectsStack from './ProjectsStack';
 import HomeStack from './HomeStack';
 import TeamStack from './TeamStack';
 import CreateProjectStack from './CreateProjectStack';
+import { CommonActions } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 
 export default function TabNavigator() {
     const Tab = createBottomTabNavigator();
     return (
-        <Tab.Navigator screenOptions={({ route }) => ({
+        <Tab.Navigator 
+        initialRouteName="HomeStack"
+        screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
             let iconName = '';
             let IconComponent = FontAwesome;
@@ -28,7 +32,25 @@ export default function TabNavigator() {
         headerShown: false,
         })}>
         <Tab.Screen name="ProjectsStack" component={ProjectsStack} />
-        <Tab.Screen name="HomeStack" component={HomeStack} />
+        <Tab.Screen 
+            name="HomeStack" 
+            component={HomeStack} 
+            //problème la 1ère fois qu'on est sur HomeScreen : stack navigate quan don clique sur HomeStack
+            listeners={({ navigation, route }) => ({
+                tabPress: () => {
+                    if (route.state && route.state.index === 0) {
+                        // Already on HomeScreen, no need to reset
+                        return;
+                    }
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: 'HomeScreen' }],
+                        })
+                    );
+                },
+            })}
+        />
         <Tab.Screen name="TeamStack" component={TeamStack} />
         <Tab.Screen
             name="CreateProjectStack"

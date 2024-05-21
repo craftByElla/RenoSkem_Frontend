@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable} from 'react-native';
-import { MyLightTheme } from '../Theme';
+import { useTheme } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-
 function SimpleModal(props) {
-    const styles = createStyles(MyLightTheme, props)
+    const { colors } = useTheme();
+    const styles = createStyles(colors, props)
 
     return (
         <Modal
@@ -13,8 +13,6 @@ function SimpleModal(props) {
             animationType="slide"
             visible={props.isShow}
             onRequestClose={props.toggleModal}
-            onBackdropPress={() => console.log('test')}
-            
         >
             <Pressable style={styles.modalContainer} onPress={() => props.toggleModal()} >
                 <View style={styles.modal} >
@@ -33,6 +31,7 @@ function SimpleModal(props) {
                     {props.button1}
                     {props.button2}
                     {props.button3}
+                    {props.button4}
                 </View>
             </Pressable>
         </Modal>
@@ -41,7 +40,7 @@ function SimpleModal(props) {
 
 export default SimpleModal;
 
-const createStyles = (MyLightTheme, props) => StyleSheet.create({
+const createStyles = (colors, props) => StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -51,7 +50,7 @@ const createStyles = (MyLightTheme, props) => StyleSheet.create({
     },
     modal: {
         width: '90%',
-        backgroundColor: MyLightTheme.colors.modalBackgroundColor,
+        backgroundColor: colors.modalBackgroundColor,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 12,
@@ -66,13 +65,12 @@ const createStyles = (MyLightTheme, props) => StyleSheet.create({
         paddingLeft: props.title ? 24 : 0,
     },
     text: {
-        fontWeight: 600,
+        fontWeight: '600',
         fontSize: 'normal',
         fontSize: 20,
         lineHeight: 21,
         letterSpacing: 0.25,
         color: '#194852',
-        justifySelf: 'flex-start'
     },
 })
 
