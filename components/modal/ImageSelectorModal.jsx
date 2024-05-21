@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Modal, View, Text, TouchableOpacity, Image, Pressable, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const images = [
   require('../../assets/avatar/Alban.png'),
@@ -27,9 +27,9 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
     setSelectedImage(index);
   };
 
-  const handleConfirm = () => {
+  const handleCloseModal = () => {
     if (selectedImage !== null) {
-      onSelectImage(images[selectedImage]);
+      onSelectImage(images[selectedImage]); 
     }
     toggleModal();
   };
@@ -39,14 +39,14 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
       transparent={true}
       animationType="slide"
       visible={isShow}
-      onRequestClose={toggleModal}
+      onRequestClose={handleCloseModal}
     >
-      <Pressable style={styles.modalContainer} onPress={toggleModal}>
-        <View style={styles.modal} >
+      <Pressable style={styles.modalContainer} onPress={handleCloseModal}>
+        <View style={styles.modal}>
           <View style={styles.textLine}>
             <Text style={styles.text}>Choisissez une image</Text>
-            <TouchableOpacity onPress={toggleModal}>
-              <Entypo name='cross' size={40} color={'#6F797B'} />
+            <TouchableOpacity onPress={handleCloseModal}>
+              <FontAwesome name="times" size={40} color={'#6F797B'} />
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={styles.imageGrid}>
@@ -63,7 +63,6 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <FilledButton text="Confirmer" onPress={handleConfirm} />
         </View>
       </Pressable>
     </Modal>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform, TouchableOpacity, Image } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
@@ -10,16 +10,20 @@ import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageSelectorModal from '../../components/modal/ImageSelectorModal';
 
 function CreateAccount({ navigation }) {
-
-    //---------CONNEXION AU BACK------------------//
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [avatar, setAvatar] = useState(null); 
+    const [isModalVisible, setModalVisible] = useState(false); 
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
 
     const handleNext = () => {
-        // Vérification simple des champs 
         if (!name || !email || !password) {
             Toast.show({
                 type: 'error',
@@ -32,10 +36,10 @@ function CreateAccount({ navigation }) {
         const userData = {
             name,
             email,
-            password
+            password,
+            avatar
         };
     
-        // Envoi des données au serveur via fetch
         fetch('http://192.168.100.227:3000/users/signup', {
             method: 'POST',
             headers: {
@@ -45,17 +49,15 @@ function CreateAccount({ navigation }) {
         })
         .then(async response => {
             const data = await response.json();
-            // Gérer la réponse du serveur
             if (data.message) {
                 if (data.message === 'User successfully registered') {
-                    // Stocker le token et l'ID utilisateur dans AsyncStorage
                     await AsyncStorage.setItem('userToken', data.user.token);
                     await AsyncStorage.setItem('userId', data.user._id);
 
-                    // Réinitialiser les champs d'entrée
                     setName('');
                     setEmail('');
                     setPassword('');
+                    setAvatar(null); 
                     Toast.show({
                         type: 'success',
                         text1: 'Succès',
@@ -87,7 +89,9 @@ function CreateAccount({ navigation }) {
         });
     };
 
-    //----------VISUEL FRONT--------------//
+    const handleImageSelect = (image) => {
+        setAvatar(image);
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -111,7 +115,15 @@ function CreateAccount({ navigation }) {
                         </View>
                         <ScreenTitle style={styles.ScreenTitle} text="Créer votre compte" />
                         <View style={styles.UserPictureWrapper}>
-                            <UserPicture />
+                            <TouchableOpacity onPress={toggleModal}>
+                                <View style={styles.avatarWrapper}>
+                                    {avatar ? (
+                                        <Image source={avatar} style={styles.avatar} />
+                                    ) : (
+                                        <UserPicture />
+                                    )}
+                                </View>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.input}>
                             <CustomInput 
@@ -124,6 +136,8 @@ function CreateAccount({ navigation }) {
                                 value={email} 
                                 onChangeText={setEmail}
                                 validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} 
+                                keyboardType="email-address" 
+                                autoCapitalize="none"
                             />
                             <CustomInput 
                                 placeholder="Mot de passe" 
@@ -143,11 +157,14 @@ function CreateAccount({ navigation }) {
                     </ScrollView>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
+            <ImageSelectorModal 
+                isShow={isModalVisible} 
+                toggleModal={toggleModal} 
+                onSelectImage={handleImageSelect} 
+            />
         </SafeAreaView>
     );
 }
-
-export default CreateAccount;
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -184,8 +201,20 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    input : {
-        flexGrow: 1, // Permettre à la section de grandir pour occuper l'espace disponible
+    avatarWrapper: {
+        borderWidth: 1,
+        borderColor: 'rgba(41, 157, 142, 1)',
+        backgroundColor: 'rgba(217, 217, 217, 1)',
+        borderRadius: 70, // Assurez-vous que la bordure soit toujours ronde
+        overflow: 'hidden', // Assurez-vous que l'image soit coupée aux bords
+    },
+    avatar: {
+        width: 140,
+        height: 140,
+        borderRadius: 70,
+    },
+    input: {
+        flexGrow: 1,
     },
     buttonContainer: {
         width: "100%",
@@ -195,6 +224,7 @@ const styles = StyleSheet.create({
     },
     filledButton: {
         marginVertical: 10, 
-        
     }
 });
+
+export default CreateAccount;

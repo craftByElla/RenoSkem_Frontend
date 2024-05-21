@@ -15,9 +15,6 @@ const styles = StyleSheet.create({
   container: {
     width: 140,
     height: 140,
-    borderRadius: 70, // La moitié de la largeur et de la hauteur pour obtenir un cercle
-    borderWidth: 1,
-    borderColor: 'rgba(41, 157, 142, 1)',
     backgroundColor: 'rgba(217, 217, 217, 1)',
     justifyContent: 'center',
     alignItems: 'center',
