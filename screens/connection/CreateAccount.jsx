@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
@@ -8,8 +8,84 @@ import CustomInput from "../../components/inputs/CustomInput";
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
+import Toast from 'react-native-toast-message';
 
 function CreateAccount({ navigation }) {
+
+    //---------CONNEXION AU BACK------------------//
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleNext = () => {
+        // Vérification simple des champs 
+        if (!name || !email || !password) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Tous les champs sont obligatoires'
+            });
+            return;
+        }
+    
+        const userData = {
+            name,
+            email,
+            password
+        };
+    
+        // Envoi des données au serveur via fetch
+        fetch('http://192.168.100.227:3000/users/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Gérer la réponse du serveur
+            if (data.message) {
+                if (data.message === 'User successfully registered') {
+                    // Réinitialiser les champs d'entrée
+                    setName('');
+                    setEmail('');
+                    setPassword('');
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Succès',
+                        text2: 'Compte créé avec succès'
+                    });
+                    navigation.navigate('SetSkills');
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: data.message
+                    });
+                }
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: 'Une erreur est survenue sans message spécifique.'
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue'
+            });
+        });
+    };
+    
+
+
+    //----------VISUEL FRONT--------------//
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <KeyboardAvoidingView
@@ -35,16 +111,30 @@ function CreateAccount({ navigation }) {
                             <UserPicture />
                         </View>
                         <View style={styles.input}>
-                            <CustomInput placeholder="Prénom" />
-                            <CustomInput placeholder="Email" validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} />
-                            <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                            <CustomInput 
+                                placeholder="Prénom" 
+                                value={name} 
+                                onChangeText={setName} 
+                            />
+                            <CustomInput 
+                                placeholder="Email" 
+                                value={email} 
+                                onChangeText={setEmail}
+                                validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} 
+                            />
+                            <CustomInput 
+                                placeholder="Mot de passe" 
+                                secureTextEntry={true} 
+                                value={password}
+                                onChangeText={setPassword}
+                            />
                         </View>
                         <View style={styles.buttonContainer}>
                             <FilledButton 
                                 text='Suivant' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={false}
-                                onPress={() => navigation.navigate('SetSkills')}
+                                onPress={handleNext}
                             /> 
                         </View>
                     </ScrollView>

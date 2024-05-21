@@ -3,9 +3,8 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex }) => {
+const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex, value, onChangeText }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(!secureTextEntry);
-  const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState('');
 
   const togglePasswordVisibility = () => {
@@ -13,10 +12,11 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
   };
 
   const handleTextChange = (text) => {
-    setInputValue(text);
+    onChangeText(text);
     if (validationRegex && !validationRegex.test(text)) {
       setError('Invalid email format');
     } else {
+      //réinitialiser le message d'erreur lorsqu'une saisie valide est détectée
       setError('');
     }
   };
@@ -32,7 +32,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         placeholderTextColor="#6F797B"
         secureTextEntry={!isPasswordVisible}
         onChangeText={handleTextChange}
-        value={inputValue}
+        value={value}
       />
       {secureTextEntry && (
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
@@ -49,6 +49,8 @@ CustomInput.propTypes = {
   secureTextEntry: PropTypes.bool,
   search: PropTypes.bool,
   validationRegex: PropTypes.instanceOf(RegExp),
+  value: PropTypes.string.isRequired,
+  onChangeText: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -80,6 +82,9 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 5,
     fontSize: 12,
+  },
+  searchIcon: {
+    marginRight: 10,
   },
 });
 

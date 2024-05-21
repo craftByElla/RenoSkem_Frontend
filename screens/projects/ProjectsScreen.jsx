@@ -1,6 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LogoTransparent from '../../components/logos/LogoTransparent';
+import IconButton from "../../components/buttons/IconButton";
+import ScreenTitle from "../../components/text/ScreenTitle";
+import PlainButton from '../../components/buttons/PlainButton';
 
 function ProjectsScreen({ navigation }) {
     return (

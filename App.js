@@ -1,3 +1,4 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,7 +8,7 @@ import HomeStack from './components/navigation/HomeStack';
 import TutoStack from './components/navigation/TutoStack';
 import TabNavigator from './components/navigation/TabNavigator';
 import { MyLightTheme, MyDarkTheme } from './components/Theme';
-
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ export default function App() {
         <Stack.Screen name='TutoStack' component={TutoStack} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
       </Stack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 }
