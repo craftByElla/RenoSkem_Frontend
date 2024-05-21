@@ -63,6 +63,9 @@ const createStyles = (colors, props) => StyleSheet.create({
         justifyContent: props.title ? 'space-between' : 'flex-end',
         paddingRight: 24,
         paddingLeft: props.title ? 24 : 0,
+        marginTop: 10,
+        marginBottom: 10,
+    
     },
     text: {
         fontWeight: '600',
@@ -71,6 +74,7 @@ const createStyles = (colors, props) => StyleSheet.create({
         lineHeight: 21,
         letterSpacing: 0.25,
         color: '#194852',
+
     },
 })
 
