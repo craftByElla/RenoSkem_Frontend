@@ -9,6 +9,7 @@ import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CreateAccount({ navigation }) {
 
@@ -42,11 +43,15 @@ function CreateAccount({ navigation }) {
             },
             body: JSON.stringify(userData),
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(async response => {
+            const data = await response.json();
             // Gérer la réponse du serveur
             if (data.message) {
                 if (data.message === 'User successfully registered') {
+                    // Stocker le token et l'ID utilisateur dans AsyncStorage
+                    await AsyncStorage.setItem('userToken', data.user.token);
+                    await AsyncStorage.setItem('userId', data.user._id);
+
                     // Réinitialiser les champs d'entrée
                     setName('');
                     setEmail('');
@@ -81,8 +86,6 @@ function CreateAccount({ navigation }) {
             });
         });
     };
-    
-
 
     //----------VISUEL FRONT--------------//
 

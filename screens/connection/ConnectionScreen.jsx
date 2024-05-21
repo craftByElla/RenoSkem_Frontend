@@ -41,7 +41,7 @@ function ConnectionScreen({ navigation }) {
                 En créant un compte, vous acceptez nos <Text style={styles.linkText}>Conditions</Text> et notre <Text style={styles.linkText}>Politique de confidentialité</Text>.
             </Text>
             <Text style={styles.footerText}>
-                Vous avez déjà un compte ? <Text style={styles.footerLinkText} onPress={() => navigation.navigate('Login_Id')}>Connectez-vous</Text>
+                Vous avez déjà un compte ? <Text style={styles.footerLinkText} onPress={() => navigation.navigate('Login_password')}>Connectez-vous</Text>
             </Text>
         </View>
     );

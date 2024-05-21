@@ -16,7 +16,6 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
     if (validationRegex && !validationRegex.test(text)) {
       setError('Invalid email format');
     } else {
-      //réinitialiser le message d'erreur lorsqu'une saisie valide est détectée
       setError('');
     }
   };
@@ -33,6 +32,8 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         secureTextEntry={!isPasswordVisible}
         onChangeText={handleTextChange}
         value={value}
+        keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : 'default'}
+        autoCapitalize={placeholder.toLowerCase().includes('email') ? 'none' : 'sentences'}
       />
       {secureTextEntry && (
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    color: '#000000', // Texte principal en noir
+    color: '#000000',
     fontFamily: 'Inter',
     fontSize: 18,
     fontStyle: 'normal',
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputWithSearch: {
-    marginLeft: 10, // Add margin to make space for the search icon
+    marginLeft: 10,
   },
   eyeIcon: {
     marginLeft: 10,

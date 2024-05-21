@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform, Text, TouchableOpacity } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
@@ -10,6 +10,10 @@ import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 
 function Login_password({ navigation }) {
+    // Ajout des états pour stocker les valeurs des champs
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <KeyboardAvoidingView
@@ -22,7 +26,7 @@ function Login_password({ navigation }) {
                         <View style={styles.header}>
                             <IconButton
                                 style={styles.iconButton}
-                                onPress={() => navigation.navigate('Login_Id')}
+                                onPress={() => navigation.navigate('ConnectionScreen')}
                                 iconName="arrow-left"
                             />
                             <LogoTransparent />
@@ -32,8 +36,18 @@ function Login_password({ navigation }) {
                         </View>
                         <ScreenTitle style={styles.ScreenTitle} text="Entrez votre mot de passe" />
                         <View style={styles.input}>
-                            <CustomInput placeholder="Email" validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} />
-                            <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                            <CustomInput 
+                                placeholder="Email" 
+                                validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i}
+                                value={email}
+                                onChangeText={setEmail} // Passe la fonction de mise à jour de l'état
+                            />
+                            <CustomInput 
+                                placeholder="Mot de passe" 
+                                secureTextEntry={true}
+                                value={password}
+                                onChangeText={setPassword} // Passe la fonction de mise à jour de l'état
+                            />
                             <View style={styles.forgotPasswordContainer}>
                                 <TouchableOpacity onPress={() => console.log('clic sur mot de passe oublié')}>
                                     <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
@@ -120,5 +134,3 @@ const styles = StyleSheet.create({
         marginVertical: 10, 
     }
 });
-
-
