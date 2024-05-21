@@ -5,12 +5,15 @@ import ProjectsStack from './ProjectsStack';
 import HomeStack from './HomeStack';
 import TeamStack from './TeamStack';
 import CreateProjectStack from './CreateProjectStack';
+import { CommonActions } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 
 export default function TabNavigator() {
-  const Tab = createBottomTabNavigator();
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
+    const Tab = createBottomTabNavigator();
+    return (
+        <Tab.Navigator 
+        initialRouteName="HomeStack"
+        screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
             let iconName = '';
             let IconComponent = FontAwesome;

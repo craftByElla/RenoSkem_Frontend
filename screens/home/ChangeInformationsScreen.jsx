@@ -34,15 +34,17 @@ function ChangeInformationsScreen({ navigation }) {
                     <UserPicture />
                 </View>
                 <CustomInput placeholder='Prénom'/>
-                <CustomInput placeholder='Mot de passe actuel'/>
-                <CustomInput placeholder='Nouveau mot de passe'/>
+                <CustomInput placeholder='Mot de passe actuel' secureTextEntry={true}/>
+                <CustomInput placeholder='Nouveau mot de passe' secureTextEntry={true}/>
                 </View>
                 <View style={{ width: '100%', alignItems: 'center'}}>
+                    <View style={{marginBottom: 16, width: '100%', alignItems: 'center'}}>
                     <FilledButton 
                         text='Enregistrer' 
                         background={MyLightTheme.colors.deepGreen} 
                         full={true} 
                     />
+                    </View>
                     <FilledButton 
                         text='Supprimer mon compte' 
                         background={MyLightTheme.colors.orange} 

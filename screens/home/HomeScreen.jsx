@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable } from 'react-native';
 import Project from '../../components/homeProject/Project';
 
 function HomeScreen({ navigation }) {
@@ -14,13 +14,11 @@ function HomeScreen({ navigation }) {
     const projectName = projectNames.map((data, i ) => {
         return <Project key={i} name={data}/> 
     })
-    const click = () => {
-        console.log('click')
-    }
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.main}>
-                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('ChangeInformationsScreen')}>
+                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('SkillsScreen')}>
                     <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture} /> 
                     <Text style={styles.helloText}>Hey Leyla !</Text>
                 </Pressable>

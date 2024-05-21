@@ -1,18 +1,32 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable} from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import SimpleModal from '../modal/SimpleModal';
+import PlainButton from '../buttons/PlainButton';
 
 function Project(props) {
     const { colors } = useTheme();
-
     const styles = createStyles(colors);
+    const [isShowModal, setIsShowModal] = useState(false);
+    const toggleModal = () => {
+        setIsShowModal(!isShowModal);
+    };
 
     return (
-        <View style={styles.projectContainer}>
+        <Pressable style={styles.projectContainer} onPress={() => toggleModal()}>
             <Image />
             <Text style={styles.title}>Projet</Text>
             <Text style={styles.projectName}>{props.name}</Text>
-        </View>
+            <SimpleModal 
+                isShow={isShowModal} 
+                toggleModal={toggleModal}
+                title={props.name}
+                button1={<PlainButton text='1 - Périmètre' style={styles.btn}/>}
+                button2={<PlainButton text='2 - Artisans' style={styles.btn}/>}
+                button3={<PlainButton text='3 - DYI ou PRO' style={styles.btn}/>}
+                button4={<PlainButton text='4 - Planification' style={styles.btn}/>}
+            />
+        </Pressable>
     )
 }
 
@@ -38,7 +52,11 @@ const createStyles = (colors) => StyleSheet.create({
         color: colors.deepGrey,
         letterSpacing: 0.5,
         lineHeight: 19 
-    }
+    },
+    btn: {
+        width: '90%',
+        margin: 'auto'
+    },
 })
 
 
