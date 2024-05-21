@@ -90,7 +90,7 @@ function Login_password({ navigation }) {
                         <View style={styles.progressIndicatorWrapper}>
                             <TwoStep step={1} /> 
                         </View>
-                        <ScreenTitle style={styles.ScreenTitle} text="Entrez votre mot de passe" />
+                        <ScreenTitle style={styles.ScreenTitle} text="Bon retour parmis nous 👋" />
                         <View style={styles.input}>
                             <CustomInput 
                                 placeholder="Email" 

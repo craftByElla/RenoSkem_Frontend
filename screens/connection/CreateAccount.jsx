@@ -37,9 +37,11 @@ function CreateAccount({ navigation }) {
             name,
             email,
             password,
-            avatar
+            avatar: avatar ? avatar.uri : null
         };
     
+        console.log('Données utilisateur envoyées :', userData);
+
         fetch('http://192.168.100.227:3000/users/signup', {
             method: 'POST',
             headers: {
@@ -90,6 +92,7 @@ function CreateAccount({ navigation }) {
     };
 
     const handleImageSelect = (image) => {
+        console.log('Image sélectionnée :', image);
         setAvatar(image);
     };
 

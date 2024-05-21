@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 import { StyleSheet, Modal, View, Text, TouchableOpacity, Image, Pressable, ScrollView } from 'react-native';
-import { useTheme } from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const images = [
-  require('../../assets/avatar/Alban.png'),
-  require('../../assets/avatar/Andrea.png'),
-  require('../../assets/avatar/Apu.png'),
-  require('../../assets/avatar/Cedric.png'),
-  require('../../assets/avatar/Ella.png'),
-  require('../../assets/avatar/Gael.png'),
-  require('../../assets/avatar/JeanPierre.png'),
-  require('../../assets/avatar/Martin.png'),
-  require('../../assets/avatar/Melanie.png'),
-  require('../../assets/avatar/Nathan.png'),
-  require('../../assets/avatar/Paulette.png'),
-  require('../../assets/avatar/Roger.png'),
+  { uri: require('../../assets/avatar/Alban.png'), name: 'Alban.png' },
+  { uri: require('../../assets/avatar/Andrea.png'), name: 'Andrea.png' },
+  { uri: require('../../assets/avatar/Apu.png'), name: 'Apu.png' },
+  { uri: require('../../assets/avatar/Cedric.png'), name: 'Cedric.png' },
+  { uri: require('../../assets/avatar/Ella.png'), name: 'Ella.png' },
+  { uri: require('../../assets/avatar/Gael.png'), name: 'Gael.png' },
+  { uri: require('../../assets/avatar/JeanPierre.png'), name: 'JeanPierre.png' },
+  { uri: require('../../assets/avatar/Martin.png'), name: 'Martin.png' },
+  { uri: require('../../assets/avatar/Melanie.png'), name: 'Melanie.png' },
+  { uri: require('../../assets/avatar/Nathan.png'), name: 'Nathan.png' },
+  { uri: require('../../assets/avatar/Paulette.png'), name: 'Paulette.png' },
+  { uri: require('../../assets/avatar/Roger.png'), name: 'Roger.png' },
 ];
 
 function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
-  const { colors } = useTheme();
   const [selectedImage, setSelectedImage] = useState(null);
-  const styles = createStyles(colors);
 
   const handleImageSelect = (index) => {
+    console.log('Index sélectionné :', index, 'Image :', images[index].uri);
     setSelectedImage(index);
   };
 
   const handleCloseModal = () => {
     if (selectedImage !== null) {
-      onSelectImage(images[selectedImage]); 
+      const imageUri = Image.resolveAssetSource(images[selectedImage].uri);
+      console.log('Image confirmée :', imageUri);
+      onSelectImage(imageUri);
     }
     toggleModal();
   };
@@ -46,7 +46,7 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
           <View style={styles.textLine}>
             <Text style={styles.text}>Choisissez une image</Text>
             <TouchableOpacity onPress={handleCloseModal}>
-              <FontAwesome name="times" size={40} color={'#6F797B'} />
+              <FontAwesome name='close' size={30} color={'#6F797B'} />
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={styles.imageGrid}>
@@ -56,10 +56,10 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
                 onPress={() => handleImageSelect(index)}
                 style={[
                   styles.imageWrapper,
-                  selectedImage === index && { borderColor: colors.lightGreen, borderWidth: 2 }
+                  selectedImage === index && styles.selectedImageWrapper
                 ]}
               >
-                <Image source={image} style={styles.image} />
+                <Image source={image.uri} style={styles.image} />
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -71,7 +71,7 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
 
 export default ImageSelectorModal;
 
-const createStyles = (colors) => StyleSheet.create({
+const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -80,7 +80,7 @@ const createStyles = (colors) => StyleSheet.create({
   },
   modal: {
     width: '90%',
-    backgroundColor: colors.modalBackgroundColor,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
@@ -111,6 +111,11 @@ const createStyles = (colors) => StyleSheet.create({
   imageWrapper: {
     margin: 10,
     padding: 5,
+  },
+  selectedImageWrapper: {
+    borderWidth: 2,
+    borderColor: '#29A38E',
+    padding: 3,
   },
   image: {
     width: 80,
