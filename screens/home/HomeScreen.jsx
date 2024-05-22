@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable } from 'react-native';
-import Project from '../../components/homeProject/Project';
+import SmallProjectCard from '../../components/cards/SmallProjectCard';
 
 function HomeScreen({ navigation }) {
 
@@ -12,7 +12,7 @@ function HomeScreen({ navigation }) {
     ]
 
     const projectName = projectNames.map((data, i ) => {
-        return <Project key={i} name={data}/> 
+        return <SmallProjectCard key={i} name={data}/> 
     })
 
     return (

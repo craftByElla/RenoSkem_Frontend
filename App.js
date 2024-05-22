@@ -17,7 +17,6 @@ export default function App() {
     <NavigationContainer theme={MyLightTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="ConnectionStack" component={ConnectionStack} />
-        <Stack.Screen name='TutoStack' component={TutoStack} />
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
       </Stack.Navigator>
       <Toast />

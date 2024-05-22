@@ -4,7 +4,7 @@ import { useTheme } from '@react-navigation/native';
 import SimpleModal from '../modal/SimpleModal';
 import PlainButton from '../buttons/PlainButton';
 
-function Project(props) {
+function SmallProjectCard(props) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
     const [isShowModal, setIsShowModal] = useState(false);
@@ -30,7 +30,7 @@ function Project(props) {
     )
 }
 
-export default Project;
+export default SmallProjectCard;
 
 const createStyles = (colors) => StyleSheet.create({
     projectContainer: {

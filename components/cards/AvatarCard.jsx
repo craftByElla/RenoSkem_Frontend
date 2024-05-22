@@ -1,7 +1,7 @@
 
 import {StyleSheet,Text, View, Image,TouchableOpacity,} from "react-native";
 
-function Avatar(props,{navigation}) {
+function AvatarCard(props,{navigation}) {
   return (
     <View style={styles.container}>                                   
       <View>                                                           
@@ -16,7 +16,7 @@ function Avatar(props,{navigation}) {
   );
 }
 
-export default Avatar;
+export default AvatarCard;
 
 const styles = StyleSheet.create({
   container: {
