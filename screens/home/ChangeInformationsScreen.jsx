@@ -23,7 +23,7 @@ function ChangeInformationsScreen({ navigation }) {
                 <IconButton
                     style={styles.iconButton}
                     onPress={() => navigation.navigate('HomeScreen')}
-                    iconName="arrow-left"
+                    iconName="long-arrow-left"
                 />
                 <LogoTransparent />
             </View>

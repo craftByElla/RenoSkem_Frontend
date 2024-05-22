@@ -22,7 +22,7 @@ function Login_Id({ navigation }) {
                             <IconButton
                                 style={styles.iconButton}
                                 onPress={() => navigation.navigate('ConnectionScreen')}
-                                iconName="arrow-left"
+                                iconName="long-arrow-left"
                             />
                             <LogoTransparent />
                         </View>

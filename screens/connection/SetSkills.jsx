@@ -141,7 +141,7 @@ function SetSkills({ navigation }) {
                             <IconButton
                                 style={styles.iconButton}
                                 onPress={() => navigation.navigate('CreateAccount')}
-                                iconName="arrow-left"
+                                iconName="long-arrow-left"
                             />
                             <LogoTransparent />
                         </View>

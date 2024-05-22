@@ -8,7 +8,7 @@ export default function NewCoworkerScreen({ navigation }) {
     return (
         <View style={styles.newTeammateSkills}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <FontAwesome name="arrow-left" style={styles.arrowLeft} />
+                <FontAwesome name="long-arrow-left" style={styles.arrowLeft} />
             </TouchableOpacity>
             <View>
                 <Image source={picture} style={styles.picture} />
