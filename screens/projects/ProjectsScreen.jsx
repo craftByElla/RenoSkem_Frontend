@@ -41,7 +41,7 @@ function ProjectsScreen({ navigation }) {
                         <Text>Nouveau</Text>
                     </TouchableOpacity>
                 </View>
-                <CustomInput placeholder="Rechercher ici" search={true} onChangeText={setSearch}  />
+                <CustomInput placeholder="Rechercher ici" search={true} value={search} onChangeText={setSearch}  />
                 {projects.map((project) => (
                     <ProjectCard key={project.id} imageSrc={project.image} title={project.title} />
                 ))}
