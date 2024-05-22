@@ -6,7 +6,9 @@ import FilledButton from '../../components/buttons/FilledButton'
 import { useTheme } from '@react-navigation/native';
 import SpiderChart from '../../components/homeProject/SpiderChart';
 import SimpleModal from '../../components/modal/SimpleModal';
-
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IP_ADDRESS } from '@env';
 
 function SkillsScreen({ navigation }) {
     const { colors } = useTheme()
@@ -16,6 +18,42 @@ function SkillsScreen({ navigation }) {
     const toggleModal = () => {
         setIsShowModal(!isShowModal);
     };
+
+    const logOut = async() => {
+            await AsyncStorage.clear();
+            const token = await AsyncStorage.getItem('userToken')
+            console.log('token', token)
+            if (!token) {
+                console.log('token has been deleted')
+                const response = await fetch(`${IP_ADDRESS}/users/logout`) 
+
+                const data = await response.json();
+                console.log('data', data);
+                if (response.status === 200) {
+                    console.log('data.status', response.status)
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Succès',
+                        text2: 'Déconnection avec succès'
+                    });
+                    navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
+                }else {
+                    console.log('error')
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: 'erreur dans la déconnection'
+                    });
+                }
+            }else {
+                console.log('test_3')
+                Toast.show({
+                    type: 'error',
+                        text1: 'Erreur',
+                        text2: 'failed dans la déconnection'
+                });
+            }
+    }
 
     return (
     <SafeAreaView style={{flex: 1}}>
@@ -53,7 +91,7 @@ function SkillsScreen({ navigation }) {
                     full={true}
                     text='Se Déconnecter'
                     background={colors.deepGreen}
-                    onPress={() => console.log('Disconnect')}
+                    onPress={() => logOut()}
                 />
             }
         />
