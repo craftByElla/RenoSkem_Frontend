@@ -31,7 +31,7 @@ export default function NewArtisanScreen({ navigation }) {
             </View>
         </View>
         <View style={styles.h1}>
-          <PageTitle text="Modifier la fiche artisan" />
+          <PageTitle text="Fiche artisan" />
         </View>
         <View style={styles.nameContainer}>
           <TextInput
