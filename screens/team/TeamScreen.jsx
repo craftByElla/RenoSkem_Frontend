@@ -96,6 +96,7 @@ export default function TeamScreen({navigation}) {
                 button2={
                         <View style={{width: "90%" }}>
                         <PlainButton text='Artisan' 
+                            onPress={() => navigation.navigate("NewArtisanScreen")}
                             background={colors.deepGreen} 
                             full={true} 
                     /> 

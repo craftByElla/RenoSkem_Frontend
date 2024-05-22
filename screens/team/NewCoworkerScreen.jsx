@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import IconButton from "../../components/buttons/IconButton";
 const picture = require("../../assets/Gabin.jpg");
 import PageTitle from "../../components/text/ScreenTitle";
