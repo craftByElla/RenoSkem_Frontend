@@ -6,12 +6,16 @@ import LogoTransparent from '../../components/logos/LogoTransparent';
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import CustomInput from '../../components/inputs/CustomInput';
-import ProjectCard from '../../components/cards/ProjectCard'; 
+import ProjectCard from '../../components/cards/ProjectCard';
+import SimpleModal from '../../components/modal/SimpleModal';
+import PlainButton from '../../components/buttons/PlainButton';
+
 
 function ProjectsScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
     const [search, setSearch] = useState('');
+    const [isShowFilterModal, setIsShowFilterModal] = useState(false);
 
     const projects = [
         { id: 1, title: 'Maison 2.0', image: require('../../assets/projectIcon/House.png') },
@@ -19,33 +23,63 @@ function ProjectsScreen({ navigation }) {
         { id: 3, title: 'Mezzanine', image: require('../../assets/projectIcon/Bedroom.png') },
     ];
 
+    const toggleModal = (setIsShowModal, isShowModal) => {
+        setIsShowModal(!isShowModal);
+    };
+
+    const handleButtonPress = (setIsShowModal, isShowModal, action) => {
+        toggleModal(setIsShowModal, isShowModal);
+        action();
+    };
+
     return (
         <SafeAreaView style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.header}>
-                    <IconButton
-                        style={styles.iconButtonLeft}
-                        onPress={() => navigation.navigate('TutoStack', { screen: 'WhereToStartScreen' })}
-                        iconName="info-circle"
-                    />
-                    <LogoTransparent />
-                    <IconButton
-                        style={styles.iconButtonRight}
-                        onPress={() => console.log("modale filtre à faire")}
-                        iconName="filter"
-                    />
-                </View>
+            <View style={styles.header}>
+                <IconButton
+                    style={styles.iconButtonLeft}
+                    onPress={() => navigation.navigate('TutoStack', { screen: 'WhereToStartScreen' })}
+                    iconName="info-circle"
+                />
+                <LogoTransparent />
+                <IconButton
+                    style={styles.iconButtonRight}
+                    onPress={() => toggleModal(setIsShowFilterModal, isShowFilterModal)}
+                    iconName="filter"
+                />
+            </View>
+            <View style={styles.centerContainer}>
                 <View style={styles.titleContainer}>
                     <ScreenTitle style={styles.ScreenTitle} text="Mes projets" />
                     <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('NewProjectScreen')}>
                         <Text>Nouveau</Text>
                     </TouchableOpacity>
                 </View>
-                <CustomInput placeholder="Rechercher ici" search={true} value={search} onChangeText={setSearch}  />
+                <CustomInput placeholder="Rechercher ici" search={true} value={search} onChangeText={setSearch} />
+            </View>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 {projects.map((project) => (
                     <ProjectCard key={project.id} imageSrc={project.image} title={project.title} />
                 ))}
             </ScrollView>
+            <SimpleModal 
+                isShow={isShowFilterModal} 
+                toggleModal={() => toggleModal(setIsShowFilterModal, isShowFilterModal)}
+                title="Filtres"
+                button1={
+                    <PlainButton 
+                        text='Ordre chronologique' 
+                        style={styles.btn} 
+                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, () => console.log('Ordre chronologique'))}
+                    />
+                }
+                button2={
+                    <PlainButton 
+                        text='Fichier archivé' 
+                        style={styles.btn} 
+                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, () => console.log('Fichier archivé'))}
+                    />
+                }
+            />
         </SafeAreaView>
     );
 }
@@ -55,15 +89,7 @@ export default ProjectsScreen;
 const createStyles = (colors) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        width: "100%"
-    },
-    container: {
-        flex: 1,
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        width: "100%",
     },
     header: {
         width: '100%',
@@ -85,7 +111,13 @@ const createStyles = (colors) => StyleSheet.create({
         right: 20, 
         top: '50%', 
         marginTop: -25, 
-    },  
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    },
     titleContainer: {
         display: 'flex',
         width: '80%',
@@ -93,7 +125,6 @@ const createStyles = (colors) => StyleSheet.create({
         alignItems: 'center',
     },
     nouveauBtn: {
-        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 0.5,
@@ -101,17 +132,16 @@ const createStyles = (colors) => StyleSheet.create({
         borderRadius: 8,
         height: 25,
         width: 64,
+        marginLeft: 10,
     },
-    input: {
-        flexGrow: 1,
+    scrollContainer: {
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingTop: 20,
+        paddingBottom: 20,
     },
-    buttonContainer: {
-        width: "100%",
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginRight: "10%",
+    btn: {
+        width: '90%',
+        margin: 'auto',
     },
-    filledButton: {
-        marginVertical: 10, 
-    }
 });
