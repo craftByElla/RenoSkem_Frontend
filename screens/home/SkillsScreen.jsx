@@ -4,7 +4,7 @@ import IconButton from '../../components/buttons/IconButton';
 import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton'
 import { useTheme } from '@react-navigation/native';
-import SpiderChart from '../../components/homeProject/SpiderChart';
+import SpiderChart from '../../components/charts/SpiderChart';
 import SimpleModal from '../../components/modal/SimpleModal';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
