@@ -11,7 +11,7 @@ function SimpleModal(props) {
         <Modal
             transparent={true}
             animationType="slide"
-            visible={props.isShow}
+            visible={props.isShow} // true or false 
             onRequestClose={props.toggleModal}
         >
             <Pressable style={styles.modalContainer} onPress={() => props.toggleModal()} >

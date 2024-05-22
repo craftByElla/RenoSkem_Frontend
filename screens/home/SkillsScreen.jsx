@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, SafeAreaView, Image, Text } from 'react-native';
 import IconButton from '../../components/buttons/IconButton';
 import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton'
 import { useTheme } from '@react-navigation/native';
-import SpiderChart from '../../components/homeProject/SpiderChart';
+import SpiderChart from '../../components/charts/SpiderChart';
 import SimpleModal from '../../components/modal/SimpleModal';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IP_ADDRESS } from '@env';
+import { useSelector } from 'react-redux';
+const ipString = process.env.IP_ADDRESS;
 
 function SkillsScreen({ navigation }) {
     const { colors } = useTheme()
+    const userInfos = useSelector((state) => state.user.userInfos)
     const styles = createStyles(colors)
 
     const [isShowModal, setIsShowModal] = useState(false);
@@ -19,13 +21,17 @@ function SkillsScreen({ navigation }) {
         setIsShowModal(!isShowModal);
     };
 
+
+
+//---------------------------FONCTION FETCH POUR VIDER LE LOCAL STORAGE, DECONNECTION--------------------------------
+
     const logOut = async() => {
             await AsyncStorage.clear();
             const token = await AsyncStorage.getItem('userToken')
             console.log('token', token)
             if (!token) {
                 console.log('token has been deleted')
-                const response = await fetch(`${IP_ADDRESS}/users/logout`) 
+                const response = await fetch(`${ipString}/users/logout`) 
 
                 const data = await response.json();
                 console.log('data', data);
@@ -63,8 +69,8 @@ function SkillsScreen({ navigation }) {
                 onPress={() => navigation.navigate('HomeScreen')}
                 iconName="long-arrow-left"
             />
-            <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture} /> 
-            <Text>Leyla</Text>
+            <Image source={{ uri: userInfos.avatar }} style={styles.profilePicture} /> 
+            <Text>{userInfos.name}</Text>
             <IconButton 
                 onPress={() => toggleModal()}
                 iconName='ellipsis-h'
@@ -74,7 +80,9 @@ function SkillsScreen({ navigation }) {
             <Text style={styles.title}>Mes compétences</Text>
             <PlainButton text='Modifier' onPress={() => navigation.navigate('ChangeSkillsScreen')}/> 
         </View>
-        <SpiderChart />
+        <SpiderChart 
+            skills={userInfos.skills}
+        />
         <SimpleModal 
             isShow={isShowModal}
             toggleModal={toggleModal}
@@ -126,7 +134,7 @@ const createStyles = (colors) => StyleSheet.create({
         width: 50,
     },
     title: {
-        fontWeight: 800,
+        fontWeight: '800',
         fontSize: 18,
         fontStyle: 'normal',
         lineHeight: 36,

@@ -12,7 +12,7 @@ export default function CreateProjectStack() {
     return (
         <SafeAreaView style={{flex:1}}>
         <View style={{display: 'flex', alignItems: 'center'}}>
-        <LogoTransparent />
+            <LogoTransparent />
         </View>
         <Scroll.Navigator 
             screenOptions={{ 

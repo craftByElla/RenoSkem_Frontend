@@ -2,25 +2,50 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { VictoryBar, VictoryChart, VictoryTheme, VictoryGroup, VictoryArea, VictoryPolarAxis, VictoryLabel } from "victory-native";
 import { useTheme } from "@react-navigation/native";
-
-const characterData = [
-    { menuiserie: 1, Electricité: 2, Plomberie: 1, Cloisonnement: 3, revêtement_muraux: 3, Montage_dees_meubles: 3, Installation_cuisine: 2, Maçonnerie: 1, Reevêtement_de_sol: 3, Peinture: 1 },
-    { menuiserie: 4, Electricité: 4, Plomberie: 4, Cloisonnement: 4, revêtement_muraux: 4, Montage_dees_meubles: 4, Installation_cuisine: 4, Maçonnerie: 4, Reevêtement_de_sol: 4, Peinture: 4 },
-  ];
   
-  function SpiderChart() {
+  function SpiderChart(props) {
+    const characterData = [
+      {
+        "Chauffage": 2,
+        "Cloisonnement/Plâtrage": 2,
+        "Démolition": 2,
+        "Électricité": 2,
+        "Étanchéité": 2,
+        "Façade": 2,
+        "Fondations": 2,
+        "Installation cuisine/SDB": 2,
+        "Isolation": 2,
+        "Maçonnerie": 2,
+        "Menuiserie": 2,
+        "Montage de meuble": 2,
+        "Peinture": 2,
+        "Plomberie": 2,
+        "Revêtements muraux": 2,
+        "Revêtements sol": 2,
+        "Revêtements extérieurs": 2,
+        "Toiture": 2,
+        "Ventilation": 2,
+    },
+    props.skills
+    ];
+
     const { colors } = useTheme();
+    console.log('typeofcharaData[1]', typeof characterData[1])
+    console.log('characterData !!!!!!!!!',characterData)
     const [state, setState] = React.useState({
       data: processData(characterData),
       maxima: getMaxima(characterData)
     });
   
+    
     return (
+      <>
+      {characterData.length === 2 ?
       <VictoryChart polar
         theme={VictoryTheme.material}
         domain={{ y: [ 0, 1 ] }}
       >
-        <VictoryGroup colorScale={["gold", "transparent"]}
+        <VictoryGroup colorScale={["transparent", "red"]}
           style={{ data: { fillOpacity: 0.2, strokeWidth: 1 } }}
         >
           {state.data.map((data, i) => {
@@ -55,6 +80,8 @@ const characterData = [
         />
 
     </VictoryChart>
+  : <View></View>}
+  </>
     );
 }
   
