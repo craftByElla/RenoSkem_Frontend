@@ -10,6 +10,7 @@ import Stars from '../../components/buttons/Stars';
 import { MyLightTheme } from '../../components/Theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+const ipString = process.env.IP_ADDRESS;
 
 // Liste des postes de travaux
 const postesTravaux = [
@@ -80,7 +81,7 @@ function SetSkills({ navigation }) {
         };
 
         // Envoi des données au serveur
-        const response = await fetch('http://192.168.100.227:3000/skills/setSkills', {
+        const response = await fetch(`${ipString}/skills/setSkills`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ function SetSkills({ navigation }) {
             const skillsId = data.skills._id;
 
             // Mise à jour des compétences de l'utilisateur
-            const addSkillsResponse = await fetch(`http://192.168.100.227:3000/users/addSkills/${userId}/${skillsId}`, {
+            const addSkillsResponse = await fetch(`${ipString}/users/addSkills/${userId}/${skillsId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,

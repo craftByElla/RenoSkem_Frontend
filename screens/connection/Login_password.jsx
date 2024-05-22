@@ -10,7 +10,7 @@ import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IP_ADDRESS } from '@env';
+const ipString = process.env.IP_ADDRESS;
 
 function Login_password({ navigation }) {
     const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ function Login_password({ navigation }) {
         };
 
         try {
-            const response = await fetch(`${IP_ADDRESS}/users/login`, {
+            const response = await fetch(`${ipString}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,10 +88,8 @@ function Login_password({ navigation }) {
                             />
                             <LogoTransparent />
                         </View>
-                        <View style={styles.progressIndicatorWrapper}>
-                            <TwoStep step={1} /> 
-                        </View>
-                        <ScreenTitle style={styles.ScreenTitle} text="Entrez votre mot de passe" />
+                        
+                        <ScreenTitle style={styles.ScreenTitle} text="Bon retour parmis nous 👋" />
                         <View style={styles.input}>
                             <CustomInput 
                                 placeholder="Email" 
@@ -148,6 +146,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 50,
         position: 'relative',
+        marginBottom: 50
     },
     iconButton: {
         position: 'absolute', 

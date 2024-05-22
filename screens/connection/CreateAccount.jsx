@@ -11,6 +11,7 @@ import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageSelectorModal from '../../components/modal/ImageSelectorModal';
+const ipString = process.env.IP_ADDRESS;
 
 function CreateAccount({ navigation }) {
     const [name, setName] = useState('');
@@ -37,10 +38,12 @@ function CreateAccount({ navigation }) {
             name,
             email,
             password,
-            avatar
+            avatar: avatar ? avatar.uri : null
         };
     
-        fetch('http://192.168.100.227:3000/users/signup', {
+        console.log('Données utilisateur envoyées :', userData);
+
+        fetch(`${ipString}/users/signup`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,6 +93,7 @@ function CreateAccount({ navigation }) {
     };
 
     const handleImageSelect = (image) => {
+        console.log('Image sélectionnée :', image);
         setAvatar(image);
     };
 
