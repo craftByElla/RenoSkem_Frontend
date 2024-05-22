@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 70,
-    color: MyLightTheme.colors.lightOrangeWithOpacity
+    color: MyLightTheme.colors.deepGrey
   },
   image: {
     width: '100%',

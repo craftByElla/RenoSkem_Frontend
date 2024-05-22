@@ -5,7 +5,6 @@ import ProjectsStack from './ProjectsStack';
 import HomeStack from './HomeStack';
 import TeamStack from './TeamStack';
 import CreateProjectStack from './CreateProjectStack';
-import TutoStack from './TutoStack';
 import { CommonActions } from '@react-navigation/native';
 import { StackActions } from '@react-navigation/native';
 
@@ -38,14 +37,6 @@ export default function TabNavigator() {
         <Tab.Screen
             name="CreateProjectStack"
             component={CreateProjectStack}
-            options={{
-            tabBarButton: () => null,
-            tabBarVisible: false,  // Option pour cacher l'onglet
-            }}
-        />
-        <Tab.Screen
-            name="TutoStack"
-            component={TutoStack}
             options={{
             tabBarButton: () => null,
             tabBarVisible: false,  // Option pour cacher l'onglet

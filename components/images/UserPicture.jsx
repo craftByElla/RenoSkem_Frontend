@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { MyLightTheme } from '../../components/Theme';
 
 const UserPicture = ({ avatar }) => {
   
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 70,
-    color: 'rgba(111, 121, 123, 1)',
+    color: MyLightTheme.colors.deepGrey,
   },
   image: {
     width: '100%',
