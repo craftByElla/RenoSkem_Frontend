@@ -58,7 +58,7 @@ function ChangeSkillsScreen({ navigation }) {
                             <IconButton
                                 style={styles.iconButton}
                                 onPress={() => navigation.navigate('SkillsScreen')}
-                                iconName="arrow-left"
+                                iconName="long-arrow-left"
                             />
                             <LogoTransparent />
                         </View>
