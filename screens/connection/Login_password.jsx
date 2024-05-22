@@ -10,6 +10,7 @@ import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IP_ADDRESS } from '@env';
 
 function Login_password({ navigation }) {
     const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ function Login_password({ navigation }) {
         };
 
         try {
-            const response = await fetch('http://192.168.100.227:3000/users/login', {
+            const response = await fetch(`${IP_ADDRESS}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
