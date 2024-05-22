@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Avatar from "../../components/avatar";
+import AvatarCard from "../../components/cards/AvatarCard";
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle"
 import LogoTransparent from "../../components/logos/LogoTransparent"
@@ -19,7 +19,7 @@ export default function TeamScreen({ navigation }) {
     ];
 
     const avatars = avatarsData.map((data, i) => {
-        return <Avatar key={i} name={data.name} image={data.image} />;
+        return <AvatarCard key={i} name={data.name} image={data.image} />;
     });
 
     return (

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable } from 'react-native';
-import Project from '../../components/charts/Project';
+import SmallProjectCard from '../../components/cards/SmmallProjectCard';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const ipString = process.env.IP_ADDRESS;
 import { addUserInfosToStore } from '../../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
+import SmallProjectCard from '../../components/cards/SmallProjectCard';
 
 function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
@@ -59,7 +60,7 @@ function HomeScreen({ navigation }) {
     ]
 
     const projectName = projectNames.map((data, i ) => {
-        return <Project key={i} name={data}/> 
+        return <SmallProjectCard key={i} name={data}/> 
     })
 
     return (

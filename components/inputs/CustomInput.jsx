@@ -56,7 +56,7 @@ CustomInput.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    width: 300,
+    width: '80%',
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#D5CDD2',

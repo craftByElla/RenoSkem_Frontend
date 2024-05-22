@@ -3,15 +3,15 @@ import { View, Image, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { MyLightTheme } from '../../components/Theme';
 
-const UserPicture = ({ avatar }) => {
+const ProjectPicture = ({ projectIcon }) => {
   
   return (
     <View style={styles.container}>
-      {avatar ? (
+      {projectIcon ? (
         
-        <Image source={{ uri: {avatar} }} style={styles.image} />
+        <Image source={{ uri: {projectIcon} }} style={styles.image} />
       ) : (
-        <FontAwesome name="user" style={styles.icon} />
+        <FontAwesome name="image" style={styles.icon} />
       )}
     </View>
   );
@@ -21,14 +21,13 @@ const styles = StyleSheet.create({
   container: {
     width: 140,
     height: 140,
-    backgroundColor: 'rgba(217, 217, 217, 1)',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
   icon: {
     fontSize: 70,
-    color: MyLightTheme.colors.deepGrey,
+    color: MyLightTheme.colors.deepGrey
   },
   image: {
     width: '100%',
@@ -36,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserPicture;
+export default ProjectPicture;
