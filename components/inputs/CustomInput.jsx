@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex, value, onChangeText }) => {
+const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex, value, onChangeText, suffix }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(!secureTextEntry);
   const [error, setError] = useState('');
 
@@ -14,7 +14,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
   const handleTextChange = (text) => {
     onChangeText(text);
     if (validationRegex && !validationRegex.test(text)) {
-      setError('Invalid email format');
+      setError(`Invalid ${placeholder.toLowerCase()} format`);
     } else {
       setError('');
     }
@@ -32,7 +32,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         secureTextEntry={!isPasswordVisible}
         onChangeText={handleTextChange}
         value={value}
-        keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : 'default'}
+        keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : placeholder.toLowerCase().includes('budget') ? 'numeric' : 'default'}
         autoCapitalize={placeholder.toLowerCase().includes('email') ? 'none' : 'sentences'}
       />
       {secureTextEntry && (
@@ -40,6 +40,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
           <FontAwesome name={isPasswordVisible ? 'eye' : 'eye-slash'} size={20} color="#6F797B" />
         </TouchableOpacity>
       )}
+      {suffix && <Text style={styles.suffix}>{suffix}</Text>}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
@@ -52,6 +53,7 @@ CustomInput.propTypes = {
   validationRegex: PropTypes.instanceOf(RegExp),
   value: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
+  suffix: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
@@ -86,6 +88,15 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 10,
+  },
+  suffix: {
+    color: '#6F797B',
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: 21,
+    marginLeft: 5,
   },
 });
 

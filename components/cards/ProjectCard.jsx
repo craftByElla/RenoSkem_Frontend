@@ -45,28 +45,28 @@ const ProjectCard = ({ imageSrc, title }) => {
                     <PlainButton 
                         text='1 - Périmètre' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectStack', { screen: 'RoomsScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'RoomsScreen' }))}
                     />
                 }
                 button2={
                     <PlainButton 
                         text='2 - Artisans' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectStack', { screen: 'ArtisanScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'ArtisanScreen' }))}
                     />
                 }
                 button3={
                     <PlainButton 
                         text='3 - DYI ou PRO' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectStack', { screen: 'DIYOrProScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'DIYOrProScreen' }))}
                     />
                 }
                 button4={
                     <PlainButton 
                         text='4 - Planification' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectStack', { screen: 'PlanningScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'PlanningScreen' }))}
                     />
                 }
             />
@@ -131,7 +131,7 @@ const createStyles = (colors) => StyleSheet.create({
       position: 'absolute',
       top: 1,
       right: 1,
-      padding: 10, // Ajoutez du padding pour agrandir la zone cliquable
+      padding: 10,
     },
     trailingIcon: {
       fontSize: 20,

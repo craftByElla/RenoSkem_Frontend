@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import ProjectPicture from "../../components/images/ProjectPicture";
@@ -8,21 +8,28 @@ import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProjectIconSelectorModal from '../../components/modal/ProjectIconSelectorModal';
+import { useSelector } from 'react-redux';
+
+// Récupération de l'adresse IP à partir des variables d'environnement
 const ipString = process.env.IP_ADDRESS;
 
 function NewProjectScreen({ navigation }) {
+    // Utilisation de Redux pour récupérer le token de l'utilisateur
+    const userToken = useSelector((state) => state.user.userInfos.token);
+    // Déclaration des états locaux pour gérer les données du formulaire
     const [name, setName] = useState('');
     const [budget, setBudget] = useState('');
     const [location, setLocation] = useState('');
-    const [avatar, setAvatar] = useState(null); 
-    const [isModalVisible, setModalVisible] = useState(false); 
+    const [picture, setPicture] = useState(null);
+    const [isModalVisible, setModalVisible] = useState(false);
 
+    // Fonction pour basculer la visibilité du modal de sélection d'image
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
 
+    // Fonction pour gérer le clic sur le bouton "Enregistrer"
     const handleNext = () => {
         if (!name || !location || !budget) {
             Toast.show({
@@ -32,40 +39,41 @@ function NewProjectScreen({ navigation }) {
             });
             return;
         }
-    
-        const userData = {
+
+        const projectData = {
+            token: userToken,
             name,
             location,
             budget,
-            avatar: avatar ? avatar.uri : null
+            picture: picture ? picture.uri : null
         };
-    
-        console.log('Données utilisateur envoyées :', userData);
 
-        fetch(`${ipString}/users/signup`, {
+        fetch(`${ipString}/projects/newProject`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(userData),
+            body: JSON.stringify(projectData),
         })
-        .then(async response => {
-            const data = await response.json();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
             if (data.message) {
-                if (data.message === 'User successfully registered') {
-                    await AsyncStorage.setItem('userToken', data.user.token);
-                    await AsyncStorage.setItem('userId', data.user._id);
-
+                if (data.message === 'Project successfully created') {
                     setName('');
                     setLocation('');
                     setBudget('');
-                    setAvatar(null); 
+                    setPicture(null); 
                     Toast.show({
                         type: 'success',
                         text1: 'Succès',
-                        text2: 'Compte créé avec succès'
+                        text2: 'Projet créé avec succès'
                     });
-                    navigation.navigate('SetSkills');
+                    navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } });
                 } else {
                     Toast.show({
                         type: 'error',
@@ -82,7 +90,6 @@ function NewProjectScreen({ navigation }) {
             }
         })
         .catch((error) => {
-            console.error('Error:', error);
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
@@ -91,38 +98,38 @@ function NewProjectScreen({ navigation }) {
         });
     };
 
+    // Fonction pour gérer la sélection de l'image
     const handleImageSelect = (image) => {
-        console.log('Image sélectionnée :', image);
-        setAvatar(image);
+        setPicture(image);
     };
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.innerContainer}>
-                        <View style={styles.header}>
-                            <IconButton
-                                style={styles.iconButton}
-                                onPress={() => navigation.navigate('ProjectsScreen')}
-                                iconName="long-arrow-left"
-                            />
-                            <LogoTransparent />
-                        </View>
-                        <View style={styles.titleContainer}>
-                            <ScreenTitle style={styles.ScreenTitle} text="Créer un nouveau projet" />
-                        </View>
-                        <View style={styles.UserPictureWrapper}>
-                            <TouchableOpacity onPress={toggleModal}>
-                                <View style={styles.avatarWrapper}>
-                                    {avatar ? (
-                                        <Image source={avatar} style={styles.avatar} />
-                                    ) : (
-                                        <ProjectPicture />
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.innerContainer}>
+                    <View style={styles.header}>
+                        <IconButton
+                            style={styles.iconButton}
+                            onPress={() => navigation.navigate('ProjectsScreen')}
+                            iconName="long-arrow-left"
+                        />
+                        <LogoTransparent />
+                    </View>
+                    <View style={styles.titleContainer}>
+                        <ScreenTitle style={styles.ScreenTitle} text="Créer un nouveau projet" />
+                    </View>
+                    <View style={styles.ProjectPictureWrapper}>
+                        <TouchableOpacity onPress={toggleModal}>
+                            <View style={styles.pictureWrapper}>
+                                {picture ? (
+                                    <Image source={picture} style={styles.picture} />
+                                ) : (
+                                    <ProjectPicture />
+                                )}
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.inputContainer}>
                             <CustomInput 
                                 placeholder="Nom du projet" 
@@ -138,22 +145,22 @@ function NewProjectScreen({ navigation }) {
                                 placeholder="Budget" 
                                 value={budget} 
                                 onChangeText={setBudget} 
+                                validationRegex={/^\d+(\.\d{1,2})?$/} // Ajout de la validation pour le budget
+                                suffix="€" // Ajout du suffixe pour la devise
                             />
                         </View>
-                        <View style={styles.vide}>
-
-                        </View>
-                        <View style={styles.buttonContainer}>
-                            <FilledButton 
-                                text='Enregistrer' 
-                                background={MyLightTheme.colors.deepGreen} 
-                                full={true}
-                                onPress={handleNext}
-                            /> 
-                        </View>
+                    </ScrollView>
+                    <View style={styles.vide} />
+                    <View style={styles.buttonContainer}>
+                        <FilledButton 
+                            text='Enregistrer' 
+                            background={MyLightTheme.colors.deepGreen} 
+                            full={true}
+                            onPress={handleNext}
+                        /> 
                     </View>
-                </TouchableWithoutFeedback>
-            
+                </View>
+            </TouchableWithoutFeedback>
             <ProjectIconSelectorModal 
                 isShow={isModalVisible} 
                 toggleModal={toggleModal} 
@@ -167,6 +174,11 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         width: "100%"
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        width: "100%",
     },
     container: {
         flex: 1,
@@ -197,18 +209,18 @@ const styles = StyleSheet.create({
         top: '50%', 
         marginTop: -25, 
     },
-    UserPictureWrapper: {
+    ProjectPictureWrapper: {
         marginTop: 10,
         marginBottom: 10,
     },
-    avatarWrapper: {
+    pictureWrapper: {
         borderWidth: 1,
         borderColor: 'rgba(41, 157, 142, 1)',
         backgroundColor: 'rgba(217, 217, 217, 1)',
-        borderRadius: 70, // Assurez-vous que la bordure soit toujours ronde
-        overflow: 'hidden', // Assurez-vous que l'image soit coupée aux bords
+        borderRadius: 70, // Assure que la bordure soit toujours ronde
+        overflow: 'hidden', // Assure que l'image soit coupée aux bords
     },
-    avatar: {
+    picture: {
         width: 140,
         height: 140,
         borderRadius: 70,
@@ -222,11 +234,9 @@ const styles = StyleSheet.create({
     buttonContainer: {
         width: "100%",
         alignItems: 'center',
-        
     },
-    vide : {
-        height: 200,
-        backgroundColor: "red" ,
+    vide: {
+        height: 110,
     }
 });
 

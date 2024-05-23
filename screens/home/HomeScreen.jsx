@@ -11,7 +11,7 @@ const ipString = process.env.IP_ADDRESS;
 function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
     const userInfos = useSelector((state) => state.user.userInfos);
-    console.log('userInfos', userInfos);
+    // console.log('userInfos', userInfos);
 
     const [avatar, setAvatar] = useState(null);
     const [name, setName] = useState(null);
@@ -22,9 +22,9 @@ function HomeScreen({ navigation }) {
                 const token = await AsyncStorage.getItem('userToken');
                 
                 const response = await fetch(`${ipString}/users/getUserByToken/${token}`);
-                console.log('token', token);
+                // console.log('token', token);
                 const userData = await response.json();
-                console.log(userData);
+                // console.log(userData);
                 if(response.status === 401) {
                     Toast.show({
                         type: 'error',
@@ -33,7 +33,7 @@ function HomeScreen({ navigation }) {
                     });
                     // navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
                 } else if (response.status === 200) {
-                    console.log('userDataName', userData.user.name);
+                    // console.log('userDataName', userData.user.name);
                     const skills = userData.user.skills;
                     delete skills.__v;
                     delete skills._id;
@@ -41,6 +41,7 @@ function HomeScreen({ navigation }) {
                         name: userData.user.name,
                         avatar: userData.user.avatar,
                         skills: skills,
+                        token: userData.user.token,
                     }));
                     setName(userData.user.name);
                     setAvatar(userData.user.avatar);

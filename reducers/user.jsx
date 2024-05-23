@@ -5,6 +5,7 @@ const initialState = {
     userInfos: {},
 };
 
+// on retrouve dans le store redux le nom de l'utilisateur, son token, son avatar et ses skills
 export const userSlice = createSlice({
     name: 'user',
     initialState,

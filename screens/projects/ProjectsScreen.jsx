@@ -37,7 +37,7 @@ function ProjectsScreen({ navigation }) {
             <View style={styles.header}>
                 <IconButton
                     style={styles.iconButtonLeft}
-                    onPress={() => navigation.navigate('TutoStack', { screen: 'WhereToStartScreen' })}
+                    onPress={() => navigation.navigate('TabNavigator', { screen: 'TutoStack', params: { screen: 'WhereToStartScreen' } })}
                     iconName="info-circle"
                 />
                 <LogoTransparent />
