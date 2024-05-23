@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex, value, onChangeText, prefix }) => {
+const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex, value, onChangeText, suffix }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(!secureTextEntry);
   const [error, setError] = useState('');
 
@@ -25,9 +25,8 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
       {search && (
         <FontAwesome name="search" size={20} color="#6F797B" style={styles.searchIcon} />
       )}
-      {prefix && <Text style={styles.prefix}>{prefix}</Text>}
       <TextInput
-        style={[styles.input, search && styles.inputWithSearch, prefix && styles.inputWithPrefix]}
+        style={[styles.input, search && styles.inputWithSearch]}
         placeholder={placeholder}
         placeholderTextColor="#6F797B"
         secureTextEntry={!isPasswordVisible}
@@ -41,6 +40,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
           <FontAwesome name={isPasswordVisible ? 'eye' : 'eye-slash'} size={20} color="#6F797B" />
         </TouchableOpacity>
       )}
+      {suffix && <Text style={styles.suffix}>{suffix}</Text>}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
@@ -53,7 +53,7 @@ CustomInput.propTypes = {
   validationRegex: PropTypes.instanceOf(RegExp),
   value: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
-  prefix: PropTypes.string,
+  suffix: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
@@ -78,9 +78,6 @@ const styles = StyleSheet.create({
   inputWithSearch: {
     marginLeft: 10,
   },
-  inputWithPrefix: {
-    marginLeft: 5,
-  },
   eyeIcon: {
     marginLeft: 10,
   },
@@ -92,13 +89,14 @@ const styles = StyleSheet.create({
   searchIcon: {
     marginRight: 10,
   },
-  prefix: {
-    color: '#000000',
+  suffix: {
+    color: '#6F797B',
     fontFamily: 'Inter',
     fontSize: 18,
     fontStyle: 'normal',
     fontWeight: '400',
     lineHeight: 21,
+    marginLeft: 5,
   },
 });
 

@@ -74,7 +74,7 @@ function NewProjectScreen({ navigation }) {
                         text1: 'Succès',
                         text2: 'Projet créé avec succès'
                     });
-                    navigation.navigate('SetSkills'); // Navigation vers l'écran suivant
+                    navigation.navigate('RoomsScreen'); 
                 } else {
                     Toast.show({
                         type: 'error',
@@ -153,7 +153,7 @@ function NewProjectScreen({ navigation }) {
                                 value={budget} 
                                 onChangeText={setBudget} 
                                 validationRegex={/^\d+(\.\d{1,2})?$/} // Ajout de la validation pour le budget
-                                prefix="€" // Ajout du préfixe pour la devise
+                                suffix="€" // Ajout du suffixe pour la devise
                             />
                         </View>
                         <View style={styles.vide} />
