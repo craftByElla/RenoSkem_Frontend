@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import FilledButton from '../../components/buttons/FilledButton';
 import { useTheme } from '@react-navigation/native';
 import { MyLightTheme } from '../../components/Theme';
@@ -11,19 +11,20 @@ import IconButton from '../../components/buttons/IconButton';
 import SimpleModal from '../../components/modal/SimpleModal';
 import ImageSelectorModal from '../../components/modal/ImageSelectorModal'
 import { useSelector } from 'react-redux'; 
+import Toast from 'react-native-toast-message';
 
 const ipString = process.env.IP_ADDRESS;
 
 function ChangeInformationsScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
-    
+    const token = useSelector((state) => state.user.userInfos.token)
 
     const [avatar, setAvatar] = useState('');
-    const [prenom, setPrenom] = useState('');
-    const [actualPassword, setActualPassword] = useState('');
+    const [name, setname] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('')
-    console.log('prenom', prenom)
+    
 
     const [isShowModal, setIsShowModal] = useState(false);
     const [isShowModalImage, setIsShowModalImage] = useState(false);
@@ -38,81 +39,118 @@ function ChangeInformationsScreen({ navigation }) {
     };
 
     const changeInformations = async () => {
-        const response = fetch(`${ipString}/users/editUser/${token}`)
+        
+        const response = await fetch(`${ipString}/users/editUser/${token}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({                 
+                name: name,
+                avatar: avatar.uri,
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            })
+        });
+        if(response.status === 500) {
+            Toast.show({
+                type: 'error',
+                text1: 'erreur',
+                text2: 'erreur durant l\'update',
+            })
+        }else if (response.status === 401) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Mot de passe invalide',
+            });
+        }else {
+            Toast.show({
+                type: 'success',
+                text1: 'succès',
+                text2: 'Profil actualisé',
+            })
+        }
     }
 
     return (
         <SafeAreaView style={{flex: 1}}>
-            <View style={styles.header}>
-                <IconButton
-                    style={styles.iconButton}
-                    onPress={() => navigation.navigate('HomeScreen')}
-                    iconName="long-arrow-left"
-                />
-                <LogoTransparent />
-            </View>
-            <View style={styles.mainContainer}>
-            <View style={{ width: '100%', alignItems: 'center'}}>
-                <ScreenTitle text='Modifier mes informations'/>
-                <TouchableOpacity style={styles.userContainer} onPress={() => {toggleModal(setIsShowModalImage, isShowModalImage), console.log(isShowModalImage)}}>
-                    {avatar ? 
-                        <Image source={avatar} style={styles.avatar} /> 
-                            : 
-                        <UserPicture />
-                    }
-                </TouchableOpacity>
-                <CustomInput 
-                    placeholder='Prénom' 
-                    value={prenom} 
-                    onChangeText={(value) => setPrenom(value)}
-                />
-                <CustomInput 
-                    placeholder='Mot de passe actuel' 
-                    secureTextEntry={true} 
-                    value={actualPassword} 
-                    onChangeText={(value) => setActualPassword(value)}
-                />
-                <CustomInput 
-                    placeholder='Nouveau mot de passe' 
-                    secureTextEntry={true} 
-                    value={newPassword} 
-                    onChangeText={(value) => setNewPassword(value)}
-                />
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.container}
+                keyboardVerticalOffset={20}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.header}>
+                    <IconButton
+                        style={styles.iconButton}
+                        onPress={() => navigation.navigate('HomeScreen')}
+                        iconName="long-arrow-left"
+                    />
+                    <LogoTransparent />
                 </View>
+                <View style={styles.mainContainer}>
                 <View style={{ width: '100%', alignItems: 'center'}}>
-                    <View style={{marginBottom: 16, width: '100%', alignItems: 'center'}}>
-                    <FilledButton 
-                        text='Enregistrer' 
-                        background={colors.deepGreen} 
-                        full={true}
-                        onPress={() => console.log('enregistrer')}
+                    <ScreenTitle text='Modifier mes informations'/>
+                    <TouchableOpacity style={styles.userContainer} onPress={() => {toggleModal(setIsShowModalImage, isShowModalImage)}}>
+                        {avatar ? 
+                            <Image source={avatar} style={styles.avatar} /> 
+                                : 
+                            <UserPicture />
+                        }
+                    </TouchableOpacity>
+                    <CustomInput 
+                        placeholder='Prénom' 
+                        value={name} 
+                        onChangeText={(value) => setname(value)}
+                    />
+                    <CustomInput 
+                        placeholder='Mot de passe actuel' 
+                        secureTextEntry={true} 
+                        value={currentPassword} 
+                        onChangeText={(value) => setCurrentPassword(value)}
+                    />
+                    <CustomInput 
+                        placeholder='Nouveau mot de passe' 
+                        secureTextEntry={true} 
+                        value={newPassword} 
+                        onChangeText={(value) => setNewPassword(value)}
                     />
                     </View>
-                    <FilledButton 
-                        text='Supprimer mon compte' 
-                        background={colors.orange} 
-                        full={true} 
-                        onPress={() => setIsShowModal(true)}
-                    />
+                    <View style={{ width: '100%', alignItems: 'center'}}>
+                        <View style={{marginBottom: 16, width: '100%', alignItems: 'center'}}>
+                        <FilledButton 
+                            text='Enregistrer' 
+                            background={colors.deepGreen} 
+                            full={true}
+                            onPress={() => { changeInformations(), navigation.navigate('HomeScreen') }}
+                        />
+                        </View>
+                        <FilledButton 
+                            text='Supprimer mon compte' 
+                            background={colors.orange} 
+                            full={true} 
+                            onPress={() => setIsShowModal(true)}
+                        />
+                    </View>
                 </View>
-            </View>
-            <SimpleModal
-                isShow={isShowModal} 
-                toggleModal={() => toggleModal(setIsShowModal, isShowModal)}
-                title='Suppression de compte'
-                button1={
-                    <FilledButton text='Supprimer' 
-                        background={MyLightTheme.colors.orange} 
-                        full={true} 
-                        onPress={() => {console.log('delete account'), toggleModal(setIsShowModal, isShowModal)}}
-                    />
-                }
-            /> 
-            <ImageSelectorModal 
-                isShow={isShowModalImage} 
-                toggleModal={() => toggleModal(setIsShowModalImage, isShowModalImage)}
-                onSelectImage={handleImageSelect} 
-            />
+                </ ScrollView>
+                </KeyboardAvoidingView>
+                <SimpleModal
+                    isShow={isShowModal} 
+                    toggleModal={() => toggleModal(setIsShowModal, isShowModal)}
+                    title='Suppression de compte'
+                    button1={
+                        <FilledButton text='Supprimer' 
+                            background={MyLightTheme.colors.orange} 
+                            full={true} 
+                            onPress={() => {console.log('delete account'), toggleModal(setIsShowModal, isShowModal)}}
+                        />
+                    }
+                /> 
+                <ImageSelectorModal 
+                    isShow={isShowModalImage} 
+                    toggleModal={() => toggleModal(setIsShowModalImage, isShowModalImage)}
+                    onSelectImage={handleImageSelect} 
+                />
         </SafeAreaView>
     )
 }
@@ -120,6 +158,7 @@ function ChangeInformationsScreen({ navigation }) {
 export default ChangeInformationsScreen;
 
 createStyles = (colors) => StyleSheet.create({
+    
     header: {
         width: '100%',
         flexDirection: 'row',
@@ -139,6 +178,14 @@ createStyles = (colors) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         paddingHorizontal: 22,
+    },
+    container: {
+        flex: 1
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
     userContainer: {
         display: 'flex',

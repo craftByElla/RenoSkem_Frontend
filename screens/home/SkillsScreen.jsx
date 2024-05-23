@@ -32,8 +32,7 @@ function SkillsScreen({ navigation }) {
             if (!token) {
                 console.log('token has been deleted')
                 const response = await fetch(`${ipString}/users/logout`) 
-
-                const data = await response.json();
+                console.log('response', response.status)
                 // console.log('data', data);
                 if (response.status === 200) {
                     console.log('data.status', response.status)
