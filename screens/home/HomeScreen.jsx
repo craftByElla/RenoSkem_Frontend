@@ -41,6 +41,7 @@ function HomeScreen({ navigation }) {
                         name: userData.user.name,
                         avatar: userData.user.avatar,
                         skills: skills,
+                        token: userData.user.token,
                     }));
                     setName(userData.user.name);
                     setAvatar(userData.user.avatar);

@@ -17,7 +17,6 @@ function Login_password({ navigation }) {
     const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
-        // Vérification simple des champs
         if (!email || !password) {
             Toast.show({
                 type: 'error',
@@ -26,39 +25,40 @@ function Login_password({ navigation }) {
             });
             return;
         }
-
-        const userData = {
-            email,
-            password
-        };
-
+    
+        const userData = { email, password };
+        console.log('Sending login request to:', `${ipString}/users/login`);
+        console.log('With data:', userData);
+    
         try {
             const response = await fetch(`${ipString}/users/login`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-
+    
             const data = await response.json();
-
+            console.log('API Response:', data); // Log la réponse de l'API pour déboguer
+    
             if (response.status === 200) {
-                // Stocker le token JWT dans AsyncStorage
-                await AsyncStorage.setItem('userToken', data.token);
-                await AsyncStorage.setItem('userName', data.name);
-
-                Toast.show({
-                    type: 'success',
-                    text1: 'Succès',
-                    text2: 'Connexion réussie'
-                });
-                navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } });
+                if (data.token) {
+                    await AsyncStorage.setItem('userToken', data.token);
+                    await AsyncStorage.setItem('userName', data.name);
+    
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Succès',
+                        text2: 'Connexion réussie'
+                    });
+                    navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } });
+                } else {
+                    throw new Error('Token manquant dans la réponse');
+                }
             } else {
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
-                    text2: data.message
+                    text2: data.message || 'Une erreur est survenue lors de la connexion'
                 });
             }
         } catch (error) {
@@ -70,6 +70,8 @@ function Login_password({ navigation }) {
             });
         }
     };
+    
+    
 
     return (
         <SafeAreaView style={styles.safeArea}>
