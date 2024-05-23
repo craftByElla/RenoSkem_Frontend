@@ -478,6 +478,14 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.24.5"
 
+"@babel/plugin-transform-class-properties@^7.24.1":
+  version "7.24.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-class-properties/-/plugin-transform-class-properties-7.24.1.tgz#bcbf1aef6ba6085cfddec9fc8d58871cf011fc29"
+  integrity sha512-OMLCXi0NqvJfORTaPQBwqLXHhb93wkBKZ4aNwMl6WtehO7ar+cmp+89iPEQPqxAnxsOKTaMcs3POz3rKayJ72g==
+  dependencies:
+    "@babel/helper-create-class-features-plugin" "^7.24.1"
+    "@babel/helper-plugin-utils" "^7.24.0"
+
 "@babel/plugin-transform-classes@^7.0.0":
   version "7.24.5"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-classes/-/plugin-transform-classes-7.24.5.tgz#05e04a09df49a46348299a0e24bfd7e901129339"
@@ -573,7 +581,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.24.5"
 
-"@babel/plugin-transform-private-methods@^7.22.5":
+"@babel/plugin-transform-private-methods@^7.22.5", "@babel/plugin-transform-private-methods@^7.24.1":
   version "7.24.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-private-methods/-/plugin-transform-private-methods-7.24.1.tgz#a0faa1ae87eff077e1e47a5ec81c3aef383dc15a"
   integrity sha512-tGvisebwBO5em4PaYNqt4fkw56K2VALsAbAakY0FjTYqJp7gfdrgr7YX76Or8/cpik0W6+tj3rZ0uHU9Oil4tw==
@@ -581,7 +589,7 @@
     "@babel/helper-create-class-features-plugin" "^7.24.1"
     "@babel/helper-plugin-utils" "^7.24.0"
 
-"@babel/plugin-transform-private-property-in-object@^7.22.11":
+"@babel/plugin-transform-private-property-in-object@^7.22.11", "@babel/plugin-transform-private-property-in-object@^7.24.5":
   version "7.24.5"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-private-property-in-object/-/plugin-transform-private-property-in-object-7.24.5.tgz#f5d1fcad36e30c960134cb479f1ca98a5b06eda5"
   integrity sha512-JM4MHZqnWR04jPMujQDTBVRnqxpLLpx2tkn7iPn+Hmsc0Gnb79yvRWOkvqFOx3Z7P7VxiRIR22c4eGSNj87OBQ==

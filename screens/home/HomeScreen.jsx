@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable } from 'react-native';
 import SmallProjectCard from '../../components/cards/SmallProjectCard';
 import Toast from 'react-native-toast-message';
@@ -10,21 +10,21 @@ const ipString = process.env.IP_ADDRESS;
 
 function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
-    const userInfos = useSelector((state) => state.user.userInfos)
-    console.log('userInfos', userInfos)
+    const userInfos = useSelector((state) => state.user.userInfos);
+    console.log('userInfos', userInfos);
 
     const [avatar, setAvatar] = useState(null);
     const [name, setName] = useState(null);
 
     useEffect(() => {
         (async () => {
-            try{
+            try {
                 const token = await AsyncStorage.getItem('userToken');
                 
-                const response = await fetch(`${ipString}/users/getUserByToken/${token}`)
-                console.log('token', token)
-                const userData = await response.json()
-                console.log(userData)
+                const response = await fetch(`${ipString}/users/getUserByToken/${token}`);
+                console.log('token', token);
+                const userData = await response.json();
+                console.log(userData);
                 if(response.status === 401) {
                     Toast.show({
                         type: 'error',
@@ -32,36 +32,34 @@ function HomeScreen({ navigation }) {
                         text2: 'Utilisateur introuvable'
                     });
                     // navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
-                }else if (response.status === 200) {
-                    console.log('userDataName', userData.user.name)
-                    const skills = userData.user.skills
+                } else if (response.status === 200) {
+                    console.log('userDataName', userData.user.name);
+                    const skills = userData.user.skills;
                     delete skills.__v;
                     delete skills._id;
                     dispatch(addUserInfosToStore({
                         name: userData.user.name,
                         avatar: userData.user.avatar,
                         skills: skills,
-                    }
-                    ))
-                    setName(userData.user.name)
-                    setAvatar(userData.user.avatar)
+                    }));
+                    setName(userData.user.name);
+                    setAvatar(userData.user.avatar);
                 }
-
-            }catch (error){
+            } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
             }
         })();
-    }, [])
+    }, []);
 
     const projectNames = [
         'Maison2.0',
         'Chez Papy', 
         'Mezzanine',
-    ]
+    ];
 
-    const projectName = projectNames.map((data, i ) => {
+    const projectName = projectNames.map((data, i) => {
         return <SmallProjectCard key={i} name={data}/> 
-    })
+    });
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -84,7 +82,7 @@ function HomeScreen({ navigation }) {
             <View style={styles.dashboard}>
             </View>
         </SafeAreaView>
-    )
+    );
 }
 
 export default HomeScreen;
@@ -165,6 +163,4 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',
     },
-})
-
-
+});

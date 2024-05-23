@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image} from 'react-native';
 import FilledButton from '../../components/buttons/FilledButton';
+import { useTheme } from '@react-navigation/native';
 import { MyLightTheme } from '../../components/Theme';
 import CustomInput from '../../components/inputs/CustomInput';
 import UserPicture from '../../components/images/UserPicture';
@@ -8,14 +9,37 @@ import ScreenTitle from '../../components/text/ScreenTitle';
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import IconButton from '../../components/buttons/IconButton';
 import SimpleModal from '../../components/modal/SimpleModal';
+import ImageSelectorModal from '../../components/modal/ImageSelectorModal'
+import { useSelector } from 'react-redux'; 
 
+const ipString = process.env.IP_ADDRESS;
 
 function ChangeInformationsScreen({ navigation }) {
-    const styles = createStyles(MyLightTheme)
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+    
+
+    const [avatar, setAvatar] = useState('');
+    const [prenom, setPrenom] = useState('');
+    const [actualPassword, setActualPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('')
+    console.log('prenom', prenom)
+
     const [isShowModal, setIsShowModal] = useState(false);
-    const toggleModal = () => {
-        setIsShowModal(!isShowModal);
+    const [isShowModalImage, setIsShowModalImage] = useState(false);
+
+    const toggleModal = (setter, isShowModalBoolean) => {
+        setter(!isShowModalBoolean);
     };
+
+    const handleImageSelect = (image) => {
+        console.log('Image sélectionnée :', image);
+        setAvatar(image);
+    };
+
+    const changeInformations = async () => {
+        const response = fetch(`${ipString}/users/editUser/${token}`)
+    }
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -30,25 +54,43 @@ function ChangeInformationsScreen({ navigation }) {
             <View style={styles.mainContainer}>
             <View style={{ width: '100%', alignItems: 'center'}}>
                 <ScreenTitle text='Modifier mes informations'/>
-                <View style={styles.userContainer}>
-                    <UserPicture />
-                </View>
-                <CustomInput placeholder='Prénom'/>
-                <CustomInput placeholder='Mot de passe actuel' secureTextEntry={true}/>
-                <CustomInput placeholder='Nouveau mot de passe' secureTextEntry={true}/>
+                <TouchableOpacity style={styles.userContainer} onPress={() => {toggleModal(setIsShowModalImage, isShowModalImage), console.log(isShowModalImage)}}>
+                    {avatar ? 
+                        <Image source={avatar} style={styles.avatar} /> 
+                            : 
+                        <UserPicture />
+                    }
+                </TouchableOpacity>
+                <CustomInput 
+                    placeholder='Prénom' 
+                    value={prenom} 
+                    onChangeText={(value) => setPrenom(value)}
+                />
+                <CustomInput 
+                    placeholder='Mot de passe actuel' 
+                    secureTextEntry={true} 
+                    value={actualPassword} 
+                    onChangeText={(value) => setActualPassword(value)}
+                />
+                <CustomInput 
+                    placeholder='Nouveau mot de passe' 
+                    secureTextEntry={true} 
+                    value={newPassword} 
+                    onChangeText={(value) => setNewPassword(value)}
+                />
                 </View>
                 <View style={{ width: '100%', alignItems: 'center'}}>
                     <View style={{marginBottom: 16, width: '100%', alignItems: 'center'}}>
                     <FilledButton 
                         text='Enregistrer' 
-                        background={MyLightTheme.colors.deepGreen} 
+                        background={colors.deepGreen} 
                         full={true}
                         onPress={() => console.log('enregistrer')}
                     />
                     </View>
                     <FilledButton 
                         text='Supprimer mon compte' 
-                        background={MyLightTheme.colors.orange} 
+                        background={colors.orange} 
                         full={true} 
                         onPress={() => setIsShowModal(true)}
                     />
@@ -56,23 +98,28 @@ function ChangeInformationsScreen({ navigation }) {
             </View>
             <SimpleModal
                 isShow={isShowModal} 
-                toggleModal={toggleModal}
+                toggleModal={() => toggleModal(setIsShowModal, isShowModal)}
                 title='Suppression de compte'
                 button1={
                     <FilledButton text='Supprimer' 
                         background={MyLightTheme.colors.orange} 
                         full={true} 
-                        onPress={() => console.log('delete account')}
+                        onPress={() => {console.log('delete account'), toggleModal(setIsShowModal, isShowModal)}}
                     />
                 }
             /> 
+            <ImageSelectorModal 
+                isShow={isShowModalImage} 
+                toggleModal={() => toggleModal(setIsShowModalImage, isShowModalImage)}
+                onSelectImage={handleImageSelect} 
+            />
         </SafeAreaView>
     )
 }
 
 export default ChangeInformationsScreen;
 
-createStyles = (MyLightTheme) => StyleSheet.create({
+createStyles = (colors) => StyleSheet.create({
     header: {
         width: '100%',
         flexDirection: 'row',
@@ -102,6 +149,11 @@ createStyles = (MyLightTheme) => StyleSheet.create({
     profilePicture: {
         height: 50,
         width: 50,
+    },
+    avatar: {
+        width: 140,
+        height: 140,
+        borderRadius: 70,
     },
     helloText: {
         paddingLeft: 10,
