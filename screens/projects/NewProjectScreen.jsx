@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import ProjectPicture from "../../components/images/ProjectPicture";
@@ -31,7 +31,6 @@ function NewProjectScreen({ navigation }) {
 
     // Fonction pour gérer le clic sur le bouton "Enregistrer"
     const handleNext = () => {
-        // Vérification que tous les champs sont remplis
         if (!name || !location || !budget) {
             Toast.show({
                 type: 'error',
@@ -41,7 +40,6 @@ function NewProjectScreen({ navigation }) {
             return;
         }
 
-        // Création de l'objet de données du projet à envoyer
         const projectData = {
             token: userToken,
             name,
@@ -49,10 +47,7 @@ function NewProjectScreen({ navigation }) {
             budget,
             picture: picture ? picture.uri : null
         };
-    
-        console.log('Données projet envoyées :', projectData);
 
-        // Envoi des données au serveur
         fetch(`${ipString}/projects/newProject`, {
             method: 'POST',
             headers: {
@@ -60,11 +55,15 @@ function NewProjectScreen({ navigation }) {
             },
             body: JSON.stringify(projectData),
         })
-        .then(async response => {
-            const data = await response.json();
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
             if (data.message) {
                 if (data.message === 'Project successfully created') {
-                    // Réinitialisation des champs du formulaire
                     setName('');
                     setLocation('');
                     setBudget('');
@@ -74,7 +73,7 @@ function NewProjectScreen({ navigation }) {
                         text1: 'Succès',
                         text2: 'Projet créé avec succès'
                     });
-                    navigation.navigate('RoomsScreen'); 
+                    navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } });
                 } else {
                     Toast.show({
                         type: 'error',
@@ -91,7 +90,6 @@ function NewProjectScreen({ navigation }) {
             }
         })
         .catch((error) => {
-            console.error('Error:', error);
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
@@ -102,41 +100,36 @@ function NewProjectScreen({ navigation }) {
 
     // Fonction pour gérer la sélection de l'image
     const handleImageSelect = (image) => {
-        console.log('Image sélectionnée :', image);
         setPicture(image);
     };
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.container}
-                keyboardVerticalOffset={20}
-            >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.innerContainer}>
-                        <View style={styles.header}>
-                            <IconButton
-                                style={styles.iconButton}
-                                onPress={() => navigation.navigate('ProjectsScreen')}
-                                iconName="long-arrow-left"
-                            />
-                            <LogoTransparent />
-                        </View>
-                        <View style={styles.titleContainer}>
-                            <ScreenTitle style={styles.ScreenTitle} text="Créer un nouveau projet" />
-                        </View>
-                        <View style={styles.ProjectPictureWrapper}>
-                            <TouchableOpacity onPress={toggleModal}>
-                                <View style={styles.pictureWrapper}>
-                                    {picture ? (
-                                        <Image source={picture} style={styles.picture} />
-                                    ) : (
-                                        <ProjectPicture />
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.innerContainer}>
+                    <View style={styles.header}>
+                        <IconButton
+                            style={styles.iconButton}
+                            onPress={() => navigation.navigate('ProjectsScreen')}
+                            iconName="long-arrow-left"
+                        />
+                        <LogoTransparent />
+                    </View>
+                    <View style={styles.titleContainer}>
+                        <ScreenTitle style={styles.ScreenTitle} text="Créer un nouveau projet" />
+                    </View>
+                    <View style={styles.ProjectPictureWrapper}>
+                        <TouchableOpacity onPress={toggleModal}>
+                            <View style={styles.pictureWrapper}>
+                                {picture ? (
+                                    <Image source={picture} style={styles.picture} />
+                                ) : (
+                                    <ProjectPicture />
+                                )}
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.inputContainer}>
                             <CustomInput 
                                 placeholder="Nom du projet" 
@@ -156,18 +149,18 @@ function NewProjectScreen({ navigation }) {
                                 suffix="€" // Ajout du suffixe pour la devise
                             />
                         </View>
-                        <View style={styles.vide} />
-                        <View style={styles.buttonContainer}>
-                            <FilledButton 
-                                text='Enregistrer' 
-                                background={MyLightTheme.colors.deepGreen} 
-                                full={true}
-                                onPress={handleNext}
-                            /> 
-                        </View>
+                    </ScrollView>
+                    <View style={styles.vide} />
+                    <View style={styles.buttonContainer}>
+                        <FilledButton 
+                            text='Enregistrer' 
+                            background={MyLightTheme.colors.deepGreen} 
+                            full={true}
+                            onPress={handleNext}
+                        /> 
                     </View>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+                </View>
+            </TouchableWithoutFeedback>
             <ProjectIconSelectorModal 
                 isShow={isModalVisible} 
                 toggleModal={toggleModal} 
@@ -181,6 +174,11 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         width: "100%"
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        width: "100%",
     },
     container: {
         flex: 1,
@@ -238,7 +236,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     vide: {
-        height: 200,
+        height: 110,
     }
 });
 

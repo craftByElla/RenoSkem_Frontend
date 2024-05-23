@@ -30,8 +30,8 @@ import { useTheme } from "@react-navigation/native";
     ];
 
     const { colors } = useTheme();
-    console.log('typeofcharaData[1]', typeof characterData[1])
-    console.log('characterData !!!!!!!!!',characterData)
+    // console.log('typeofcharaData[1]', typeof characterData[1])
+    // console.log('characterData !!!!!!!!!',characterData)
     const [state, setState] = React.useState({
       data: processData(characterData),
       maxima: getMaxima(characterData)

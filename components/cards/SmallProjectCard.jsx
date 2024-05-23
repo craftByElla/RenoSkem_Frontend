@@ -31,28 +31,28 @@ function SmallProjectCard(props) {
                     <PlainButton 
                         text='1 - Périmètre' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() => navigation.navigate('CreateProjectStack', { screen: 'RoomsScreen' }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } }))}
                     />
                 }
                 button2={
                     <PlainButton 
                         text='2 - Artisans' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() => navigation.navigate('CreateProjectStack', { screen: 'ArtisanScreen' }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'ArtisanScreen' } }))}
                     />
                 }
                 button3={
                     <PlainButton 
                         text='3 - DYI ou PRO' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() => navigation.navigate('CreateProjectStack', { screen: 'DIYOrProScreen' }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'DIYOrProScreen' } }))}
                     />
                 }
                 button4={
                     <PlainButton 
                         text='4 - Planification' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() => navigation.navigate('CreateProjectStack', { screen: 'PlanningScreen' }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'PlanningScreen' } }))}
                     />
                 }
             />

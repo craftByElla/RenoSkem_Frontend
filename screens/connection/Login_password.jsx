@@ -28,8 +28,8 @@ function Login_password({ navigation }) {
     
         const userData = { email, password };
         const loginUrl = `${ipString}/users/login`;
-        console.log('Sending login request to:', loginUrl);
-        console.log('With data:', userData);
+        // console.log('Sending login request to:', loginUrl);
+        // console.log('With data:', userData);
     
         try {
             const response = await fetch(loginUrl, {
@@ -45,7 +45,7 @@ function Login_password({ navigation }) {
             }
     
             const data = await response.json();
-            console.log('API Response:', data);
+            // console.log('API Response:', data);
     
             if (response.status === 200) {
                 if (data.token) {

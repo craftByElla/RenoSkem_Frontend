@@ -28,13 +28,13 @@ function SkillsScreen({ navigation }) {
     const logOut = async() => {
             await AsyncStorage.clear();
             const token = await AsyncStorage.getItem('userToken')
-            console.log('token', token)
+            // console.log('token', token)
             if (!token) {
                 console.log('token has been deleted')
                 const response = await fetch(`${ipString}/users/logout`) 
 
                 const data = await response.json();
-                console.log('data', data);
+                // console.log('data', data);
                 if (response.status === 200) {
                     console.log('data.status', response.status)
                     Toast.show({

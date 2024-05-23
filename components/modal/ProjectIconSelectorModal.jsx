@@ -15,14 +15,14 @@ function ProjectIconSelectorModal({ isShow, toggleModal, onSelectImage }) {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleImageSelect = (index) => {
-    console.log('Index sélectionné :', index, 'Image :', images[index].uri);
+    // console.log('Index sélectionné :', index, 'Image :', images[index].uri);
     setSelectedImage(index);
   };
 
   const handleCloseModal = () => {
     if (selectedImage !== null) {
       const imageUri = Image.resolveAssetSource(images[selectedImage].uri);
-      console.log('Image confirmée :', imageUri);
+      // console.log('Image confirmée :', imageUri);
       onSelectImage(imageUri);
     }
     toggleModal();
