@@ -27,18 +27,25 @@ function Login_password({ navigation }) {
         }
     
         const userData = { email, password };
-        console.log('Sending login request to:', `${ipString}/users/login`);
+        const loginUrl = `${ipString}/users/login`;
+        console.log('Sending login request to:', loginUrl);
         console.log('With data:', userData);
     
         try {
-            const response = await fetch(`${ipString}/users/login`, {
+            const response = await fetch(loginUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
     
+            if (!response.ok) {
+                // Log response status and headers if request fails
+                console.error('Response Status:', response.status);
+                console.error('Response Headers:', response.headers);
+            }
+    
             const data = await response.json();
-            console.log('API Response:', data); // Log la réponse de l'API pour déboguer
+            console.log('API Response:', data);
     
             if (response.status === 200) {
                 if (data.token) {
@@ -62,7 +69,7 @@ function Login_password({ navigation }) {
                 });
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Network Error:', error);
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
