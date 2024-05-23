@@ -6,6 +6,7 @@ import { addUserInfosToStore } from '../../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
 import SmallProjectCard from '../../components/cards/SmallProjectCard'; 
 
+const ipString = process.env.IP_ADDRESS;
 
 function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
