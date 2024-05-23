@@ -34,7 +34,7 @@ const ProjectCard = ({ imageSrc, title }) => {
                 <TouchableOpacity onPress={handleIconClick} style={styles.iconContainer}>
                     <FontAwesome name="ellipsis-h" style={styles.trailingIcon} />
                 </TouchableOpacity>
-                <Image source={imageSrc} style={styles.image} />
+                <Image source={typeof imageSrc === 'string' ? { uri: imageSrc } : imageSrc} style={styles.image} />
                 <Text style={styles.projectTitle}>{title}</Text>
             </TouchableOpacity>
             <SimpleModal 
@@ -45,28 +45,28 @@ const ProjectCard = ({ imageSrc, title }) => {
                     <PlainButton 
                         text='1 - Périmètre' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'RoomsScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'RoomsScreen' }))}
                     />
                 }
                 button2={
                     <PlainButton 
                         text='2 - Artisans' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'ArtisanScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'ArtisanScreen' }))}
                     />
                 }
                 button3={
                     <PlainButton 
                         text='3 - DYI ou PRO' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'DIYOrProScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'DIYOrProScreen' }))}
                     />
                 }
                 button4={
                     <PlainButton 
                         text='4 - Planification' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { screen: 'PlanningScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'PlanningScreen' }))}
                     />
                 }
             />
@@ -104,70 +104,73 @@ const ProjectCard = ({ imageSrc, title }) => {
 };
 
 ProjectCard.propTypes = {
-  imageSrc: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
+    imageSrc: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.shape({
+            uri: PropTypes.string,
+        })
+    ]).isRequired,
+    title: PropTypes.string.isRequired,
 };
 
 const createStyles = (colors) => StyleSheet.create({
     projectContainer: {
-      flex: 1,
-      width: '100%',
-      alignItems: 'center',
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
     },
     card: {
-      display: 'flex',
-      width: '80%', 
-      padding: 16,
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 4,
-      flexShrink: 0,
-      borderRadius: 10,
-      backgroundColor: colors.modalBackgroundColor,
-      position: 'relative',
-      marginBottom: 10,
+        display: 'flex',
+        width: '80%', 
+        padding: 16,
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 4,
+        flexShrink: 0,
+        borderRadius: 10,
+        backgroundColor: colors.modalBackgroundColor,
+        position: 'relative',
+        marginBottom: 10,
     },
     iconContainer: {
-      position: 'absolute',
-      top: 1,
-      right: 1,
-      padding: 10,
+        position: 'absolute',
+        top: 1,
+        right: 1,
+        padding: 10,
     },
     trailingIcon: {
-      fontSize: 20,
-      color: colors.deepGrey,
+        fontSize: 20,
+        color: colors.deepGrey,
     },
     image: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10,
-      flex: 1,
-      width: 60,
-      height: 60,
-      borderRadius: 30,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        flex: 1,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
     },
     projectTitle: {
-      color: colors.deepGrey,
-      textAlign: 'center',
-      fontFamily: 'Inter',
-      fontSize: 12,
-      fontStyle: 'normal',
-      fontWeight: '600',
-      lineHeight: 19,
-      letterSpacing: 0.5,
+        color: colors.deepGrey,
+        textAlign: 'center',
+        fontFamily: 'Inter',
+        fontSize: 12,
+        fontStyle: 'normal',
+        fontWeight: '600',
+        lineHeight: 19,
+        letterSpacing: 0.5,
     },
     btn: {
-      width: '90%',
-      margin: 'auto',
+        width: '90%',
+        margin: 'auto',
     },
     btnDelete: {
         display: 'flex',
         alignItems: 'center',
         marginTop: 8,
         width: '100%',
-        
-      }
-  });
-  
+    }
+});
 
 export default ProjectCard;

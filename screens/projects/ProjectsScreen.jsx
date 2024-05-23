@@ -1,27 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context"; 
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
-import CustomInput from '../../components/inputs/CustomInput';
 import ProjectCard from '../../components/cards/ProjectCard';
 import SimpleModal from '../../components/modal/SimpleModal';
 import PlainButton from '../../components/buttons/PlainButton';
-
+import { useSelector } from 'react-redux';
+import Toast from 'react-native-toast-message';
+const ipString = process.env.IP_ADDRESS;
 
 function ProjectsScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
-    const [search, setSearch] = useState('');
     const [isShowFilterModal, setIsShowFilterModal] = useState(false);
+    const userToken = useSelector((state) => state.user.userInfos.token);
+    const [projects, setProjects] = useState([]);
 
-    const projects = [
-        { id: 1, title: 'Maison 2.0', image: require('../../assets/projectIcon/House.png') },
-        { id: 2, title: 'Chez Papy', image: require('../../assets/projectIcon/DinnerRoom.png') },
-        { id: 3, title: 'Mezzanine', image: require('../../assets/projectIcon/Bedroom.png') },
-    ];
+    const fetchProjects = async () => {
+        try {
+            const url = `${ipString}/projects/getUserProjects/${userToken}`;
+            // console.log("URL:", url);
+            const response = await fetch(url);
+            const data = await response.json();
+            // console.log("Response data:", data);
+
+            if (response.ok) {
+                // console.log("Projects retrieved successfully:", data.projects);
+                setProjects(data.projects);
+            } else {
+                // console.log("Error in response:", data.message);
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la récupération des projets'
+                });
+            }
+        } catch (error) {
+            // console.error("Fetch error:", error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la récupération des projets'
+            });
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchProjects();
+        }, [userToken])
+    );
 
     const toggleModal = (setIsShowModal, isShowModal) => {
         setIsShowModal(!isShowModal);
@@ -47,20 +78,21 @@ function ProjectsScreen({ navigation }) {
                     iconName="filter"
                 />
             </View>
-            <View style={styles.centerContainer}>
+            <View style={styles.biggerContainer}>
                 <View style={styles.titleContainer}>
                     <ScreenTitle style={styles.ScreenTitle} text="Mes projets" />
                     <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('NewProjectScreen')}>
                         <Text>Nouveau</Text>
                     </TouchableOpacity>
                 </View>
-                <CustomInput placeholder="Rechercher ici" search={true} value={search} onChangeText={setSearch} />
             </View>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {projects.map((project) => (
-                    <ProjectCard key={project.id} imageSrc={project.image} title={project.title} />
-                ))}
-            </ScrollView>
+            <View style={styles.biggerScrollContainer}>
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    {projects.map((project) => (
+                        <ProjectCard key={project._id} imageSrc={{ uri: project.picture }} title={project.name} />
+                    ))}
+                </ScrollView>
+            </View>
             <SimpleModal 
                 isShow={isShowFilterModal} 
                 toggleModal={() => toggleModal(setIsShowFilterModal, isShowFilterModal)}
@@ -98,7 +130,6 @@ const createStyles = (colors) => StyleSheet.create({
         alignItems: 'center',
         height: 50,
         position: 'relative',
-        marginBottom: 30,
     },
     iconButtonLeft: {
         position: 'absolute', 
@@ -112,11 +143,12 @@ const createStyles = (colors) => StyleSheet.create({
         top: '50%', 
         marginTop: -25, 
     },
-    centerContainer: {
-        flex: 1,
+    biggerContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
+        marginTop: 20,
+        marginBottom: 50,
     },
     titleContainer: {
         display: 'flex',
@@ -132,13 +164,9 @@ const createStyles = (colors) => StyleSheet.create({
         borderRadius: 8,
         height: 25,
         width: 64,
-        marginLeft: 10,
     },
-    scrollContainer: {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingTop: 20,
-        paddingBottom: 20,
+    biggerScrollContainer: {
+        flex: 1,
     },
     btn: {
         width: '90%',
