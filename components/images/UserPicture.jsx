@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const UserPicture = () => {
   return (
     <View style={styles.container}>
-      <FontAwesome name="user" style={styles.icon} />
+      <FontAwesome name="user" style={styles.icon} />   {/*nom de l'icone*/}
     </View>
   );
 };

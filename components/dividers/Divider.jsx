@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import PropTypes from "prop-types";
-
+import PropTypes from "prop-types";         // Importation de PropTypes pour la validation des types de propriétés
+                                            // Définition du composant fonctionnel Divider
 const Divider = ({ text = "Ou" }) => {
   return (
     <View style={styles.dividerContainer}>
@@ -14,8 +14,8 @@ const Divider = ({ text = "Ou" }) => {
   );
 };
 
-Divider.propTypes = {
-  text: PropTypes.string,
+Divider.propTypes = {     // Validation des types des propriétés attendues par le composant
+  text: PropTypes.string, // La propriété text est de type chaîne de caractères
 };
 
 const styles = StyleSheet.create({

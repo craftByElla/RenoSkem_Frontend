@@ -1,16 +1,16 @@
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { MyLightTheme, MyDarkTheme } from '../Theme';
-import RoomsScreen from '../../screens/createProject/RoomsScreen';
+import { MyLightTheme, MyDarkTheme } from '../Theme';  // Importation des thèmes personnalisés (thème clair et sombre)
+import RoomsScreen from '../../screens/createProject/RoomsScreen'; // Importation des composants d'écran spécifiques à la création de projet
 import ArtisanScreen from '../../screens/createProject/ArtisansScreen';
 import DIYOrProScreen from '../../screens/createProject/DIYorPro';
 import PlanningScreen from '../../screens/createProject/Planning';
 import LogoTransparent from '../logos/LogoTransparent';
 
-export default function CreateProjectStack() {
-    const Scroll = createMaterialTopTabNavigator();
+export default function CreateProjectStack() {  // Définition du composant CreateProjectStack
+    const Scroll = createMaterialTopTabNavigator();  // Création d'un Tab Navigator
     return (
-        <SafeAreaView style={{flex:1}}>
+        <SafeAreaView style={{flex:1}}>  {/* Wrapper sûr pour le contenu, assure que le contenu ne sera pas coupé par les bords de l'écran */}
         <View style={{display: 'flex', alignItems: 'center'}}>
         <LogoTransparent />
         </View>
@@ -23,7 +23,7 @@ export default function CreateProjectStack() {
             tabBarIndicatorStyle: { backgroundColor: 'rgba(231, 111, 81, 1)', height: 2 }, // Pour ne pas afficher l'indicateur
             }}
             
-        > 
+        >   {/* Définition des différentes routes du Tab Navigator */}
             <Scroll.Screen options={{ tabBarLabel: '1' }} name="RoomsScreen" component={RoomsScreen} />
             <Scroll.Screen options={{ tabBarLabel: '2' }} name="ArtisanScreen" component={ArtisanScreen} />
             <Scroll.Screen options={{ tabBarLabel: '3' }} name="DIYOrProScreen" component={DIYOrProScreen} />

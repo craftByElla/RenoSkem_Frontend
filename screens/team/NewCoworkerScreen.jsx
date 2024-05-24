@@ -94,8 +94,8 @@ export default function TeammateSkillsScreen({ navigation }) {
 
 
 
-      useEffect(() => {
-        fetch(`${ipString}/teammates/addSkillsToTeammate/${teammates._id}/${skills._id}`,{   // fetch vers la route addSkillsToTeammates pour assignées les compétences au teammates
+      useEffect(() => {                                     // un s a ete retiré a teammate !!!!
+        fetch(`${ipString}/teammates/addSkillsToTeammate/${teammate._id}/${skills._id}`,{   // fetch vers la route addSkillsToTeammates pour assignées les compétences au teammates
           method:'PUT',
           headers:{'Content-Type':'application/json'},
         })

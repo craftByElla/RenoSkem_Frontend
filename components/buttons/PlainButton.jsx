@@ -9,10 +9,10 @@ const PlainButton = ({ onPress, text }) => {
     </TouchableOpacity>
   );
 };
-
+                                        // Définition des types de propriétés pour le composant PlainButton
 PlainButton.propTypes = {
-  onPress: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,   // La propriété onPress est requise et doit être de type fonction
+  text: PropTypes.string.isRequired,     // La propriété text est requise et doit être de type chaîne de caractères
 };
 
 const styles = StyleSheet.create({

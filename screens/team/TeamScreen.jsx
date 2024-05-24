@@ -14,6 +14,7 @@ import { useTheme } from '@react-navigation/native';
 
 const logo = require("../../assets/splash.png");
 const ipString = process.env.IP_KEY;
+const token = "4vbTO4WCd7GmAhEaQ7o0gjyv6KhZRctl";
 
 export default function TeamScreen({navigation}) {
     const { colors } = useTheme()
@@ -40,11 +41,11 @@ export default function TeamScreen({navigation}) {
     };
 
 
-    /*useEffect(() => {
-        fetch(`${ipString}/users/getUserTeammates/${token}`)    //fetch pour recuperer tout les teammates de l'utilisateur
+    useEffect(() => {
+        fetch(`${ipString}/users/getUserTeammates/${token}`)                 //fetch pour recuperer tout les teammates de l'utilisateur
                 .then (response => response.json())
                 .catch((error) => console.error("Error:", error));
-        }, []); */
+        }, []); 
 
 
     return (

@@ -9,9 +9,9 @@ function Project(props) {
 
     return (
         <View style={styles.projectContainer}>
-            <Image />
+            <Image />                                            {/* Composant Image pour afficher une image*/}
             <Text style={styles.title}>Projet</Text>
-            <Text style={styles.projectName}>{props.name}</Text>
+            <Text style={styles.projectName}>{props.name}</Text>   {/* Composant Text pour afficher le nom du projet, en utilisant la prop 'name' passée au composant parent */}
         </View>
     )
 }

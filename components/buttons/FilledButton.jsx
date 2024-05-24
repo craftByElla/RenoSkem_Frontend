@@ -3,11 +3,11 @@ import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 
 const PlainButton = ({ onPress, text, background, full }) => {
-    const styles =  createStyles(background)
-    let size;
-    full ? size = '90%' : size = '50%'
+    const styles =  createStyles(background)                     // Création des styles dynamiques en fonction de la couleur de fond
+    let size;                                                    // Détermination de la taille du bouton en fonction de la prop "full"
+full ? size = '90%' : size = '50%'                 
   return (
-    <View style={{width: size}}>
+    <View style={{width: size}}>                                 // Définition de la largeur du bouton en fonction de la variable "size"
         <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>
@@ -15,10 +15,11 @@ const PlainButton = ({ onPress, text, background, full }) => {
   );
 };
 
-PlainButton.propTypes = {
-  onPress: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired,
+PlainButton.propTypes = {                           
+  onPress: PropTypes.func.isRequired,               
+  text: PropTypes.string.isRequired,                
 };
+
 
 const createStyles = (background) => StyleSheet.create({
   button: {

@@ -5,20 +5,20 @@ import { useTheme } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 
 const TextWithRadioButtons = ({ text }) => {
-  const [selectedButton, setSelectedButton] = useState(null);
-  const { colors } = useTheme();
+  const [selectedButton, setSelectedButton] = useState(null);  // Utilisation du hook useState de React pour gérer l'état du bouton sélectionné
+  const { colors } = useTheme();               // Utilisation du hook useTheme pour accéder aux couleurs du thème actuel
 
-  const handlePress = (index) => {
-    setSelectedButton(index);
+  const handlePress = (index) => {             // Fonction pour gérer l'événement de pression sur un bouton
+    setSelectedButton(index);                  // Met à jour l'état selectedButton avec l'index du bouton pressé
   };
 
-  const renderButton = (index) => {
-    const isSelected = selectedButton === index;
-    const iconName = isSelected ? 'dot-circle-o' : 'circle-o';
-    const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;
+  const renderButton = (index) => {                              // Fonction pour rendre un bouton spécifique
+    const isSelected = selectedButton === index;                   // Vérifie si le bouton courant est celui qui est sélectionné
+    const iconName = isSelected ? 'dot-circle-o' : 'circle-o';       // Détermine le nom de l'icône en fonction de l'état de sélection
+    const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;  // Détermine la couleur de l'icône en fonction de l'état de sélection
 
     return (
-      <TouchableOpacity key={index} onPress={() => handlePress(index)}>
+      <TouchableOpacity key={index} onPress={() => handlePress(index)}>  // Utilise l'index comme clé pour l'élément
         <FontAwesome 
           name={iconName} 
           size={24} 

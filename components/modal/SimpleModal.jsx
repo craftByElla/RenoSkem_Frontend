@@ -9,19 +9,19 @@ function SimpleModal(props) {
 
     return (
         <Modal
-            transparent={true}
-            animationType="slide"
-            visible={props.isShow}
-            onRequestClose={props.toggleModal}
-            onBackdropPress={() => console.log('test')}
+            transparent={true}   // Rendre le fond du modal transparent
+            animationType="slide"  // Animation de glissement lors de l'affichage et de la fermeture du modal
+            visible={props.isShow}  // Contrôle de la visibilité du modal basé sur la prop isShow
+            onRequestClose={props.toggleModal}  // Fonction appelée lorsque l'utilisateur demande à fermer le modal (bouton de retour)
+            onBackdropPress={() => console.log('test')} //Fonction appelée lorsque l'utilisateur appuie sur l'arrière-plan
             
         >
-            <Pressable style={styles.modalContainer} onPress={() => props.toggleModal()} >
+            <Pressable style={styles.modalContainer} onPress={() => props.toggleModal()} > {/* Pressable permet de détecter les pressions sur le modal */}
                 <View style={styles.modal} >
                     <View style={ styles.textLine }>
                         <Text style={styles.text}>{props.title}</Text>
                         <TouchableOpacity 
-                            onPress={() => props.toggleModal()}                         
+                            onPress={() => props.toggleModal()}   // Bouton pour fermer le modal                     
                         >
                             <Entypo 
                                 name='cross'   
@@ -29,7 +29,7 @@ function SimpleModal(props) {
                                 color={'#6F797B'} 
                             />
                         </TouchableOpacity>
-                    </View>
+                    </View>       {/* Affiche les boutons passés en props */}
                     {props.button1}
                     {props.button2}
                     {props.button3}
