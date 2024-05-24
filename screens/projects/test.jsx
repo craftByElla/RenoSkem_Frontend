@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import { useTheme, useNavigation } from '@react-navigation/native';
@@ -7,7 +7,6 @@ import { MyLightTheme } from '../../components/Theme';
 import SimpleModal from '../modal/SimpleModal';
 import PlainButton from '../buttons/PlainButton';
 import FilledButton from '../buttons/FilledButton';
-import Toast from 'react-native-toast-message';
 
 const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, togglePinned, deleteProject }) => {
     const { colors } = useTheme();
@@ -18,7 +17,6 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
     const [longPressTimeout, setLongPressTimeout] = useState(null);
 
     const toggleModal = (setIsShowModal, isShowModal) => {
-        console.log("Toggle modal");
         setIsShowModal(!isShowModal);
     };
 
@@ -28,44 +26,26 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
     };
 
     const handleIconClick = () => {
-        console.log("Icon clicked");
         toggleModal(setIsShowModal2, isShowModal2);
     };
 
     const handleLongPress = () => {
-        console.log("Long press detected");
         setLongPressTimeout(setTimeout(() => {
-            console.log("Timeout reached, deleting project");
-            deleteProject()
-                .then(() => {
-                    console.log("Projet supprimé avec succès");
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Projet supprimé',
-                        text2: 'Le projet a été supprimé avec succès.'
-                    });
-                    setIsShowModal2(false);
-                })
-                .catch((error) => {
-                    console.error("Erreur lors de la suppression du projet:", error);
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'Une erreur est survenue lors de la suppression du projet'
-                    });
-                });
-        }, 1000)); // 1 seconde
+            deleteProject();
+            Toast.show({
+                type: 'success',
+                text1: 'Projet supprimé',
+                text2: 'Le projet a été supprimé avec succès.'
+            });
+        }, 3000)); // 3 secondes
     };
-    
+
     const handlePressOut = () => {
-        console.log("Press out detected");
         if (longPressTimeout) {
             clearTimeout(longPressTimeout);
             setLongPressTimeout(null);
         }
     };
-    
-    
 
     return (
         <View style={styles.projectContainer}>
@@ -147,7 +127,6 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                             text='Supprimer' 
                             background={MyLightTheme.colors.orange} 
                             full={true}
-                            style={styles.btn}
                             onLongPress={handleLongPress}
                             onPressOut={handlePressOut}
                         />

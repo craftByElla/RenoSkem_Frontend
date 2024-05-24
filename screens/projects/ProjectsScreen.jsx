@@ -8,6 +8,7 @@ import ScreenTitle from "../../components/text/ScreenTitle";
 import ProjectCard from '../../components/cards/ProjectCard';
 import SimpleModal from '../../components/modal/SimpleModal';
 import PlainButton from '../../components/buttons/PlainButton';
+import FilledButton from '../../components/buttons/FilledButton';
 import { useSelector } from 'react-redux';
 import Toast from 'react-native-toast-message';
 const ipString = process.env.IP_ADDRESS;
@@ -15,23 +16,22 @@ const ipString = process.env.IP_ADDRESS;
 function ProjectsScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
-    const [isShowFilterModal, setIsShowFilterModal] = useState(false);
     const userToken = useSelector((state) => state.user.userInfos.token);
+    const [isShowFilterModal, setIsShowFilterModal] = useState(false);
     const [projects, setProjects] = useState([]);
+    //états pour gérer les filtres
+    const [showAllProjects, setShowAllProjects] = useState(true);
+    const [showArchivedProjects, setShowArchivedProjects] = useState(false);
 
     const fetchProjects = async () => {
         try {
             const url = `${ipString}/projects/getUserProjects/${userToken}`;
-            // console.log("URL:", url);
             const response = await fetch(url);
             const data = await response.json();
-            // console.log("Response data:", data);
 
             if (response.ok) {
-                // console.log("Projects retrieved successfully:", data.projects);
                 setProjects(data.projects);
             } else {
-                // console.log("Error in response:", data.message);
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
@@ -39,7 +39,6 @@ function ProjectsScreen({ navigation }) {
                 });
             }
         } catch (error) {
-            // console.error("Fetch error:", error);
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
@@ -58,10 +57,119 @@ function ProjectsScreen({ navigation }) {
         setIsShowModal(!isShowModal);
     };
 
-    const handleButtonPress = (setIsShowModal, isShowModal, action) => {
+    const handleButtonPress = (setIsShowModal, isShowModal, action = () => {}) => {
         toggleModal(setIsShowModal, isShowModal);
         action();
     };
+    
+
+    // Fonctions pour gérer les états des filtres
+    const handleShowAllProjects = () => {
+        setShowAllProjects(true);
+        setShowArchivedProjects(false);
+    }
+    const handleShowArchivedProjects = () => {
+        setShowAllProjects(false);
+        setShowArchivedProjects(true);
+    }
+
+    // Pour archiver un projet
+    const toggleArchived = async (projectId, currentStatus) => {
+        try {
+            const url = `${ipString}/projects/setIsProjectArchived/${projectId}/${!currentStatus}`;
+            const response = await fetch(url, { method: 'PUT' });
+            const data = await response.json();
+
+            if (response.ok) {
+                fetchProjects();
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la mise à jour du projet'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la mise à jour du projet'
+            });
+        }
+    };
+
+    //Pour épingler un projet
+    const togglePinned = async (projectId, currentStatus) => {
+        try {
+            const url = `${ipString}/projects/setIsProjectPinned/${projectId}/${!currentStatus}`;
+            const response = await fetch(url, { method: 'PUT' });
+            const data = await response.json();
+
+            if (response.ok) {
+                fetchProjects();
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la mise à jour du projet'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la mise à jour du projet'
+            });
+        }
+    };
+
+
+    //pour filtrer les projets
+    const filteredProjects = projects
+        .filter(project => showAllProjects ? !project.archived : project.archived)
+        .sort((a, b) => b.pinned - a.pinned || new Date(b.creationDate) - new Date(a.creationDate));
+
+
+    //Pour supprimer un projet
+    const deleteProject = async (projectId) => {
+        console.log("Suppression du projet avec l'ID:", projectId);
+        try {
+            const url = `${ipString}/projects/deleteProject/${projectId}`;
+            console.log("URL de suppression:", url);
+            const response = await fetch(url, { method: 'DELETE' });
+            const data = await response.json();
+            console.log("Réponse de la suppression:", data);
+    
+            if (response.ok) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: 'Projet supprimé avec succès'
+                });
+                fetchProjects();
+                return Promise.resolve();  // Resolve promise on success
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la suppression du projet'
+                });
+                return Promise.reject();  // Reject promise on failure
+            }
+        } catch (error) {
+            console.error("Erreur lors de la suppression du projet:", error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la suppression du projet'
+            });
+            return Promise.reject();  // Reject promise on error
+        }
+    };
+    
+
+
+
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -88,8 +196,17 @@ function ProjectsScreen({ navigation }) {
             </View>
             <View style={styles.biggerScrollContainer}>
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    {projects.map((project) => (
-                        <ProjectCard key={project._id} imageSrc={{ uri: project.picture }} title={project.name} />
+                    {filteredProjects.map((project) => (
+                        <ProjectCard
+                            key={project._id}
+                            imageSrc={{ uri: project.picture }}
+                            title={project.name}
+                            archived={project.archived}
+                            pinned={project.pinned}
+                            toggleArchived={() => toggleArchived(project._id, project.archived)}
+                            togglePinned={() => togglePinned(project._id, project.pinned)}
+                            deleteProject={() => deleteProject(project._id)}
+                        />
                     ))}
                 </ScrollView>
             </View>
@@ -98,17 +215,31 @@ function ProjectsScreen({ navigation }) {
                 toggleModal={() => toggleModal(setIsShowFilterModal, isShowFilterModal)}
                 title="Filtres"
                 button1={
-                    <PlainButton 
-                        text='Ordre chronologique' 
+                    showAllProjects ? 
+                    <FilledButton 
+                        text='Tous mes projets' 
+                        background={colors.primary} 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, () => console.log('Ordre chronologique'))}
+                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowAllProjects)}
+                    /> :
+                    <PlainButton 
+                        text='Tous mes projets' 
+                        style={styles.btn} 
+                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowAllProjects)}
                     />
                 }
                 button2={
+                    showArchivedProjects ? 
+                    <FilledButton 
+                        text='Fichier archivé' 
+                        background={colors.primary} 
+                        style={styles.btn} 
+                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowArchivedProjects)}
+                    /> :
                     <PlainButton 
                         text='Fichier archivé' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, () => console.log('Fichier archivé'))}
+                        onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowArchivedProjects)}
                     />
                 }
             />
@@ -167,6 +298,10 @@ const createStyles = (colors) => StyleSheet.create({
     },
     biggerScrollContainer: {
         flex: 1,
+    },
+    scrollContainer: {
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
     btn: {
         width: '90%',

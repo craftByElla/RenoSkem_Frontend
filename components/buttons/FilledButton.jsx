@@ -1,27 +1,26 @@
 // components/buttons/FilledButton.js
 
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-const FilledButton = ({ onPress, text, background, full }) => {
+const FilledButton = ({ onPress, text, background, full, style }) => {
     const styles = createStyles(background);
-    const size = full ? '90%' : '50%';
+    const sizeStyle = full ? { width: '90%' } : { width: '50%' };
 
     return (
-        <View style={{width: size}}>
-            <TouchableOpacity style={styles.button} onPress={onPress}>
-                <Text style={styles.text}>{text}</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={[styles.button, sizeStyle, style]} onPress={onPress}>
+            <Text style={styles.text}>{text}</Text>
+        </TouchableOpacity>
     );
 };
 
 FilledButton.propTypes = {
-    onPress: PropTypes.func.isRequired,
+    onPress: PropTypes.func,
     text: PropTypes.string.isRequired,
     background: PropTypes.string.isRequired,
-    full: PropTypes.bool
+    full: PropTypes.bool,
+    style: PropTypes.object, // Accept external styles
 };
 
 const createStyles = (background) => StyleSheet.create({
