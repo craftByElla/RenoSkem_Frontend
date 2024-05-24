@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable } from 'react-native';
+import SmallProjectCard from '../../components/cards/SmallProjectCard';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addUserInfosToStore } from '../../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
-import SmallProjectCard from '../../components/cards/SmallProjectCard'; 
+import { useFocusEffect } from '@react-navigation/native';
 
 const ipString = process.env.IP_ADDRESS;
 
@@ -15,8 +16,10 @@ function HomeScreen({ navigation }) {
 
     const [avatar, setAvatar] = useState(null);
     const [name, setName] = useState(null);
+    const [projects, setProjects] = ([]);
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
         (async () => {
             try {
                 const token = await AsyncStorage.getItem('userToken');
@@ -50,7 +53,25 @@ function HomeScreen({ navigation }) {
                 console.error('There was a problem with the fetch operation:', error);
             }
         })();
-    }, []);
+        
+    }, [])
+);
+
+    useFocusEffect(
+    useCallback(() => {
+        (async () => {
+            try{
+                const response = await fetch(`${ipString}/projects/getProject/${token}`)
+                const projectsFromBack = await response.json();
+                setProjects(projectsFromBack)
+                
+            }catch (error){
+                console.error('There was a problem with the fetch projects operation:', error)
+            }
+        })
+    }, [])
+)
+console.log('projects', projects)
 
     const projectNames = [
         'Maison2.0',

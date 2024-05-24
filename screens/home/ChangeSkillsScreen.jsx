@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
-import TwoStep from "../../components/progressIndicator/TwoStep";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import TextWithRadioButtons from '../../components/buttons/TextWithRadioButtons'; 
 import Stars from '../../components/buttons/Stars';
 import { useTheme } from '@react-navigation/native';
+
+const ipString = process.env.IP_ADDRESS
 
 const postesTravaux = [
     "Chauffage",
@@ -50,7 +51,15 @@ function ChangeSkillsScreen({ navigation }) {
                 }));
             };
 
-    
+            // router.put("/editSkills/:id/:chauffage/:cloisonnementPlatrage/:demolition/:electricite/:etancheite/:facade/:fondations/:installationCuisineSDB/:isolation/:maconnerie/:menuiserie/:montageDeMeuble/:peinture/:plomberie/:revetementsMuraux/:revetementsSol/:revetementsExterieurs/:toiture/:ventilation", async (req, res) => {
+
+            const changeSkills = async () => {
+                const response = await fetch (`${ipString}/editSkills/${token}/`)
+                
+
+            }
+
+
     return (
         <SafeAreaView style={styles.safeArea}>
                     <View style={styles.main}>
