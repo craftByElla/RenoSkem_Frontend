@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Avatar from "../../components/avatar";
 import IconButton from "../../components/buttons/IconButton";
@@ -9,6 +9,7 @@ import CustomInput from "../../components/inputs/CustomInput";
 import SimpleModal from '../../components/modal/SimpleModal';
 import FilledButton from '../../components/buttons/FilledButton'
 import PlainButton from '../../components/buttons/PlainButton';
+
 
 import { useState } from 'react';
 import { useTheme } from '@react-navigation/native';
