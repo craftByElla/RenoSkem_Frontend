@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback, Keyboard, SafeAreaView, Platform, TouchableOpacity, Image, KeyboardAvoidingView, Text } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle";
 import ProjectPicture from "../../components/images/ProjectPicture";
@@ -9,6 +9,7 @@ import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
 import ProjectIconSelectorModal from '../../components/modal/ProjectIconSelectorModal';
+import CommentModal from '../../components/modal/CommentModal'; // Import CommentModal
 import { useSelector } from 'react-redux';
 
 // Récupération de l'adresse IP à partir des variables d'environnement
@@ -22,20 +23,28 @@ function NewProjectScreen({ navigation }) {
     const [budget, setBudget] = useState('');
     const [location, setLocation] = useState('');
     const [picture, setPicture] = useState(null);
+    const [comment, setComment] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isCommentModalVisible, setCommentModalVisible] = useState(false);
 
     // Fonction pour basculer la visibilité du modal de sélection d'image
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
 
+    // Fonction pour basculer la visibilité de la modale de commentaire
+    const toggleCommentModal = () => {
+        setCommentModalVisible(!isCommentModalVisible);
+    };
+
     // Fonction pour gérer le clic sur le bouton "Enregistrer"
     const handleNext = () => {
-        if (!name || !location || !budget) {
+        // console.log("handleNext - comment:", comment);
+        if (!name || !comment) {
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
-                text2: 'Tous les champs sont obligatoires'
+                text2: 'Les champs Nom du projet et Commentaire sont obligatoires'
             });
             return;
         }
@@ -45,8 +54,11 @@ function NewProjectScreen({ navigation }) {
             name,
             location,
             budget,
-            picture: picture ? picture.uri : null
+            picture: picture ? picture.uri : null,
+            comment,
         };
+
+        // console.log("handleNext - projectData:", projectData); 
 
         fetch(`${ipString}/projects/newProject`, {
             method: 'POST',
@@ -62,12 +74,14 @@ function NewProjectScreen({ navigation }) {
             return response.json();
         })
         .then(data => {
+            // console.log("handleNext - response data:", data); 
             if (data.message) {
                 if (data.message === 'Project successfully created') {
                     setName('');
                     setLocation('');
                     setBudget('');
-                    setPicture(null); 
+                    setPicture(null);
+                    setComment(''); 
                     Toast.show({
                         type: 'success',
                         text1: 'Succès',
@@ -90,6 +104,7 @@ function NewProjectScreen({ navigation }) {
             }
         })
         .catch((error) => {
+            // console.log("handleNext - error:", error); 
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
@@ -105,67 +120,96 @@ function NewProjectScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.header}>
-                        <IconButton
-                            style={styles.iconButton}
-                            onPress={() => navigation.navigate('ProjectsScreen')}
-                            iconName="long-arrow-left"
-                        />
-                        <LogoTransparent />
-                    </View>
-                    <View style={styles.titleContainer}>
-                        <ScreenTitle style={styles.ScreenTitle} text="Créer un nouveau projet" />
-                    </View>
-                    <View style={styles.ProjectPictureWrapper}>
-                        <TouchableOpacity onPress={toggleModal}>
-                            <View style={styles.pictureWrapper}>
-                                {picture ? (
-                                    <Image source={picture} style={styles.picture} />
-                                ) : (
-                                    <ProjectPicture />
-                                )}
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 80} // Ajustez cet offset si nécessaire
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <ScrollView 
+                        contentContainerStyle={styles.scrollContainer}
+                        contentInsetAdjustmentBehavior="automatic"
+                    >
+                        <View style={styles.innerContainer}>
+                            <View style={styles.header}>
+                                <IconButton
+                                    style={styles.iconButtonLeft}
+                                    onPress={() => navigation.navigate('ProjectsScreen')}
+                                    iconName="long-arrow-left"
+                                />
+                                <LogoTransparent />
+                                <IconButton
+                                    style={styles.iconButtonRight}
+                                    onPress={handleNext}
+                                    iconName="save"
+                                />
                             </View>
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView contentContainerStyle={styles.scrollContainer}>
-                        <View style={styles.inputContainer}>
-                            <CustomInput 
-                                placeholder="Nom du projet" 
-                                value={name} 
-                                onChangeText={setName} 
-                            />
-                            <CustomInput 
-                                placeholder="Localisation du bien" 
-                                value={location} 
-                                onChangeText={setLocation} 
-                            />
-                            <CustomInput 
-                                placeholder="Budget" 
-                                value={budget} 
-                                onChangeText={setBudget} 
-                                validationRegex={/^\d+(\.\d{1,2})?$/} // Ajout de la validation pour le budget
-                                suffix="€" // Ajout du suffixe pour la devise
-                            />
+                            <View style={styles.titleContainer}>
+                                <ScreenTitle style={styles.ScreenTitle} text="Créer un nouveau projet" />
+                            </View>
+                            <View style={styles.ProjectPictureWrapper}>
+                                <TouchableOpacity onPress={toggleModal}>
+                                    <View style={styles.pictureWrapper}>
+                                        {picture ? (
+                                            <Image source={picture} style={styles.picture} />
+                                        ) : (
+                                            <ProjectPicture />
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <CustomInput 
+                                    placeholder="Nom du projet" 
+                                    value={name} 
+                                    onChangeText={setName} 
+                                />
+                                <CustomInput 
+                                    placeholder="Localisation du bien" 
+                                    value={location} 
+                                    onChangeText={setLocation} 
+                                />
+                                <CustomInput 
+                                    placeholder="Budget" 
+                                    value={budget} 
+                                    onChangeText={setBudget} 
+                                    validationRegex={/^\d+(\.\d{1,2})?$/} // Ajout de la validation pour le budget
+                                    suffix="€" // Ajout du suffixe pour la devise
+                                />
+                                {comment ? (
+                                    <View style={styles.commentContainer}>
+                                        <Text style={styles.commentText}>{comment}</Text>
+                                    </View>
+                                ) : null}
+                                
+                            </View>
+                            <View style={styles.buttonContainer}>
+                               <FilledButton
+                                    text={comment ? 'Modifier le commentaire' : 'Ajouter un commentaire'}
+                                    background="#194852"
+                                    full={true}
+                                    onPress={toggleCommentModal}
+                                    style={styles.commentButton}
+                                />
+                            </View>
                         </View>
                     </ScrollView>
-                    <View style={styles.buttonContainer}>
-                        <FilledButton 
-                            text='Enregistrer' 
-                            background={MyLightTheme.colors.deepGreen} 
-                            full={true}
-                            onPress={handleNext}
-                            style={styles.filledButton} // Assurez-vous d'utiliser ce style
-                        /> 
-                    </View>
-                </View>
-            </TouchableWithoutFeedback>
-            <ProjectIconSelectorModal 
-                isShow={isModalVisible} 
-                toggleModal={toggleModal} 
-                onSelectImage={handleImageSelect} 
-            />
+                </TouchableWithoutFeedback>
+                <ProjectIconSelectorModal 
+                    isShow={isModalVisible} 
+                    toggleModal={toggleModal} 
+                    onSelectImage={handleImageSelect} 
+                />
+                <CommentModal
+                    isShow={isCommentModalVisible}
+                    toggleModal={toggleCommentModal}
+                    comment={comment}
+                    onSave={(newComment) => {
+                        console.log("onSave - newComment:", newComment); // Log the new comment
+                        setComment(newComment);
+                    }}
+                />
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
@@ -173,21 +217,20 @@ function NewProjectScreen({ navigation }) {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        width: "100%"
+        width: "100%",
     },
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
-        width: "100%",
+        paddingBottom: 20, // Ajoutez un padding en bas pour éviter que le contenu soit masqué par le clavier
     },
     container: {
-        flex: 1,
+        flex: 1, // Utilisation de flex: 1 pour prendre tout l'espace disponible
     },
     innerContainer: {
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingBottom: 20,
     },
     header: {
         width: '100%',
@@ -203,9 +246,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    iconButton: {
+    iconButtonLeft: {
         position: 'absolute', 
         left: 25, 
+        top: '50%', 
+        marginTop: -25, 
+    },
+    iconButtonRight: {
+        position: 'absolute', 
+        right: 25, 
         top: '50%', 
         marginTop: -25, 
     },
@@ -231,18 +280,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexGrow: 1,
     },
+    commentContainer: {
+        width: '85%',
+        marginVertical: 15,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#D5CDD2',
+        borderRadius: 4,
+    },
+    commentText: {
+        color: '#000',
+        fontSize: 16,
+    },
     buttonContainer: {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 10,
     },
-    filledButton: {
-        marginVertical: 10,
+    commentButton: {
         width: '80%',  
         alignSelf: 'center',
     },
-    
 });
 
 export default NewProjectScreen;

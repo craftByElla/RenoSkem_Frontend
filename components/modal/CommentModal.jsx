@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 const CommentModal = ({ isShow, toggleModal, comment, onSave }) => {
     const { colors } = useTheme();
     const [currentComment, setCurrentComment] = useState(comment);
+    //Etat pour gérer l'ouverture du clavier en meme temps que la modale
     const textInputRef = useRef(null);
 
     useEffect(() => {
@@ -16,7 +17,7 @@ const CommentModal = ({ isShow, toggleModal, comment, onSave }) => {
                 if (textInputRef.current) {
                     textInputRef.current.focus();
                 }
-            }, 100); // Delay to ensure the modal has time to open
+            }, 100); //Délai pour être sur que la modale à le temps de s'ouvrir
         }
     }, [isShow]);
 
@@ -37,7 +38,7 @@ const CommentModal = ({ isShow, toggleModal, comment, onSave }) => {
                     <TouchableWithoutFeedback>
                         <View style={[styles.modal, { backgroundColor: colors.modalBackgroundColor }]}>
                             <View style={styles.textLine}>
-                                <Text style={styles.modalTitle}>Ajouter un commentaire</Text>
+                                <Text style={styles.modalTitle}>Détails du projet</Text>
                                 <TouchableOpacity onPress={handleClose}>
                                     <Entypo name='cross' size={40} color={'#6F797B'} />
                                 </TouchableOpacity>
@@ -70,10 +71,10 @@ CommentModal.propTypes = {
 const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        justifyContent: 'flex-start', // Aligner la modale en haut
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        paddingTop: 50, // Ajouter un peu de padding en haut si nécessaire
+        paddingTop: 80,
     },
     modal: {
         width: '90%',
@@ -86,9 +87,6 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingRight: 24,
-        paddingLeft: 24,
-        marginTop: 10,
         marginBottom: 10,
     },
     modalTitle: {
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         width: '100%',
-        height: 100,
+        height: 300,
         borderColor: '#D5CDD2',
         borderWidth: 1,
         borderRadius: 4,
