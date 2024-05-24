@@ -4,6 +4,7 @@ import { VictoryBar, VictoryChart, VictoryTheme, VictoryGroup, VictoryArea, Vict
 import { useTheme } from "@react-navigation/native";
   
   function SpiderChart(props) {
+    
     const characterData = [
       {
         "Chauffage": 2,
@@ -29,6 +30,8 @@ import { useTheme } from "@react-navigation/native";
     props.skills
     ];
 
+    console.log('PROPS.SKILLS', props.skills)
+
     const { colors } = useTheme();
     // console.log('typeofcharaData[1]', typeof characterData[1])
     // console.log('characterData !!!!!!!!!',characterData)
@@ -37,6 +40,11 @@ import { useTheme } from "@react-navigation/native";
       maxima: getMaxima(characterData)
     });
   
+    React.useEffect(() => {
+        const data = processData(characterData);
+        const maxima = getMaxima(characterData);
+        setState({ data, maxima });
+    }, [props.skills]);
     
     return (
       <>

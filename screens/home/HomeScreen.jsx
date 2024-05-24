@@ -18,6 +18,7 @@ function HomeScreen({ navigation }) {
     const [avatar, setAvatar] = useState(null);
     const [name, setName] = useState(null);
     const [projects, setProjects] = useState([]);
+    const [skillsFromBack, setSkillsFromBack] = useState([])
 
     useFocusEffect(
         useCallback(() => { //permet d'optimiser les performances. A voir dans la doc pour plus de précision en vrai 
@@ -49,6 +50,7 @@ function HomeScreen({ navigation }) {
                         }));
                         setName(userData.user.name);
                         setAvatar(userData.user.avatar);
+                        setSkillsFromBack(skills)
                     }
                     const secondResponse = await fetch(`${ipString}/projects/getUserProjects/${token}`)
                     const projectsFromBack = await secondResponse.json();
@@ -69,7 +71,7 @@ function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.main}>
-                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('SkillsScreen')}>
+                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('SkillsScreen', { skillsFromBack })}>
                     <View style={styles.avatarWrapper}>
                         <Image source={{ uri: avatar }} style={styles.profilePicture} /> 
                     </View>

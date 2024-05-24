@@ -7,7 +7,7 @@ import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import TextWithRadioButtons from '../../components/buttons/TextWithRadioButtons'; 
 import Stars from '../../components/buttons/Stars';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import Toast from 'react-native-toast-message';
 const ipString = process.env.IP_ADDRESS
@@ -41,9 +41,11 @@ function ChangeSkillsScreen({ navigation }) {
     const { colors } = useTheme();
     const token = useSelector((state) => state.user.userInfos.token)
     const skillsFromStore = useSelector((state) => state.user.userInfos.skills)
-    console.log('skillsFromStore', skillsFromStore)
+    const route = useRoute();
+    const { skillsFromBack } = route.params;
+    // console.log('skillsFromStore', skillsFromStore)
 
-    const [skills, setSkills] = useState(useSelector((state) => state.user.userInfos.skills));
+    const [skills, setSkills] = useState(skillsFromBack);
     // const [updatedSkills, setUpdatedSkills]
 
     // Mise à jour de l'état lorsqu'une compétence est sélectionnée
@@ -82,7 +84,7 @@ function ChangeSkillsScreen({ navigation }) {
             headers: {'Content-Type': 'application/json' },
             body: JSON.stringify(skillsData)
         })
-        const data = response.json() // Ligne peut-être pas nécessaire
+        const data = await response.json() // Ligne peut-être pas nécessaire
         if (response.status === 401){
             Toast.show({
                 type: 'error',
@@ -102,7 +104,8 @@ function ChangeSkillsScreen({ navigation }) {
                 text2: 'Compétences enregistrées'
             });
         }
-        navigation.navigate('SkillsScreen')
+        console.log('skills', skillsFromBack)
+        navigation.navigate('SkillsScreen', { skillsFromBack: skills })
     }
 
     return (
@@ -111,7 +114,7 @@ function ChangeSkillsScreen({ navigation }) {
                 <View style={styles.header}>
                     <IconButton
                         style={styles.iconButton}
-                        onPress={() => navigation.navigate('SkillsScreen')}
+                        onPress={() => navigation.navigate('SkillsScreen', { skillsFromBack: skills })}
                         iconName="long-arrow-left"
                     />
                     <LogoTransparent />
@@ -135,7 +138,7 @@ function ChangeSkillsScreen({ navigation }) {
                         text='Enregistrer' 
                         background={colors.deepGreen} 
                         full={true}
-                        onPress={() =>  changeSkills() }
+                        onPress={() =>  changeSkills()}
                     /> 
                 </View>
             </View>

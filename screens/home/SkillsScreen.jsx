@@ -4,7 +4,7 @@ import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context'
 import IconButton from '../../components/buttons/IconButton';
 import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton'
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useRoute } from '@react-navigation/native';
 import SpiderChart from '../../components/charts/SpiderChart';
 import SimpleModal from '../../components/modal/SimpleModal';
 import Toast from 'react-native-toast-message';
@@ -14,9 +14,12 @@ const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 function SkillsScreen({ navigation }) {
-    const { colors } = useTheme()
-    const userInfos = useSelector((state) => state.user.userInfos)
-    const styles = createStyles(colors)
+    const { colors } = useTheme();
+    const userInfos = useSelector((state) => state.user.userInfos);
+    const styles = createStyles(colors);
+    const route = useRoute();
+    const { skillsFromBack } = route.params;
+    console.log('Compétences reçues :', skillsFromBack);
 
     const [isShowModal, setIsShowModal] = useState(false);
     const toggleModal = () => {
@@ -79,10 +82,10 @@ function SkillsScreen({ navigation }) {
         </View>
         <View style={styles.titleContainer}>
             <Text style={styles.title}>Mes compétences</Text>
-            <PlainButton text='Modifier' onPress={() => navigation.navigate('ChangeSkillsScreen')}/> 
+            <PlainButton text='Modifier' onPress={() => navigation.navigate('ChangeSkillsScreen', { skillsFromBack })}/> 
         </View>
         <SpiderChart 
-            skills={userInfos.skills}
+            skills={skillsFromBack}
         />
         <SimpleModal 
             isShow={isShowModal}
