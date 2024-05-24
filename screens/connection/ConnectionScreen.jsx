@@ -30,10 +30,12 @@ function ConnectionScreen({ navigation }) {
                 <PlainButton
                     onPress={() => navigation.navigate('CreateAccount')}
                     text="Créez un compte"
+                    style={styles.btn} 
                 />
                 <PlainButton
                     onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                     text="Go to Home"
+                    style={styles.btn} 
                 />
                
             </View>
@@ -122,5 +124,8 @@ const styles = StyleSheet.create({
     },
     footerLinkText: {
         color: '#E56F52',
-    }
+    },
+    btn: {
+        marginVertical: 5,
+    },
 });

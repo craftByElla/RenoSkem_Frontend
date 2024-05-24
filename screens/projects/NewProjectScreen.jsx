@@ -9,7 +9,7 @@ import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
 import Toast from 'react-native-toast-message';
 import ProjectIconSelectorModal from '../../components/modal/ProjectIconSelectorModal';
-import CommentModal from '../../components/modal/CommentModal'; // Import CommentModal
+import CommentModal from '../../components/modal/CommentModal'; 
 import { useSelector } from 'react-redux';
 
 // Récupération de l'adresse IP à partir des variables d'environnement
