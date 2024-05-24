@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, SafeAreaView, Image, Text } from 'react-native';
+import { StyleSheet, Platform, View, SafeAreaView as SafeAreaViewIOS, Image, Text } from 'react-native';
+import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
 import IconButton from '../../components/buttons/IconButton';
 import PlainButton from '../../components/buttons/PlainButton';
 import FilledButton from '../../components/buttons/FilledButton'
@@ -10,6 +11,7 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
 const ipString = process.env.IP_ADDRESS;
+const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 function SkillsScreen({ navigation }) {
     const { colors } = useTheme()
@@ -26,38 +28,38 @@ function SkillsScreen({ navigation }) {
 //---------------------------FONCTION FETCH POUR VIDER LE LOCAL STORAGE, DECONNECTION--------------------------------
 
     const logOut = async() => {
-            await AsyncStorage.clear();
-            const token = await AsyncStorage.getItem('userToken')
-            // console.log('token', token)
-            if (!token) {
-                console.log('token has been deleted')
-                const response = await fetch(`${ipString}/users/logout`) 
-                console.log('response', response.status)
-                // console.log('data', data);
-                if (response.status === 200) {
-                    console.log('data.status', response.status)
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Succès',
-                        text2: 'Déconnection avec succès'
-                    });
-                    navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
-                }else {
-                    console.log('error')
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'erreur dans la déconnection'
-                    });
-                }
+        await AsyncStorage.clear();
+        const token = await AsyncStorage.getItem('userToken')
+        // console.log('token', token)
+        if (!token) {
+            console.log('token has been deleted')
+            const response = await fetch(`${ipString}/users/logout`) 
+            console.log('response', response.status)
+            // console.log('data', data);
+            if (response.status === 200) {
+                console.log('data.status', response.status)
+                Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: 'Déconnection avec succès'
+                });
+                navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
             }else {
-                console.log('test_3')
+                console.log('error')
                 Toast.show({
                     type: 'error',
-                        text1: 'Erreur',
-                        text2: 'failed dans la déconnection'
+                    text1: 'Erreur',
+                    text2: 'erreur dans la déconnection'
                 });
             }
+        }else {
+            // console.log('test_3')
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'failed dans la déconnection'
+            });
+        }
     }
 
     return (

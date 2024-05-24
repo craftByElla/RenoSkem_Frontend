@@ -5,11 +5,11 @@ function AvatarCard(props,{navigation}) {
   return (
     <View style={styles.container}>                                   
       <View>                                                           
-        <Text style={styles.avatarName}>{props.name}</Text>
+        <Text style={styles.avatarName}>{name}</Text>
       </View>
       <View>
-      <TouchableOpacity onPress={() => navigation.navigate('TeammateSkillsScreen')}>                                                         
-        <Image source={props.image} style={styles.avatarPicture}/>
+      <TouchableOpacity onPress={onPress} >                                                         
+        <Image source={image} style={styles.avatarPicture}/>
         </TouchableOpacity>
       </View>
     </View>
