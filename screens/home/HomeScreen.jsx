@@ -7,6 +7,7 @@ import { addUserInfosToStore } from '../../reducers/user';
 import { useDispatch } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
+import BudgetPieChart from '../../components/charts/BudgetPieChart';
 const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -86,7 +87,12 @@ function HomeScreen({ navigation }) {
                 </ScrollView>
                 <Text style={styles.titleDashboard}>Dashboard</Text>
             </View>
-            <View style={styles.dashboard}></View>
+            <View style={styles.dashboard}>
+                <BudgetPieChart 
+                    height={'20%'}
+                    width={'20%'}
+                /> 
+            </View>
         </SafeAreaView>
     );
 }
