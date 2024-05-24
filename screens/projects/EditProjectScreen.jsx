@@ -116,7 +116,7 @@ function NewProjectScreen({ navigation }) {
                         <LogoTransparent />
                     </View>
                     <View style={styles.titleContainer}>
-                        <ScreenTitle style={styles.ScreenTitle} text="Modifier mon projet" />
+                        <ScreenTitle style={styles.ScreenTitle} text="Modifier mon projet !!!" />
                     </View>
                     <View style={styles.ProjectPictureWrapper}>
                         <TouchableOpacity onPress={toggleModal}>

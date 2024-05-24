@@ -106,6 +106,13 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                 toggleModal={() => toggleModal(setIsShowModal2, isShowModal2)}
                 title="Options"
                 button1={
+                    <PlainButton 
+                    text='Modifier' 
+                    style={styles.btn} 
+                    onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, () => navigation.navigate('ProjectStack', { screen: 'EditProjectScreen' }))}
+                    />
+                }
+                button2={
                     archived ?
                     <FilledButton 
                         text='Archiver' 
@@ -119,7 +126,7 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                         onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, toggleArchived)}
                     />
                 }
-                button2={
+                button3={
                     pinned ?
                     <FilledButton 
                         text='Épingler' 
@@ -133,7 +140,7 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                         onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, togglePinned)}
                     />
                 }
-                button3={
+                button4={
                     <View style={styles.btnDelete}>
                         <DeleteButton 
                             text='Supprimer' 
