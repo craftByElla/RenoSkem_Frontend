@@ -15,7 +15,9 @@ import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Stars from "../../components/buttons/Stars";
 import TextWithRadioButton from "../../components/buttons/TextWithRadioButtons";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+
+const ipString = process.env.IP_KEY;
 
 const postesTravaux = [
   "Chauffage",
@@ -44,6 +46,62 @@ export default function TeammateSkillsScreen({ navigation }) {
 
   
     const [text, setText] = useState("");
+
+
+    useEffect(() => {
+        fetch(`${ipString}/teammates/newTeammate`,{   //fetch vers la route newTeammates pour creer un nouveau coéquipier.
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name:text}),
+        })
+          .then(response => response.json())
+          .then(newTeammate => {console.log(newTeammate)})
+          .catch((error) => console.error("Error:", error));
+      }, []);
+
+
+
+      useEffect(() => {  
+        fetch(`${ipString}/skills/setSkills`,{   // fetch vers la route newSkills pour creer de nouvelles compétences
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            chauffage: 1,
+            cloisonnementPlatrage: 2,
+            demolition: 3,
+            electricite: 1,
+            etancheite: 2,
+            facade: 3,
+            fondations: 1,
+            installationCuisineSDB: 2,
+            isolation: 3,
+            maconnerie: 1,
+            menuiserie: 2,
+            montageDeMeuble: 3,
+            peinture: 1,
+            plomberie: 2,
+            revetementsMuraux: 2,
+            revetementsSol: 1,
+            revetementsExterieurs: 2,
+            toiture: 3,
+            ventilation: 1
+        }),
+        })
+        .then(response => response.json())
+        .then(skills => {console.log(skills)})
+        .catch((error) => console.error("Error:", error));
+      }, []); 
+
+
+
+      useEffect(() => {
+        fetch(`${ipString}/teammates/addSkillsToTeammate/${teammates._id}/${skills._id}`,{   // fetch vers la route addSkillsToTeammates pour assignées les compétences au teammates
+          method:'PUT',
+          headers:{'Content-Type':'application/json'},
+        })
+          .then(response => response.json())
+          .catch((error) => console.error("Error:", error));
+      }, []); 
 
     return (
       <SafeAreaView style={{ flex: 1 }}>

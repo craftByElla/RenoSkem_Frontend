@@ -4,9 +4,11 @@ import LogoTransparent from "../../components/logos/LogoTransparent"
 import IconButton from "../../components/buttons/IconButton";
 import PageTitle from "../../components/text/ScreenTitle";
 import FilledButton from "../../components/buttons/FilledButton";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
+
+const ipString = process.env.IP_KEY;
 
 export default function NewArtisanScreen({ navigation }) {
   const { colors } = useTheme();
@@ -15,6 +17,21 @@ export default function NewArtisanScreen({ navigation }) {
   const [job, setJob] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
+
+
+  useEffect(() => {
+    fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,
+                           phone:phoneNumber,
+                           fiel:job,
+                           company:name,
+      }),
+    })
+      .then(response => response.json())
+      .catch((error) => console.error("Error:", error));
+  }, []);
 
   
   return (

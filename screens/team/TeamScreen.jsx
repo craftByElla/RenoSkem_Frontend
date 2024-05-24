@@ -9,12 +9,11 @@ import CustomInput from "../../components/inputs/CustomInput";
 import SimpleModal from '../../components/modal/SimpleModal';
 import FilledButton from '../../components/buttons/FilledButton'
 import PlainButton from '../../components/buttons/PlainButton';
-
-
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useTheme } from '@react-navigation/native';
 
 const logo = require("../../assets/splash.png");
+const ipString = process.env.IP_KEY;
 
 export default function TeamScreen({navigation}) {
     const { colors } = useTheme()
@@ -39,6 +38,13 @@ export default function TeamScreen({navigation}) {
     const toggleModal_2 = () => {
         setIsShowModal_2(!isShowModal_2);
     };
+
+
+    /*useEffect(() => {
+        fetch(`${ipString}/users/getUserTeammates/${token}`)    //fetch pour recuperer tout les teammates de l'utilisateur
+                .then (response => response.json())
+                .catch((error) => console.error("Error:", error));
+        }, []); */
 
 
     return (
