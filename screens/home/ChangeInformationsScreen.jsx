@@ -18,7 +18,9 @@ const ipString = process.env.IP_ADDRESS;
 function ChangeInformationsScreen({ navigation }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
-    const token = useSelector((state) => state.user.userInfos.token)
+    const userInfos = useSelector((state) => state.user.userInfos);
+    const token = userInfos.token
+    const currentName = userInfos.name
 
     const [avatar, setAvatar] = useState('');
     const [name, setname] = useState('');
@@ -44,12 +46,13 @@ function ChangeInformationsScreen({ navigation }) {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({                 
-                name: name,
+                name: name ? name : currentName,
                 avatar: avatar.uri,
                 currentPassword: currentPassword,
                 newPassword: newPassword
             })
         });
+        console.log('name', name)
         if(response.status === 500) {
             Toast.show({
                 type: 'error',
