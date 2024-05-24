@@ -12,10 +12,10 @@ export default function ProjectsStack() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="TeamScreen" component={TeamScreen} />
-            <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
-            <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />
-            <Stack.Screen name="ConfigureExpertiseScreen" component={ConfigureExpertiseScreen} />
             <Stack.Screen name="TeammateSkillsScreen" component={TeammateSkillsScreen} />
+            <Stack.Screen name="NewCoworkerScreen" component={NewCoworkerScreen} />
+            <Stack.Screen name="NewArtisanScreen" component={NewArtisanScreen} />
+            <Stack.Screen name="ConfigureExpertiseScreen" component={ConfigureExpertiseScreen} />
         </Stack.Navigator>
     );
 };

@@ -1,15 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AvatarCard from "../../components/cards/AvatarCard";
 import IconButton from "../../components/buttons/IconButton";
 import ScreenTitle from "../../components/text/ScreenTitle"
 import LogoTransparent from "../../components/logos/LogoTransparent"
 import CustomInput from "../../components/inputs/CustomInput";
+import SimpleModal from '../../components/modal/SimpleModal';
+import FilledButton from '../../components/buttons/FilledButton'
+import PlainButton from '../../components/buttons/PlainButton';
+
+
+import { useState } from 'react';
+import { useTheme } from '@react-navigation/native';
 
 const logo = require("../../assets/splash.png");
 
-export default function TeamScreen({ navigation }) {
+export default function TeamScreen({navigation}) {
+    const { colors } = useTheme()
     const avatarsData = [
         { name: 'martin', image: require("../../assets/Martin.jpg") },
         { name: 'jc', image: require("../../assets/jc.jpg") },
@@ -19,8 +27,23 @@ export default function TeamScreen({ navigation }) {
     ];
 
     const avatars = avatarsData.map((data, i) => {
+<<<<<<< HEAD
         return <AvatarCard key={i} name={data.name} image={data.image} />;
+=======
+        return <Avatar key={i} name={data.name} image={data.image} onPress={() => navigation.navigate("TeammateSkillsScreen")}/>;
+>>>>>>> 5b2fba5c5ef87e3eda6a4d53b22dc3af8c45943f
     });
+
+    const [isShowModal, setIsShowModal] = useState(false);
+    const toggleModal = () => {
+        setIsShowModal(!isShowModal);
+    };
+
+    const [isShowModal_2, setIsShowModal_2] = useState(false);
+    const toggleModal_2 = () => {
+        setIsShowModal_2(!isShowModal_2);
+    };
+
 
     return (
         <View style={styles.Teammates}>
@@ -31,8 +54,8 @@ export default function TeamScreen({ navigation }) {
                 <ScreenTitle text="Mon équipe"/>
             </View>
             <View style={styles.iconsContainer}>
-                <IconButton iconName='plus-circle'/>
-                <IconButton iconName='filter'/>
+                <IconButton iconName='plus-circle' onPress={() =>setIsShowModal_2(true) }/>
+                <IconButton iconName='filter' onPress={() =>setIsShowModal(true) }/>
             </View>
             <View style={styles.searchContainer}>              
                 <CustomInput
@@ -43,6 +66,48 @@ export default function TeamScreen({ navigation }) {
             <View style={styles.avatarContainer}>
                 {avatars}
             </View>
+            <SimpleModal
+                isShow={isShowModal} 
+                toggleModal={toggleModal}
+                title='Filtres'                    
+                button1={
+                    <FilledButton text='Proches' 
+                        background={colors.deepGreen} 
+                        full={true} 
+                    />
+                    
+                }
+                button2={
+                    <View style={{width: "90%" }}>
+                    <PlainButton text='Artisans' 
+                        background={colors.deepGreen} 
+                        full={true} 
+                    />
+                    </View>
+                    
+                }
+            /> 
+            <SimpleModal
+                isShow={isShowModal_2} 
+                toggleModal={toggleModal_2}
+                title="Ajout d'un nouveau "                   
+                button1={
+                    <FilledButton text='Coéquipier' 
+                        onPress={() => navigation.navigate("NewCoworkerScreen")}
+                        background={colors.deepGreen} 
+                        full={true} 
+                    />
+                }
+                button2={
+                        <View style={{width: "90%" }}>
+                        <PlainButton text='Artisan' 
+                            onPress={() => navigation.navigate("NewArtisanScreen")}
+                            background={colors.deepGreen} 
+                            full={true} 
+                    /> 
+                    </View>   
+                }
+                />
         </View>
     );
 }
