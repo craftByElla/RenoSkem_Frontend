@@ -56,30 +56,32 @@ function SetSkills({ navigation }) {
         // Récupération du token et de l'ID utilisateur
         const token = await AsyncStorage.getItem('userToken');
         const userId = await AsyncStorage.getItem('userId');
-
+    
         // Données des compétences
         const skillsData = {
-            'Chauffage': skills['Chauffage'],
-            'Cloisonnement/Plâtrage': skills['Cloisonnement/Plâtrage'],
-            'Démolition': skills['Démolition'],
-            'Électricité': skills['Électricité'],
-            'Étanchéité': skills['Étanchéité'],
-            'Façade': skills['Façade'],
-            'Fondations': skills['Fondations'],
-            'Installation cuisine/SDB': skills['Installation cuisine/SDB'],
-            'Isolation': skills['Isolation'],
-            'Maçonnerie': skills['Maçonnerie'],
-            'Menuiserie': skills['Menuiserie'],
-            'Montage de meuble': skills['Montage de meuble'],
-            'Peinture': skills['Peinture'],
-            'Plomberie': skills['Plomberie'],
-            'Revêtements muraux': skills['Revêtements muraux'],
-            'Revêtements sol': skills['Revêtements sol'],
-            'Revêtements extérieurs': skills['Revêtements extérieurs'],
-            'Toiture': skills['Toiture'],
-            'Ventilation': skills['Ventilation']
+            'chauffage': skills['Chauffage'],
+            'cloisonnementPlatrage': skills['Cloisonnement/Plâtrage'],
+            'demolition': skills['Démolition'],
+            'electricite': skills['Électricité'],
+            'etancheite': skills['Étanchéité'],
+            'facade': skills['Façade'],
+            'fondations': skills['Fondations'],
+            'installationCuisineSDB': skills['Installation cuisine/SDB'],
+            'isolation': skills['Isolation'],
+            'maconnerie': skills['Maçonnerie'],
+            'menuiserie': skills['Menuiserie'],
+            'montageDeMeuble': skills['Montage de meuble'],
+            'peinture': skills['Peinture'],
+            'plomberie': skills['Plomberie'],
+            'revetementsMuraux': skills['Revêtements muraux'],
+            'revetementsSol': skills['Revêtements sol'],
+            'revetementsExterieurs': skills['Revêtements extérieurs'],
+            'toiture': skills['Toiture'],
+            'ventilation': skills['Ventilation']
         };
-
+    
+        console.log("Données d'expertise envoyées :", skillsData);
+    
         // Envoi des données au serveur
         const response = await fetch(`${ipString}/skills/setSkills`, {
             method: 'POST',
@@ -88,23 +90,25 @@ function SetSkills({ navigation }) {
             },
             body: JSON.stringify(skillsData),
         });
-
+    
         const data = await response.json();
-
+        console.log("Réponse du serveur:", data);
+    
         // Traitement de la réponse
         if (response.status === 201) {
             const skillsId = data.skills._id;
-
+    
             // Mise à jour des compétences de l'utilisateur
-            const addSkillsResponse = await fetch(`${ipString}/users/addSkills/${userId}/${skillsId}`, {
+            const addSkillsResponse = await fetch(`${ipString}/users/addSkillsToUser/${token}/${skillsId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,
                 }
             });
-
+    
             const addSkillsData = await addSkillsResponse.json();
-
+            console.log("Réponse de la mise à jour des compétences de l'utilisateur:", addSkillsData);
+    
             // Affichage d'un message de succès ou d'erreur
             if (addSkillsResponse.status === 200) {
                 Toast.show({
@@ -128,6 +132,7 @@ function SetSkills({ navigation }) {
             });
         }
     };
+    
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -167,6 +172,7 @@ function SetSkills({ navigation }) {
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={true}
                                 onPress={handleSaveSkills}
+                                style={styles.filledButton}
                             /> 
                         </View>
                     </View>
@@ -222,9 +228,12 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         alignItems: 'center',
-        width: "100%",
+        justifyContent: 'center',
+        width: '100%',
     },
     filledButton: {
-        marginVertical: 10, 
+        marginVertical: 10,
+        width: '80%',  
+        alignSelf: 'center', 
     }
 });

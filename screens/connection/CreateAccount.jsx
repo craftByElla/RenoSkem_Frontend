@@ -93,7 +93,7 @@ function CreateAccount({ navigation }) {
     };
 
     const handleImageSelect = (image) => {
-        console.log('Image sélectionnée :', image);
+        // console.log('Image sélectionnée :', image);
         setAvatar(image);
     };
 
