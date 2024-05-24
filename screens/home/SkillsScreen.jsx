@@ -51,11 +51,11 @@ function SkillsScreen({ navigation }) {
                     });
                 }
             }else {
-                console.log('test_3')
+                // console.log('test_3')
                 Toast.show({
                     type: 'error',
-                        text1: 'Erreur',
-                        text2: 'failed dans la déconnection'
+                    text1: 'Erreur',
+                    text2: 'failed dans la déconnection'
                 });
             }
     }

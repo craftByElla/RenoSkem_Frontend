@@ -4,14 +4,27 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 
-const TextWithRadioButtons = ({ text, selectedButton, handlePress, index }) => {
+const TextWithRadioButtons = ({ text, selectedButton, handlePress, index, skills }) => {
   const { colors } = useTheme();
 
-  const renderButton = (buttonIndex) => {
+  const renderButton = (buttonIndex, skills) => {
     const isSelected = selectedButton === buttonIndex;
     const iconName = isSelected ? 'dot-circle-o' : 'circle-o';
     const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;
     
+    const mappedSkills = Object.entries(skills).map(([key, value]) => {
+      return { skill: key, value };
+    });
+    
+    console.log(mappedSkills);
+
+    // mappedSkills.map((data, i) => {
+    //   return (
+        
+    //   )
+    // })
+    
+
     return (
       <TouchableOpacity key={buttonIndex} onPress={() => handlePress(index, buttonIndex)}>
         <FontAwesome 
