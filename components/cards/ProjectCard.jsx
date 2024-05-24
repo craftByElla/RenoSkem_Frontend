@@ -56,7 +56,7 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
     return (
         <View style={styles.projectContainer}>
             <TouchableOpacity style={styles.card} onPress={() => toggleModal(setIsShowModal1, isShowModal1)}>
-                {pinned && (
+                {!archived && pinned && (
                     <Entypo name="bookmark" style={styles.bookmarkIcon} />
                 )}
                 {archived && (
@@ -107,7 +107,7 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                 title="Options"
                 button1={
                     <PlainButton 
-                    text='Modifier' 
+                    text='✏️ Modifier' 
                     style={styles.btn} 
                     onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, () => navigation.navigate('ProjectStack', { screen: 'EditProjectScreen' }))}
                     />
@@ -115,35 +115,37 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                 button2={
                     archived ?
                     <FilledButton 
-                        text='Archiver' 
+                        text='📦 Archiver' 
                         background={MyLightTheme.colors.lightGreen} 
                         style={styles.btn}
                         onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, toggleArchived)}
                     /> :
                     <PlainButton 
-                        text='Archiver' 
+                        text='📦 Archiver' 
                         style={styles.btn} 
                         onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, toggleArchived)}
                     />
                 }
                 button3={
-                    pinned ?
-                    <FilledButton 
-                        text='Épingler' 
-                        background={MyLightTheme.colors.lightGreen} 
-                        style={styles.btn}
-                        onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, togglePinned)}
-                    /> :
-                    <PlainButton 
-                        text='Épingler' 
-                        style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, togglePinned)}
-                    />
+                    !archived && ( // Afficher le bouton Épingler seulement si le projet n'est pas archivé
+                        pinned ?
+                        <FilledButton 
+                            text='🔖 Épingler' 
+                            background={MyLightTheme.colors.lightGreen} 
+                            style={styles.btn}
+                            onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, togglePinned)}
+                        /> :
+                        <PlainButton 
+                            text='🔖 Épingler' 
+                            style={styles.btn} 
+                            onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, togglePinned)}
+                        />
+                    )
                 }
                 button4={
                     <View style={styles.btnDelete}>
                         <DeleteButton 
-                            text='Supprimer' 
+                            text='🗑️ Supprimer' 
                             style={styles.btn}
                             onLongPress={handleLongPress}
                         />
@@ -236,11 +238,12 @@ const createStyles = (colors) => StyleSheet.create({
     btn: {
         width: '90%',
         margin: 'auto',
+        marginVertical: 5,
     },
     btnDelete: {
         display: 'flex',
         alignItems: 'center',
-        marginTop: 8,
+        marginTop: 0,
         width: '100%',
     }
 });

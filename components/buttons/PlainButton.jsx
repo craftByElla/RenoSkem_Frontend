@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    marginVertical: 8, // Ajout de marge verticale pour espacer les boutons
   },
   text: {
     color: '#194852', 
