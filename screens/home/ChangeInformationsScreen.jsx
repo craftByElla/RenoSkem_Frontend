@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { StyleSheet, View, SafeAreaView as SafeAreaViewIOS, TouchableOpacity, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import FilledButton from '../../components/buttons/FilledButton';
 import { useTheme } from '@react-navigation/native';
 import { MyLightTheme } from '../../components/Theme';
@@ -12,8 +13,8 @@ import SimpleModal from '../../components/modal/SimpleModal';
 import ImageSelectorModal from '../../components/modal/ImageSelectorModal'
 import { useSelector } from 'react-redux'; 
 import Toast from 'react-native-toast-message';
-
 const ipString = process.env.IP_ADDRESS;
+const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 function ChangeInformationsScreen({ navigation }) {
     const { colors } = useTheme();
@@ -82,78 +83,78 @@ function ChangeInformationsScreen({ navigation }) {
                 keyboardVerticalOffset={20}
             >
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.header}>
-                    <IconButton
-                        style={styles.iconButton}
-                        onPress={() => navigation.navigate('HomeScreen')}
-                        iconName="long-arrow-left"
-                    />
-                    <LogoTransparent />
-                </View>
-                <View style={styles.mainContainer}>
-                <View style={{ width: '100%', alignItems: 'center'}}>
-                    <ScreenTitle text='Modifier mes informations'/>
-                    <TouchableOpacity style={styles.userContainer} onPress={() => {toggleModal(setIsShowModalImage, isShowModalImage)}}>
-                        {avatar ? 
-                            <Image source={avatar} style={styles.avatar} /> 
-                                : 
-                            <UserPicture />
-                        }
-                    </TouchableOpacity>
-                    <CustomInput 
-                        placeholder='Prénom' 
-                        value={name} 
-                        onChangeText={(value) => setname(value)}
-                    />
-                    <CustomInput 
-                        placeholder='Mot de passe actuel' 
-                        secureTextEntry={true} 
-                        value={currentPassword} 
-                        onChangeText={(value) => setCurrentPassword(value)}
-                    />
-                    <CustomInput 
-                        placeholder='Nouveau mot de passe' 
-                        secureTextEntry={true} 
-                        value={newPassword} 
-                        onChangeText={(value) => setNewPassword(value)}
-                    />
-                    </View>
-                    <View style={{ width: '100%', alignItems: 'center'}}>
-                        <View style={{marginBottom: 16, width: '100%', alignItems: 'center'}}>
-                        <FilledButton 
-                            text='Enregistrer' 
-                            background={colors.deepGreen} 
-                            full={true}
-                            onPress={() => { changeInformations(), navigation.navigate('HomeScreen') }}
+                    <View style={styles.header}>
+                        <IconButton
+                            style={styles.iconButton}
+                            onPress={() => navigation.navigate('HomeScreen')}
+                            iconName="long-arrow-left"
                         />
+                        <LogoTransparent />
+                    </View>
+                    <View style={styles.mainContainer}>
+                        <View style={{ width: '100%', alignItems: 'center'}}>
+                            <ScreenTitle text='Modifier mes informations'/>
+                            <TouchableOpacity style={styles.userContainer} onPress={() => {toggleModal(setIsShowModalImage, isShowModalImage)}}>
+                                {avatar ? 
+                                    <Image source={avatar} style={styles.avatar} /> 
+                                        : 
+                                    <UserPicture />
+                                }
+                            </TouchableOpacity>
+                            <CustomInput 
+                                placeholder='Prénom' 
+                                value={name} 
+                                onChangeText={(value) => setname(value)}
+                            />
+                            <CustomInput 
+                                placeholder='Mot de passe actuel' 
+                                secureTextEntry={true} 
+                                value={currentPassword} 
+                                onChangeText={(value) => setCurrentPassword(value)}
+                            />
+                            <CustomInput 
+                                placeholder='Nouveau mot de passe' 
+                                secureTextEntry={true} 
+                                value={newPassword} 
+                                onChangeText={(value) => setNewPassword(value)}
+                            />
                         </View>
-                        <FilledButton 
-                            text='Supprimer mon compte' 
-                            background={colors.orange} 
-                            full={true} 
-                            onPress={() => setIsShowModal(true)}
-                        />
+                        <View style={{ width: '100%', alignItems: 'center'}}>
+                            <View style={{marginBottom: 16, width: '100%', alignItems: 'center'}}>
+                            <FilledButton 
+                                text='Enregistrer' 
+                                background={colors.deepGreen} 
+                                full={true}
+                                onPress={() => { changeInformations(), navigation.navigate('HomeScreen') }}
+                            />
+                            </View>
+                            <FilledButton 
+                                text='Supprimer mon compte' 
+                                background={colors.orange} 
+                                full={true} 
+                                onPress={() => setIsShowModal(true)}
+                            />
+                        </View>
                     </View>
-                </View>
-                </ ScrollView>
-                </KeyboardAvoidingView>
-                <SimpleModal
-                    isShow={isShowModal} 
-                    toggleModal={() => toggleModal(setIsShowModal, isShowModal)}
-                    title='Suppression de compte'
-                    button1={
-                        <FilledButton text='Supprimer' 
-                            background={MyLightTheme.colors.orange} 
-                            full={true} 
-                            onPress={() => {console.log('delete account'), toggleModal(setIsShowModal, isShowModal)}}
-                        />
-                    }
-                /> 
-                <ImageSelectorModal 
-                    isShow={isShowModalImage} 
-                    toggleModal={() => toggleModal(setIsShowModalImage, isShowModalImage)}
-                    onSelectImage={handleImageSelect} 
-                />
+                </ScrollView>
+            </KeyboardAvoidingView>
+            <SimpleModal
+                isShow={isShowModal} 
+                toggleModal={() => toggleModal(setIsShowModal, isShowModal)}
+                title='Suppression de compte'
+                button1={
+                    <FilledButton text='Supprimer' 
+                        background={MyLightTheme.colors.orange} 
+                        full={true} 
+                        onPress={() => {console.log('delete account'), toggleModal(setIsShowModal, isShowModal)}}
+                    />
+                }
+            /> 
+            <ImageSelectorModal 
+                isShow={isShowModalImage} 
+                toggleModal={() => toggleModal(setIsShowModalImage, isShowModalImage)}
+                onSelectImage={handleImageSelect} 
+            />
         </SafeAreaView>
     )
 }

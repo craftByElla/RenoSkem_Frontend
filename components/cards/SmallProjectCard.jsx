@@ -20,8 +20,7 @@ function SmallProjectCard(props) {
 
     return (
         <TouchableOpacity style={styles.projectContainer} onPress={() => toggleModal()}>
-            <Image />
-            <Text style={styles.title}>Projet</Text>
+            <Image source={{ uri: props.picture}} width={40} height={40}/>
             <Text style={styles.projectName}>{props.name}</Text>
             <SimpleModal 
                 isShow={isShowModal} 
@@ -65,12 +64,13 @@ export default SmallProjectCard;
 const createStyles = (colors) => StyleSheet.create({
     projectContainer: {
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         alignItems: 'center',
         height: 125,
         width: 100,
         borderRadius: 10,
         backgroundColor: colors.modalBackgroundColor,
+        marginRight: 10, 
     },
     title: {
         color: colors.deepGrey,

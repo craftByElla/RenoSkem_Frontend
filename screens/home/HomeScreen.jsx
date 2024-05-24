@@ -1,86 +1,69 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable, Platform,  ScrollView, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import SmallProjectCard from '../../components/cards/SmallProjectCard';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addUserInfosToStore } from '../../reducers/user';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
 const ipString = process.env.IP_ADDRESS;
+const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
-    const userInfos = useSelector((state) => state.user.userInfos);
+
     // console.log('userInfos', userInfos);
 
     const [avatar, setAvatar] = useState(null);
     const [name, setName] = useState(null);
-    const [projects, setProjects] = ([]);
+    const [projects, setProjects] = useState([]);
 
     useFocusEffect(
-        useCallback(() => {
-        (async () => {
-            try {
-                const token = await AsyncStorage.getItem('userToken');
-                
-                const response = await fetch(`${ipString}/users/getUserByToken/${token}`);
-                // console.log('token', token);
-                const userData = await response.json();
-                // console.log(userData);
-                if(response.status === 401) {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'Utilisateur introuvable'
-                    });
-                    // navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
-                } else if (response.status === 200) {
-                    // console.log('userDataName', userData.user.name);
-                    const skills = userData.user.skills;
-                    delete skills.__v;
-                    delete skills._id;
-                    dispatch(addUserInfosToStore({
-                        name: userData.user.name,
-                        avatar: userData.user.avatar,
-                        skills: skills,
-                        token: userData.user.token,
-                    }));
-                    setName(userData.user.name);
-                    setAvatar(userData.user.avatar);
+        useCallback(() => { //permet d'optimiser les performances. A voir dans la doc pour plus de précision en vrai 
+            (async () => {
+                try {
+                    const token = await AsyncStorage.getItem('userToken');
+                    
+                    const response = await fetch(`${ipString}/users/getUserByToken/${token}`);
+                    // console.log('token', token);
+                    const userData = await response.json();
+                    // console.log(userData);
+                    if(response.status === 401) {
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Erreur',
+                            text2: 'Utilisateur introuvable'
+                        });
+                        // navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
+                    } else if (response.status === 200) {
+                        // console.log('userDataName', userData.user.name);
+                        const skills = userData.user.skills;
+                        delete skills.__v;
+                        delete skills._id;
+                        dispatch(addUserInfosToStore({
+                            name: userData.user.name,
+                            avatar: userData.user.avatar,
+                            skills: skills,
+                            token: userData.user.token,
+                        }));
+                        setName(userData.user.name);
+                        setAvatar(userData.user.avatar);
+                    }
+                    const secondResponse = await fetch(`${ipString}/projects/getUserProjects/${token}`)
+                    const projectsFromBack = await secondResponse.json();
+                    setProjects(projectsFromBack.projects)
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
                 }
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-            }
-        })();
-        
-    }, [])
-);
+            })();
+        }, [])
+    );
 
-    useFocusEffect(
-    useCallback(() => {
-        (async () => {
-            try{
-                const response = await fetch(`${ipString}/projects/getProject/${token}`)
-                const projectsFromBack = await response.json();
-                setProjects(projectsFromBack)
-                
-            }catch (error){
-                console.error('There was a problem with the fetch projects operation:', error)
-            }
-        })
-    }, [])
-)
-console.log('projects', projects)
+// console.log('projects', projects)
 
-    const projectNames = [
-        'Maison2.0',
-        'Chez Papy', 
-        'Mezzanine',
-    ];
-
-    const projectName = projectNames.map((data, i) => {
-        return <SmallProjectCard key={i} name={data}/> 
+    const projectName = projects.map((data, i) => {
+        return <SmallProjectCard key={i} name={data.name} picture={data.picture} /> 
     });
 
     return (
@@ -94,15 +77,14 @@ console.log('projects', projects)
                 </Pressable>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>Mes Projets</Text>
-                    <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('CreateProjectStack')}><Text>Nouveau</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.nouveauBtn} onPress={() =>  navigation.navigate('TabNavigator', { screen: 'Projets', params: { screen: 'createProjectTabs' },  params: { screen: 'NewProjectScreen' }})}><Text>Nouveau</Text></TouchableOpacity>
                 </View>
-                <View style={styles.projects}>
+                <ScrollView contentContainerStyle={styles.projects} horizontal={true} showsHorizontalScrollIndicator={false}>
                     {projectName}
-                </View>
+                </ScrollView>
+                <Text style={styles.titleDashboard}>Dashboard</Text>
             </View>
-            <Text style={styles.titleDashboard}>Dashboard</Text>
-            <View style={styles.dashboard}>
-            </View>
+            <View style={styles.dashboard}></View>
         </SafeAreaView>
     );
 }
@@ -111,7 +93,9 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
     main: {
-        flex: 1,
+        display: 'flex',
+        width: '100%',
+        height: '40%',
         alignItems: 'center',
         justifyContent: 'space-around',
         paddingHorizontal: 22,
@@ -146,6 +130,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
+        paddingTop: 10,
     },
     title: {
         fontWeight: 'bold',
@@ -165,9 +150,9 @@ const styles = StyleSheet.create({
         width: 64,
     }, 
     projects : {
-        width: '100%',
         display: 'flex', 
         flexDirection: 'row',
+        paddingTop: 10,
         justifyContent: 'space-between',
     }, 
     titleDashboard: {
@@ -176,11 +161,13 @@ const styles = StyleSheet.create({
         lineHeight: 36,
         letterSpacing: 0.15,
         color: '#194852',
-        paddingHorizontal: 22
+        paddingHorizontal: 22,
+        alignSelf: 'flex-start'
     },
     dashboard: {
-        width: '100%',
-        height: '60%',  
+        display: 'flex', 
+        height: '60%',
+        width: '100%',  
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',

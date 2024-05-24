@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end', // Aligner les étoiles à droite
     alignItems: 'center',
     padding: 10,
+    marginRight:25,
   },
   starContainer: {
     flexDirection: 'row',
