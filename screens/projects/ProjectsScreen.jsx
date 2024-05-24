@@ -206,6 +206,7 @@ function ProjectsScreen({ navigation }) {
                             toggleArchived={() => toggleArchived(project._id, project.archived)}
                             togglePinned={() => togglePinned(project._id, project.pinned)}
                             deleteProject={() => deleteProject(project._id)}
+                            projectId={project._id} 
                         />
                     ))}
                 </ScrollView>
@@ -217,13 +218,13 @@ function ProjectsScreen({ navigation }) {
                 button1={
                     showAllProjects ? 
                     <FilledButton 
-                        text='Tous mes projets' 
+                        text='📚 Tous mes projets' 
                         background={colors.primary} 
                         style={styles.btn} 
                         onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowAllProjects)}
                     /> :
                     <PlainButton 
-                        text='Tous mes projets' 
+                        text='📚 Tous mes projets' 
                         style={styles.btn} 
                         onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowAllProjects)}
                     />
@@ -231,13 +232,13 @@ function ProjectsScreen({ navigation }) {
                 button2={
                     showArchivedProjects ? 
                     <FilledButton 
-                        text='Fichier archivé' 
+                        text='📦 Archives' 
                         background={colors.primary} 
                         style={styles.btn} 
                         onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowArchivedProjects)}
                     /> :
                     <PlainButton 
-                        text='Fichier archivé' 
+                        text='📦 Archives' 
                         style={styles.btn} 
                         onPress={() => handleButtonPress(setIsShowFilterModal, isShowFilterModal, handleShowArchivedProjects)}
                     />
@@ -306,5 +307,6 @@ const createStyles = (colors) => StyleSheet.create({
     btn: {
         width: '90%',
         margin: 'auto',
+        marginVertical: 5,
     },
 });
