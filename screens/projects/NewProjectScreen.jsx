@@ -150,13 +150,13 @@ function NewProjectScreen({ navigation }) {
                             />
                         </View>
                     </ScrollView>
-                    <View style={styles.vide} />
                     <View style={styles.buttonContainer}>
                         <FilledButton 
                             text='Enregistrer' 
                             background={MyLightTheme.colors.deepGreen} 
                             full={true}
                             onPress={handleNext}
+                            style={styles.filledButton} // Assurez-vous d'utiliser ce style
                         /> 
                     </View>
                 </View>
@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'rgba(41, 157, 142, 1)',
         backgroundColor: 'rgba(217, 217, 217, 1)',
-        borderRadius: 70, // Assure que la bordure soit toujours ronde
-        overflow: 'hidden', // Assure que l'image soit coupée aux bords
+        borderRadius: 70, 
+        overflow: 'hidden', 
     },
     picture: {
         width: 140,
@@ -232,12 +232,17 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     buttonContainer: {
-        width: "100%",
+        width: '100%',
         alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
     },
-    vide: {
-        height: 110,
-    }
+    filledButton: {
+        marginVertical: 10,
+        width: '80%',  
+        alignSelf: 'center',
+    },
+    
 });
 
 export default NewProjectScreen;

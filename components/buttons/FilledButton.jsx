@@ -4,12 +4,12 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-const FilledButton = ({ onPress, text, background, full, style }) => {
+const FilledButton = ({ onPress, text, background, full, style, onLongPress }) => {
     const styles = createStyles(background);
     const sizeStyle = full ? { width: '90%' } : { width: '50%' };
 
     return (
-        <TouchableOpacity style={[styles.button, sizeStyle, style]} onPress={onPress}>
+        <TouchableOpacity style={[styles.button, sizeStyle, style]} onPress={onPress} onLongPress={onLongPress}>
             <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>
     );
@@ -20,7 +20,8 @@ FilledButton.propTypes = {
     text: PropTypes.string.isRequired,
     background: PropTypes.string.isRequired,
     full: PropTypes.bool,
-    style: PropTypes.object, // Accept external styles
+    style: PropTypes.object, 
+    onLongPress: PropTypes.func,
 };
 
 const createStyles = (background) => StyleSheet.create({

@@ -206,6 +206,7 @@ function ProjectsScreen({ navigation }) {
                             toggleArchived={() => toggleArchived(project._id, project.archived)}
                             togglePinned={() => togglePinned(project._id, project.pinned)}
                             deleteProject={() => deleteProject(project._id)}
+                            projectId={project._id} 
                         />
                     ))}
                 </ScrollView>

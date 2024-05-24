@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import PropTypes from 'prop-types';
 import { useTheme, useNavigation } from '@react-navigation/native';
 import { MyLightTheme } from '../../components/Theme';
 import SimpleModal from '../modal/SimpleModal';
 import PlainButton from '../buttons/PlainButton';
 import FilledButton from '../buttons/FilledButton';
+import DeleteButton from '../buttons/DeleteButton';
 import Toast from 'react-native-toast-message';
 
-const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, togglePinned, deleteProject }) => {
+const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, togglePinned, deleteProject, projectId }) => {
     const { colors } = useTheme();
     const navigation = useNavigation();
     const styles = createStyles(colors);
@@ -18,7 +20,6 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
     const [longPressTimeout, setLongPressTimeout] = useState(null);
 
     const toggleModal = (setIsShowModal, isShowModal) => {
-        console.log("Toggle modal");
         setIsShowModal(!isShowModal);
     };
 
@@ -28,17 +29,13 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
     };
 
     const handleIconClick = () => {
-        console.log("Icon clicked");
         toggleModal(setIsShowModal2, isShowModal2);
     };
 
     const handleLongPress = () => {
-        console.log("Long press detected");
         setLongPressTimeout(setTimeout(() => {
-            console.log("Timeout reached, deleting project");
-            deleteProject()
+            deleteProject(projectId)
                 .then(() => {
-                    console.log("Projet supprimé avec succès");
                     Toast.show({
                         type: 'success',
                         text1: 'Projet supprimé',
@@ -47,7 +44,6 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                     setIsShowModal2(false);
                 })
                 .catch((error) => {
-                    console.error("Erreur lors de la suppression du projet:", error);
                     Toast.show({
                         type: 'error',
                         text1: 'Erreur',
@@ -56,20 +52,16 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                 });
         }, 1000)); // 1 seconde
     };
-    
-    const handlePressOut = () => {
-        console.log("Press out detected");
-        if (longPressTimeout) {
-            clearTimeout(longPressTimeout);
-            setLongPressTimeout(null);
-        }
-    };
-    
-    
 
     return (
         <View style={styles.projectContainer}>
             <TouchableOpacity style={styles.card} onPress={() => toggleModal(setIsShowModal1, isShowModal1)}>
+                {pinned && (
+                    <Entypo name="bookmark" style={styles.bookmarkIcon} />
+                )}
+                {archived && (
+                    <Entypo name="box" style={styles.boxIcon} />
+                )}
                 <TouchableOpacity onPress={handleIconClick} style={styles.iconContainer}>
                     <FontAwesome name="ellipsis-h" style={styles.trailingIcon} />
                 </TouchableOpacity>
@@ -143,13 +135,10 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                 }
                 button3={
                     <View style={styles.btnDelete}>
-                        <FilledButton 
+                        <DeleteButton 
                             text='Supprimer' 
-                            background={MyLightTheme.colors.orange} 
-                            full={true}
                             style={styles.btn}
                             onLongPress={handleLongPress}
-                            onPressOut={handlePressOut}
                         />
                     </View>
                 }
@@ -171,6 +160,7 @@ ProjectCard.propTypes = {
     toggleArchived: PropTypes.func.isRequired,
     togglePinned: PropTypes.func.isRequired,
     deleteProject: PropTypes.func.isRequired,
+    projectId: PropTypes.string.isRequired, 
 };
 
 const createStyles = (colors) => StyleSheet.create({
@@ -201,6 +191,21 @@ const createStyles = (colors) => StyleSheet.create({
     trailingIcon: {
         fontSize: 20,
         color: colors.deepGrey,
+    },
+    bookmarkIcon: {
+        position: 'absolute',
+        top: 5,
+        left: 5,
+        fontSize: 20,
+        color: colors.primary,
+    },
+    boxIcon: {
+        position: 'absolute',
+        top: 5,
+        left: 5,
+        fontSize: 20,
+        color: colors.primary,
+        paddingLeft: 2,
     },
     image: {
         display: 'flex',

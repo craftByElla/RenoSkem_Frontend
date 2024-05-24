@@ -13,7 +13,7 @@ export const MyLightTheme = {
         deepGreen: '#264653',
         lightGreen: '#2A9D8F',
         orange: '#E76F51',
-        lightOrangeWithOpacity: 'rgba(231, 111, 81, 0.2)',
+        o: 'rgba(231, 111, 81, 0.2)',
         lightGrey: '#E9ECEF',
         deepGrey: '#6F797B',
         modalBackgroundColor: "#FFF",
