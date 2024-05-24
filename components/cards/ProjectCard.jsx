@@ -109,7 +109,7 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                     <PlainButton 
                     text='✏️ Modifier' 
                     style={styles.btn} 
-                    onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, () => navigation.navigate('ProjectStack', { screen: 'EditProjectScreen' }))}
+                    onPress={() => handleButtonPress(setIsShowModal2, isShowModal2, () => navigation.navigate('Projets', { screen: 'EditProjectScreen', params: { projectId } }))}
                     />
                 }
                 button2={
