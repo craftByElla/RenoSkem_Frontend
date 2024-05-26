@@ -5,8 +5,6 @@ import { useDispatch } from 'react-redux';
 import { useTheme, useFocusEffect } from '@react-navigation/native';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import Toast from 'react-native-toast-message';
-import RoomsDisplay from '../../components/cards/RoomsDisplay';
-
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 const ipString = process.env.IP_ADDRESS;
@@ -18,27 +16,13 @@ function RoomsScreen({ navigation, route }) {
     const { projectId } = route.params;
     const [projectImage, setProjectImage] = useState(null);
 
-    const rooms = [
-        { type: "Salle de bain" },
-        { type: "Cuisine" },
-        { type: "Salon" },
-        { type: "Chambre" },
-        { type: "Chambre" },
-        { type: "Grenier/Combles" },
-        { type: "Garage" },
-        { type: "Cave" },
-        { type: "Bureau" },
-        { type: "Grenier/Combles" },
-        { type: "Buanderie" },
-        { type: "Salle à manger" },
-        { type: "Jardin" },
-    ];
-
     useFocusEffect(
         useCallback(() => {
             console.log("test");
         }, [])
     );
+
+   
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -50,7 +34,6 @@ function RoomsScreen({ navigation, route }) {
                             <Text>Ajouter une pièce</Text>
                         </TouchableOpacity>
                     </View>
-                    <RoomsDisplay rooms={rooms} /> 
                 </View>
             </View>
             <View style={styles.fondVert}>
@@ -115,24 +98,5 @@ const createStyles = (colors) => StyleSheet.create({
     },
     recapTitle: {
 
-    },
-    imageContainer: {
-        position: 'absolute',
-        top: 50,
-        width: 80,
-        height: 80,
-        borderWidth: 1,
-        borderColor: colors.lightGreen,
-        justifyContent: 'center',
-        alignItems: 'center',
-        left: '50%',
-        marginLeft: -(80 / 2), // Centrer horizontalement
-        borderRadius: 40, // La moitié de la dimension pour rendre le conteneur circulaire
-        zIndex: 1,
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
     },
 });
