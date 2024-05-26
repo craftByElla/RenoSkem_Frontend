@@ -6,6 +6,7 @@ import { useTheme, useFocusEffect } from '@react-navigation/native';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import Toast from 'react-native-toast-message';
 import RoomsDisplay from '../../components/cards/RoomsDisplay';
+import AddRoomModal from '../../components/modal/AddRoomModal';
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -16,29 +17,84 @@ function RoomsScreen({ navigation, route }) {
     const styles = createStyles(colors);
     const dispatch = useDispatch();
     const { projectId } = route.params;
-    const [projectImage, setProjectImage] = useState(null);
+    const [rooms, setRooms] = useState([]);
+    const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
 
-    const rooms = [
-        { type: "Salle de bain" },
-        { type: "Cuisine" },
-        { type: "Salon" },
-        { type: "Chambre" },
-        { type: "Chambre" },
-        { type: "Grenier/Combles" },
-        { type: "Garage" },
-        { type: "Cave" },
-        { type: "Bureau" },
-        { type: "Grenier/Combles" },
-        { type: "Buanderie" },
-        { type: "Salle à manger" },
-        { type: "Jardin" },
-    ];
 
-    useFocusEffect(
-        useCallback(() => {
-            console.log("test");
-        }, [])
-    );
+    // Fetch rooms by project
+    useEffect(() => {
+        const fetchRooms = async () => {
+            try {
+                const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
+                // console.log('Fetching rooms data from URL:', url); // Ligne de débogage
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // console.log('Rooms data:', data); // Ligne de débogage
+                    setRooms(data.rooms);
+                } else {
+                    // console.error('Error response from server:', data); // Ligne de débogage
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: data.message || 'Une erreur est survenue lors de la récupération des pièces'
+                    });
+                }
+            } catch (error) {
+                // console.error('Error fetching rooms:', error); // Ligne de débogage
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: 'Une erreur est survenue lors de la récupération des pièces'
+                });
+            }
+        };
+
+        fetchRooms();
+    }, [projectId]);
+
+    const toggleAddRoomModal = () => {
+        setAddRoomModalVisible(!isAddRoomModalVisible);
+    };
+
+    const handleSaveRooms = async (roomCounts) => {
+        // console.log('Saving rooms:', roomCounts); // Ligne de débogage
+        try {
+            const response = await fetch(`${ipString}/rooms/updateRooms`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ projectId, rooms: roomCounts }),
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                // console.log('Updated rooms data:', data); // Ligne de débogage
+                setRooms(data.rooms);
+                Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: 'Les pièces ont été mises à jour avec succès'
+                });
+            } else {
+                // console.error('Error response from server:', data); // Ligne de débogage
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la mise à jour des pièces'
+                });
+            }
+        } catch (error) {
+            // console.error('Error updating rooms:', error); // Ligne de débogage
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la mise à jour des pièces'
+            });
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -46,23 +102,35 @@ function RoomsScreen({ navigation, route }) {
                 <View style={styles.biggerContainer}>
                     <View style={styles.titleContainer}>
                         <ScreenTitle style={styles.screenTitle} text="Périmètre" />
-                        <TouchableOpacity style={styles.addBtn} onPress={() => console.log("click sur ajouter une pièce")}>
+                        <TouchableOpacity style={styles.addBtn} onPress={toggleAddRoomModal}>
                             <Text>Ajouter une pièce</Text>
                         </TouchableOpacity>
                     </View>
-                    <RoomsDisplay rooms={rooms} /> 
+                    {rooms.length > 0 ? (
+                        <RoomsDisplay rooms={rooms} />
+                    ) : (
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.tentIcon}>🏕️</Text>
+                        </View>
+                    )}
                 </View>
             </View>
-            <View style={styles.fondVert}>
-                <View style={styles.recapContainer}>
-                    <ScreenTitle style={styles.recapTitle} text="Récapitulatif" />
-                </View>
-            </View>
-            {projectImage && (
-                <View style={styles.imageContainer}>
-                    <Image source={{ uri: projectImage }} style={styles.image} />
+            {rooms.length > 0 && (
+                <View style={styles.fondVert}>
+                    <View style={styles.recapContainer}>
+                        <ScreenTitle style={styles.recapTitle} text="Récapitulatif" />
+                    </View>
                 </View>
             )}
+            <AddRoomModal
+                isShow={isAddRoomModalVisible}
+                toggleModal={toggleAddRoomModal}
+                onSave={handleSaveRooms}
+                initialRoomCounts={rooms.reduce((acc, room) => {
+                    acc[room.type] = (acc[room.type] || 0) + 1;
+                    return acc;
+                }, {})}
+            />
         </SafeAreaView>
     );
 }
@@ -135,4 +203,13 @@ const createStyles = (colors) => StyleSheet.create({
         height: '100%',
         resizeMode: 'contain',
     },
+    emptyContainer: {
+        marginTop:100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    tentIcon: {
+        fontSize: 150, 
+    }
+    
 });

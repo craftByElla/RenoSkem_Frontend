@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
+import { View, Image, StyleSheet, Text, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import RoomsScreen from '../../screens/createProject/RoomsScreen';
@@ -16,22 +16,25 @@ const Tab = createMaterialTopTabNavigator();
 const ipString = process.env.IP_ADDRESS;
 
 export default function CreateProjectTabs({ navigation, route }) {
-    const { projectId } = route.params;
-    const [projectImage, setProjectImage] = useState(null);
+    const { projectId } = route.params; // Récupérer projectId des paramètres de la route
+    const [projectImage, setProjectImage] = useState(null); // État pour l'image du projet
+    const [projectName, setProjectName] = useState(null); // État pour le nom du projet
 
+    // Utiliser useEffect pour récupérer les données du projet lorsque projectId change
     useEffect(() => {
         const fetchProject = async () => {
             try {
                 const url = `${ipString}/projects/getProject/${projectId}`;
-                console.log('Fetching project data from URL:', url); // Debugging line
+                // console.log('Fetching project data from URL:', url); // Ligne de débogage
                 const response = await fetch(url);
                 const data = await response.json();
 
                 if (response.ok) {
-                    console.log('Project data:', data); // Debugging line
-                    setProjectImage(data.project.picture);
+                    // console.log('Project data:', data); // Ligne de débogage
+                    setProjectImage(data.project.picture); // Mettre à jour l'état avec l'image du projet
+                    setProjectName(data.project.name); // Mettre à jour l'état avec le nom du projet
                 } else {
-                    console.error('Error response from server:', data); // Debugging line
+                    console.error('Error response from server:', data); // Ligne de débogage
                     Toast.show({
                         type: 'error',
                         text1: 'Erreur',
@@ -39,7 +42,7 @@ export default function CreateProjectTabs({ navigation, route }) {
                     });
                 }
             } catch (error) {
-                console.error('Error fetching project:', error); // Debugging line
+                // console.error('Error fetching project:', error); // Ligne de débogage
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
@@ -48,7 +51,7 @@ export default function CreateProjectTabs({ navigation, route }) {
             }
         };
 
-        fetchProject();
+        fetchProject(); // Appeler la fonction pour récupérer les données du projet
     }, [projectId]);
 
     return (
@@ -59,13 +62,17 @@ export default function CreateProjectTabs({ navigation, route }) {
                     onPress={() => navigation.navigate('TabNavigator', { screen: 'Projets', params: { screen: 'ProjectsScreen' } })}
                     iconName="long-arrow-left"
                 />
-                {!projectImage && <LogoTransparent />}
-            </View>
-            {projectImage && (
-                <View style={styles.imageContainer}>
-                    <Image source={{ uri: projectImage }} style={styles.image} />
+                <View style={styles.projectInfoContainer}>
+                    {projectImage ? (
+                        <Image source={{ uri: projectImage }} style={styles.image} />
+                    ) : (
+                        <LogoTransparent />
+                    )}
+                    {projectName && (
+                        <Text style={styles.projectName}>{projectName}</Text>
+                    )}
                 </View>
-            )}
+            </View>
             <Tab.Navigator 
                 screenOptions={{ 
                     headerShown: false, 
@@ -110,19 +117,22 @@ const styles = StyleSheet.create({
         backgroundColor: MyLightTheme.colors.background,
     },
     header: {
-        display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 10,
         height: 50,
         position: 'relative',
+        justifyContent: 'center', // Centrer le contenu horizontalement
     },
     iconButtonLeft: {
         position: 'absolute', 
         left: 20, 
         top: '50%', 
         marginTop: -25, 
+    },
+    projectInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     tabBarStyle: {
         shadowOffset: { width: 0, height: 0 },
@@ -137,24 +147,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(231, 111, 81, 1)',
         height: 2,
     },
-    
-    imageContainer: {
-        position: 'absolute',
-        top: 50,
-        width: 60, // diamètre
-        height: 60, // cette valeur doit être égale à la largeur pour obtenir un cercle
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
         borderWidth: 1,
         borderColor: MyLightTheme.colors.lightGreen,
-        justifyContent: 'center',
-        alignItems: 'center',
-        left: '50%',
-        marginLeft: -(60 / 2), // Centrer horizontalement
-        borderRadius: 30, // La moitié de la dimension pour rendre le conteneur circulaire
-        zIndex: 1,
+        marginRight: 10,
     },
-    image: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
+    projectName: {
+        alignSelf: 'center',
     },
 });

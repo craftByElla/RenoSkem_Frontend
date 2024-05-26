@@ -6,18 +6,18 @@ import { MyLightTheme } from '../../components/Theme'; // Importation du thème 
 // Composant RoomIcon pour afficher les icônes des pièces
 const RoomIcon = ({ type }) => {
     const icons = {
-        "Salle de bain": "🚿",
-        "Cuisine": "🍳",
-        "Salon": "🛋️",
-        "Chambre": "🛏️",
-        "Grenier/Combles": "🕸️",
-        "Garage": "🚗",
-        "Cave": "🍷",
-        "Bureau": "📚",
         "Balcon": "🌇",
         "Buanderie": "🧺",
-        "Salle à manger": "🍽️",
+        "Bureau": "👨‍💻",
+        "Cave": "🍷",
+        "Chambre": "🛏️",
+        "Cuisine": "🍳",
+        "Entrée": "🚪",
+        "Garage": "🚗",
+        "Grenier/Combles": "🕸️",
         "Jardin": "🌳",
+        "Salle à manger": "🍽️",
+        "Salle de bain": "🚿"
     };
 
     return (
@@ -67,7 +67,12 @@ const RoomsDisplay = ({ rooms }) => {
 
     sortedRooms.forEach(room => {
         if (room.type === "Grenier/Combles") return; // Ignorer le grenier
-        
+
+        // Initialiser la ligne si elle n'existe pas encore
+        if (!grid[rowIndex]) {
+            grid[rowIndex] = [];
+        }
+
          //Si colIndex atteint 5 (indiquant la sixième colonne)
          //cela signifie que la ligne est complète : 
          //Il faut donc réinitialiser colIndex à 0 pour recommencer à la première colonne & Décrémenter rowIndex pour passer à la ligne précédente.
@@ -75,6 +80,11 @@ const RoomsDisplay = ({ rooms }) => {
         if (colIndex === 5) {
             colIndex = 0; // Réinitialiser l'index de colonne à la première colonne
             rowIndex--; // Décrémenter l'index de ligne pour passer à la ligne précédente
+
+            // Initialiser la ligne si elle n'existe pas encore
+            if (!grid[rowIndex]) {
+                grid[rowIndex] = [];
+            }
         }
     
         grid[rowIndex][colIndex] = room; // Ajouter la pièce à la position actuelle dans la grille
