@@ -40,11 +40,11 @@ function NewProjectScreen({ navigation }) {
     // Fonction pour gérer le clic sur le bouton "Enregistrer"
     const handleNext = () => {
         // console.log("handleNext - comment:", comment);
-        if (!name || !comment) {
+        if (!name) {
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
-                text2: 'Les champs Nom du projet et Commentaire sont obligatoires'
+                text2: 'Le nom du projet est obligatoire'
             });
             return;
         }
@@ -87,7 +87,12 @@ function NewProjectScreen({ navigation }) {
                         text1: 'Succès',
                         text2: 'Projet créé avec succès'
                     });
-                    navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } });
+                    // Récupérez l'ID du projet nouvellement créé
+                    const projectId = data.project._id;
+                    
+                    // Naviguez vers la page projet avec l'ID
+                    navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { projectId, screen: 'RoomsScreen' } });
+                    // navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } });
                 } else {
                     Toast.show({
                         type: 'error',
