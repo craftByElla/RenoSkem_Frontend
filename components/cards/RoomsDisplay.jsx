@@ -139,7 +139,7 @@ const RoomsDisplay = ({ rooms }) => {
                         <TouchableOpacity 
                             key={colIndex} 
                             style={styles.room} 
-                            onPress={() => console.log(`Clicked on ${room.type}`)}
+                            onPress={() => onRoomPress(room._id)} // Passer l'ID de la pièce à la fonction de rappel}
                             onLongPress={() => handleLongPress(room.type)} 
                             onPressOut={handlePressOut}
                         >

@@ -7,6 +7,7 @@ import ScreenTitle from '../../components/text/ScreenTitle';
 import Toast from 'react-native-toast-message';
 import RoomsDisplay from '../../components/cards/RoomsDisplay';
 import AddRoomModal from '../../components/modal/AddRoomModal';
+import RoomDetailsModal from '../../components/modal/RoomDetailsModal';
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -20,6 +21,9 @@ function RoomsScreen({ navigation, route }) {
     const [rooms, setRooms] = useState([]);
     const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
 
+    //Etat pour gérer la visibilité de la modale et l'ID de la pièce actuellement sélectionnée.
+    const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false);
+    const [selectedRoomId, setSelectedRoomId] = useState(null);
 
     // Fetch rooms by project
     useEffect(() => {
@@ -96,6 +100,19 @@ function RoomsScreen({ navigation, route }) {
         }
     };
 
+    //fonction au composant RoomsDisplay pour qu'il puisse ouvrir la modale et transmettre l'ID de la pièce.
+    const handleRoomPress = (roomId) => {
+        setSelectedRoomId(roomId);
+        setRoomDetailsModalVisible(true);
+    };
+
+    const handleSaveRoomDetails = (name, surface, roomId) => {
+        // Logique de sauvegarde des détails de la pièce
+        console.log('Saving room details:', { name, surface, roomId });
+        setRoomDetailsModalVisible(false);
+    };
+
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.main}>
@@ -107,7 +124,7 @@ function RoomsScreen({ navigation, route }) {
                         </TouchableOpacity>
                     </View>
                     {rooms.length > 0 ? (
-                        <RoomsDisplay rooms={rooms} />
+                        <RoomsDisplay rooms={rooms} onRoomPress={handleRoomPress} />
                     ) : (
                         <View style={styles.emptyContainer}>
                             <Text style={styles.tentIcon}>🏕️</Text>
@@ -131,9 +148,17 @@ function RoomsScreen({ navigation, route }) {
                     return acc;
                 }, {})}
             />
+            <RoomDetailsModal
+                isShow={isRoomDetailsModalVisible}
+                toggleModal={() => setRoomDetailsModalVisible(false)}
+                onSave={handleSaveRoomDetails}
+                roomId={selectedRoomId}
+            />
         </SafeAreaView>
     );
 }
+
+
 
 export default RoomsScreen;
 
