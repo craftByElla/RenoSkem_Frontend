@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,9 +8,7 @@ import Hammers from '../../components/buttons/Hammers';
 import FilledButton from '../../components/buttons/FilledButton';
 import CommentModal from '../../components/modal/CommentModal';
 import PosteItem from '../../components/buttons/PosteItem';
-import { MyLightTheme } from '../Theme';
 
-// Liste des postes de travaux
 const postesTravaux = [
     "Chauffage",
     "Cloisonnement/Plâtrage",
@@ -33,23 +31,39 @@ const postesTravaux = [
     "Ventilation"
 ];
 
-const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
+const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) => {
     const { colors } = useTheme();
     const [name, setName] = useState('');
     const [surface, setSurface] = useState('');
     const [selectedPostes, setSelectedPostes] = useState([]);
-    const [fields, setFields] = useState(postesTravaux.reduce((acc, poste) => {
-        acc[poste] = null;
-        return acc;
-    }, {}));
+    const [fields, setFields] = useState({});
     const [comment, setComment] = useState('');
     const [isCommentModalVisible, setCommentModalVisible] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
 
+    useEffect(() => {
+        if (roomDetails) {
+            setName(roomDetails.name || '');
+            setSurface(roomDetails.surface !== null ? String(roomDetails.surface) : ''); 
+            setComment(roomDetails.comment || '');
+            setSelectedPostes(roomDetails.items ? roomDetails.items.map(item => item.field) : []);
+            setFields(roomDetails.items ? roomDetails.items.reduce((acc, item) => {
+                acc[item.field] = item.difficulty;
+                return acc;
+            }, {}) : {});
+        }
+    }, [roomDetails]);
+
     const handleSave = () => {
-        onSave(name, surface, roomId);
+        console.log('handleSave called with:', { name, surface, selectedPostes, comment });
+        const items = selectedPostes.map(poste => ({
+            field: poste,
+            difficulty: fields[poste],
+        }));
+        onSave(name, surface, items, comment, roomId);
         toggleModal();
     };
+    
 
     const handleAddPoste = (poste) => {
         if (poste && !selectedPostes.includes(poste)) {
@@ -97,7 +111,7 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
                             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                                 <View style={styles.header}>
                                     <Text style={styles.modalTitle}>Détails de la pièce</Text>
-                                    <TouchableOpacity onPress={toggleModal}>
+                                    <TouchableOpacity onPress={() => { handleSave(); toggleModal(); }}>
                                         <Entypo name='cross' size={40} color={colors.deepGrey} />
                                     </TouchableOpacity>
                                 </View>
@@ -213,8 +227,10 @@ RoomDetailsModal.propTypes = {
     toggleModal: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     roomId: PropTypes.string.isRequired,
+    roomDetails: PropTypes.object.isRequired,
 };
 
+// Définir les styles ici
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
@@ -322,7 +338,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         marginBottom: 10,
-        backgroundColor: '#f1f1f1', // même style de fond que le commentaire
+        backgroundColor: '#f1f1f1',
         padding: 10,
         borderRadius: 8,
     },

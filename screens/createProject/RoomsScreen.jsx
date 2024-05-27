@@ -7,7 +7,6 @@ import ScreenTitle from '../../components/text/ScreenTitle';
 import Toast from 'react-native-toast-message';
 import RoomsDisplay from '../../components/cards/RoomsDisplay';
 import AddRoomModal from '../../components/modal/AddRoomModal';
-import RoomDetailsModal from '../../components/modal/RoomDetailsModal';
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -18,27 +17,57 @@ function RoomsScreen({ navigation, route }) {
     const styles = createStyles(colors);
     const dispatch = useDispatch();
     const { projectId } = route.params;
+    const [projectImage, setProjectImage] = useState(null);
     const [rooms, setRooms] = useState([]);
     const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
 
-    // Etat pour gérer la visibilité de la modale et l'ID de la pièce actuellement sélectionnée.
-    const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false);
-    const [selectedRoomId, setSelectedRoomId] = useState(null);
+    // Fetch project image
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                const url = `${ipString}/projects/getProject/${projectId}`;
+                console.log('Fetching project data from URL:', url); // Ligne de débogage
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('Project data:', data); // Ligne de débogage
+                    setProjectImage(data.project.picture);
+                } else {
+                    console.error('Error response from server:', data); // Ligne de débogage
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: data.message || 'Une erreur est survenue lors de la récupération du projet'
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching project:', error); // Ligne de débogage
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: 'Une erreur est survenue lors de la récupération du projet'
+                });
+            }
+        };
+
+        fetchProject();
+    }, [projectId]);
 
     // Fetch rooms by project
     useEffect(() => {
         const fetchRooms = async () => {
             try {
                 const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
-                // console.log('Fetching rooms data from URL:', url); // Ligne de débogage
+                console.log('Fetching rooms data from URL:', url); // Ligne de débogage
                 const response = await fetch(url);
                 const data = await response.json();
 
                 if (response.ok) {
-                    // console.log('Rooms data:', data); // Ligne de débogage
+                    console.log('Rooms data:', data); // Ligne de débogage
                     setRooms(data.rooms);
                 } else {
-                    // console.error('Error response from server:', data); // Ligne de débogage
+                    console.error('Error response from server:', data); // Ligne de débogage
                     Toast.show({
                         type: 'error',
                         text1: 'Erreur',
@@ -46,7 +75,7 @@ function RoomsScreen({ navigation, route }) {
                     });
                 }
             } catch (error) {
-                // console.error('Error fetching rooms:', error); // Ligne de débogage
+                console.error('Error fetching rooms:', error); // Ligne de débogage
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
@@ -63,7 +92,7 @@ function RoomsScreen({ navigation, route }) {
     };
 
     const handleSaveRooms = async (roomCounts) => {
-        // console.log('Saving rooms:', roomCounts); // Ligne de débogage
+        console.log('Saving rooms:', roomCounts); // Ligne de débogage
         try {
             const response = await fetch(`${ipString}/rooms/updateRooms`, {
                 method: 'POST',
@@ -75,7 +104,7 @@ function RoomsScreen({ navigation, route }) {
             const data = await response.json();
 
             if (response.ok) {
-                // console.log('Updated rooms data:', data); // Ligne de débogage
+                console.log('Updated rooms data:', data); // Ligne de débogage
                 setRooms(data.rooms);
                 Toast.show({
                     type: 'success',
@@ -83,7 +112,7 @@ function RoomsScreen({ navigation, route }) {
                     text2: 'Les pièces ont été mises à jour avec succès'
                 });
             } else {
-                // console.error('Error response from server:', data); // Ligne de débogage
+                console.error('Error response from server:', data); // Ligne de débogage
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
@@ -91,25 +120,13 @@ function RoomsScreen({ navigation, route }) {
                 });
             }
         } catch (error) {
-            // console.error('Error updating rooms:', error); // Ligne de débogage
+            console.error('Error updating rooms:', error); // Ligne de débogage
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
                 text2: 'Une erreur est survenue lors de la mise à jour des pièces'
             });
         }
-    };
-
-    // Fonction au composant RoomsDisplay pour qu'il puisse ouvrir la modale et transmettre l'ID de la pièce.
-    const handleRoomPress = (roomId) => {
-        setSelectedRoomId(roomId);
-        setRoomDetailsModalVisible(true);
-    };
-
-    const handleSaveRoomDetails = (name, surface, roomId) => {
-        // Logique de sauvegarde des détails de la pièce
-        console.log('Saving room details:', { name, surface, roomId });
-        setRoomDetailsModalVisible(false);
     };
 
     return (
@@ -123,7 +140,7 @@ function RoomsScreen({ navigation, route }) {
                         </TouchableOpacity>
                     </View>
                     {rooms.length > 0 ? (
-                        <RoomsDisplay rooms={rooms} onRoomPress={handleRoomPress} />
+                        <RoomsDisplay rooms={rooms} />
                     ) : (
                         <View style={styles.emptyContainer}>
                             <Text style={styles.tentIcon}>🏕️</Text>
@@ -147,14 +164,6 @@ function RoomsScreen({ navigation, route }) {
                     return acc;
                 }, {})}
             />
-            {selectedRoomId && (
-                <RoomDetailsModal
-                    isShow={isRoomDetailsModalVisible}
-                    toggleModal={() => setRoomDetailsModalVisible(false)}
-                    onSave={handleSaveRoomDetails}
-                    roomId={selectedRoomId}
-                />
-            )}
         </SafeAreaView>
     );
 }
@@ -192,6 +201,14 @@ const createStyles = (colors) => StyleSheet.create({
         height: 25,
         width: '40%', // Utiliser un pourcentage pour une meilleure adaptabilité
     },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    tentIcon: {
+        fontSize: 100,
+    },
     fondVert: {
         display: 'flex',
         height: '100%',
@@ -227,12 +244,4 @@ const createStyles = (colors) => StyleSheet.create({
         height: '100%',
         resizeMode: 'contain',
     },
-    emptyContainer: {
-        marginTop: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    tentIcon: {
-        fontSize: 150,
-    }
 });
