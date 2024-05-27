@@ -1,7 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
-import {StyleSheet,Text, View, Image,TouchableOpacity,} from "react-native";
-
 function AvatarCard(props) {
   return (
     <View style={styles.container}>
