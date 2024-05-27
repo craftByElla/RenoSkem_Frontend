@@ -287,6 +287,8 @@ const createStyles = (colors) => StyleSheet.create({
         width: '80%',
         flexDirection: 'row',
         alignItems: 'center',
+        flexWrap: 'wrap', // Permet de réorganiser les éléments si nécessaire
+        justifyContent: 'space-between', // Ajout pour séparer les éléments
     },
     nouveauBtn: {
         justifyContent: 'center',

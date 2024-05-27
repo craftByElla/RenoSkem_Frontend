@@ -76,28 +76,28 @@ const ProjectCard = ({ imageSrc, title, archived, pinned, toggleArchived, toggle
                     <PlainButton 
                         text='1 - Périmètre' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'RoomsScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { projectId }))}
                     />
                 }
                 button2={
                     <PlainButton 
                         text='2 - Artisans' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'ArtisanScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { projectId }))}
                     />
                 }
                 button3={
                     <PlainButton 
                         text='3 - DYI ou PRO' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'DIYOrProScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { projectId }))}
                     />
                 }
                 button4={
                     <PlainButton 
                         text='4 - Planification' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('ProjectStack', { screen: 'PlanningScreen' }))}
+                        onPress={() => handleButtonPress(setIsShowModal1, isShowModal1, () => navigation.navigate('CreateProjectTabs', { projectId }))}
                     />
                 }
             />
