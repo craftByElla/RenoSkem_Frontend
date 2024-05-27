@@ -19,8 +19,7 @@ export default function NewArtisanScreen({ navigation }) {
   const [phoneNumber, setphoneNumber] = useState("");
 
 const createArtisan =() => {
-
-  useEffect(() => {                                   
+                                  
     fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -33,7 +32,6 @@ const createArtisan =() => {
       .then(response => response.json())
       .then ((response) => navigation.navigate("TeamScreen"))
       .catch((error) => console.error("Error:", error));
-  }, []);
 
 }
 
@@ -95,7 +93,7 @@ const createArtisan =() => {
               text="Enregistrer"
               background={colors.deepGreen}
               full={true}
-              onPress={() => createArtisan()}
+              onPress={() =>  createArtisan()}
             />
           </TouchableOpacity>
       </View>
@@ -110,7 +108,7 @@ const styles = StyleSheet.create({
      },
 
     emailContainer:{
-        marginLeft:-120,
+        marginRight:120,
     },
 
     jobContainer:{

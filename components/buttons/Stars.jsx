@@ -39,15 +39,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end', // Aligner les étoiles à droite
     alignItems: 'center',
     padding: 10,
-    marginRight:25,
+    marginLeft:23,
   },
   starContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end', // Aligner les étoiles à droite
     alignItems: 'center',
+    
   },
   star: {
     marginHorizontal: 5,
+    
   },
 });
 

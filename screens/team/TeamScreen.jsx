@@ -11,10 +11,11 @@ import FilledButton from "../../components/buttons/FilledButton";
 import PlainButton from "../../components/buttons/PlainButton";
 import { useState, useEffect } from "react";
 import { useTheme } from "@react-navigation/native";
+import { useSelector } from 'react-redux';
 
 const logo = require("../../assets/splash.png");
 const ipString = process.env.IP_KEY;
-const token = "4vbTO4WCd7GmAhEaQ7o0gjyv6KhZRctl";
+
 
 export default function TeamScreen({ navigation }) {
   const { colors } = useTheme();
@@ -27,7 +28,7 @@ export default function TeamScreen({ navigation }) {
   ];
 
   const avatars = avatarsData.map((data, i) => {
-    return <AvatarCard key={i} name={data.name} image={data.image} />;
+    return <AvatarCard key={i} name={data.name} image={data.image} onPress={() => navigation.navigate("TeammateSkillsScreen")} />;
   });
 
   const [isShowModal, setIsShowModal] = useState(false);
@@ -39,6 +40,8 @@ export default function TeamScreen({ navigation }) {
   const toggleModal_2 = () => {
     setIsShowModal_2(!isShowModal_2);
   };
+
+  const token = useSelector((state) => state.user.userInfos.token)
 
   useEffect(() => {
     fetch(`${ipString}/users/getUserTeammates/${token}`) //fetch pour recuperer tout les teammates de l'utilisateur
@@ -77,7 +80,7 @@ export default function TeamScreen({ navigation }) {
           />
         }
         button2={
-          <View style={{ width: "90%" }}>
+          <View style={styles.artisanButton}>
             <PlainButton
               text="Artisans"
               background={colors.deepGreen}
@@ -99,7 +102,7 @@ export default function TeamScreen({ navigation }) {
           />
         }
         button2={
-          <View style={{ width: "90%" }}>
+          <View style={styles.artisanButton}>
             <PlainButton
               text="Artisan"
               onPress={() => navigation.navigate("NewArtisanScreen")}
@@ -114,6 +117,12 @@ export default function TeamScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+
+  artisanButton: {
+    width:"90%",
+    paddingTop:5,
+  },
+
   Teammates: {
     position: "relative",
     width: 375,

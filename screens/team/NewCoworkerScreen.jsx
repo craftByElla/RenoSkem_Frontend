@@ -5,6 +5,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  Text,
   ScrollView,
 } from "react-native";
 import IconButton from "../../components/buttons/IconButton";
@@ -16,6 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Stars from "../../components/buttons/Stars";
 import TextWithRadioButton from "../../components/buttons/TextWithRadioButtons";
 import { useState } from "react";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const postesTravaux = [
   "Chauffage",
@@ -53,11 +55,6 @@ export default function TeammateSkillsScreen({ navigation }) {
         <View>
           <Image source={picture} style={styles.picture} />
         </View>
-        <View>
-          <Text style={styles.title}>Créer un nouvel équipier</Text>
-        </View>
-        <TextInput placeholder="Prénom" style={styles.inputName} />
-        <Image source={picture} style={styles.picture} />
       </View>
       <View style={styles.h1}>
         <PageTitle text="Créer un nouvel équipier" />
@@ -93,6 +90,22 @@ export default function TeammateSkillsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+
+  scrollableSection:{
+    height:"50%",
+  },
+
+  arrowLeft: {
+     marginTop:50,
+     marginLeft:20,
+
+  },
+
+  searchContainer: {
+    marginLeft:50,
+
+  },
+
   input: {
     marginRight: 200,
     marginTop: 20,
@@ -100,6 +113,7 @@ const styles = StyleSheet.create({
   },
 
   border: {
+    marginLeft:50,
     borderBottomWidth: 1,
     borderBottomColor: "#D5CDD2",
     padding: 5,
@@ -113,17 +127,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   picture: {
-    width: 68,
-    height: 64,
+    width: 70,
+    height: 70,
     borderRadius: 50,
-    marginLeft: 10,
+    marginLeft: 160,
   },
 
   h1: {
     flexDirection: "row",
     justifyContent: "center",
-    marginLeft: 30,
-    marginTop: 50,
+    marginTop: 20,
   },
 
   iconArrow: {
@@ -132,22 +145,17 @@ const styles = StyleSheet.create({
     top: "50%",
     marginTop: -25,
   },
-  iconTimecircle: {
-    position: "absolute",
-    right: 20,
-    top: "50%",
-    marginTop: -25,
-  },
-
+ 
   header: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
     height: 50,
-    position: "relative",
   },
+
   enregistrer: {
     width: "100%",
     alignItems: "center",
+
   },
 });

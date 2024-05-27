@@ -33,7 +33,8 @@ const createStyles = (background) => StyleSheet.create({
         paddingHorizontal: 24,
         justifyContent: 'center',
         alignItems: 'center',
-        alignSelf: 'stretch',      
+        alignSelf: 'stretch', 
+        marginLeft:15,     
     },
     text: {
         color: '#FFF', 

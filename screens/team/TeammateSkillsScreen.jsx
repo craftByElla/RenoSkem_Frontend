@@ -39,7 +39,8 @@ const postesTravaux = [
 export default function TeammateSkillsScreen({ navigation }) {
   const { colors } = useTheme();
 
-  useEffect(() => {
+  const skillsTeammate =
+    useEffect(() => {
     fetch(`${ipString}/skills/editSkills/${teammate.skills}`, {     // fetch pour modifier les compétences d'un teammates
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -65,7 +66,6 @@ export default function TeammateSkillsScreen({ navigation }) {
         }),
       })
         .then((response) => response.json())
-        .then((data) => console.log(data))
         .catch((error) => console.error("Error:", error));
     }, []); 
 
