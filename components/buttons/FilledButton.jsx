@@ -7,7 +7,7 @@ const PlainButton = ({ onPress, text, background, full }) => {
     let size;                                                    // Détermination de la taille du bouton en fonction de la prop "full"
 full ? size = '90%' : size = '50%'                 
   return (
-    <View style={{width: size}}>                                 // Définition de la largeur du bouton en fonction de la variable "size"
+    <View style={{width: size}}>                                 {/* Définition de la largeur du bouton en fonction de la variable "size"*/}
         <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>

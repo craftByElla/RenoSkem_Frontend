@@ -5,11 +5,11 @@ import ChangeInformationsScreen from '../../screens/home/ChangeInformationsScree
 import { MyLightTheme, MyDarkTheme } from '../Theme';  // Importation des thèmes personnalisés (thème clair et sombre)
 
 export default function HomeStack() {  // Définition du composant HomeStack
-    const Stack = createNativeStackNavigator();  // Création d'un Stack Navigator
+    const Stack = createNativeStackNavigator();  
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>  // Options de navigation par défaut : cache l'en-tête pour tous les écrans
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />   {/* Définition des différentes routes du Stack Navigator */}  {/* Écran d'accueil */}
-            <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} />  {/* Écran de modification des informations */}
+        <Stack.Navigator screenOptions={{ headerShown: false }}>  
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />   
+            <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} /> 
         </Stack.Navigator>
     );
 };

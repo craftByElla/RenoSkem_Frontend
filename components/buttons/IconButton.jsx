@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';         // Importation de PropTypes pour la 
 const IconButton = ({ onPress, style, iconName, color = '#194852' }) => {       // Définition du composant fonctionnel IconButton
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <FontAwesome name={iconName} style={[styles.icon, { color }]} />          // Combine les styles par défaut et ceux passés en prop avec "style"
+      <FontAwesome name={iconName} style={[styles.icon, { color }]} />          {/* Combine les styles par défaut et ceux passés en prop avec "style"*/}
     </TouchableOpacity>
   );
 };

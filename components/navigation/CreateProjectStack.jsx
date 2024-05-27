@@ -9,8 +9,9 @@ import LogoTransparent from '../logos/LogoTransparent';
 
 export default function CreateProjectStack() {  // Définition du composant CreateProjectStack
     const Scroll = createMaterialTopTabNavigator();  // Création d'un Tab Navigator
+    // Wrapper sûr pour le contenu, assure que le contenu ne sera pas coupé par les bords de l'écran 
     return (
-        <SafeAreaView style={{flex:1}}>  {/* Wrapper sûr pour le contenu, assure que le contenu ne sera pas coupé par les bords de l'écran */}
+        <SafeAreaView style={{flex:1}}> 
         <View style={{display: 'flex', alignItems: 'center'}}>
         <LogoTransparent />
         </View>
@@ -23,7 +24,7 @@ export default function CreateProjectStack() {  // Définition du composant Crea
             tabBarIndicatorStyle: { backgroundColor: 'rgba(231, 111, 81, 1)', height: 2 }, // Pour ne pas afficher l'indicateur
             }}
             
-        >   {/* Définition des différentes routes du Tab Navigator */}
+        >   
             <Scroll.Screen options={{ tabBarLabel: '1' }} name="RoomsScreen" component={RoomsScreen} />
             <Scroll.Screen options={{ tabBarLabel: '2' }} name="ArtisanScreen" component={ArtisanScreen} />
             <Scroll.Screen options={{ tabBarLabel: '3' }} name="DIYOrProScreen" component={DIYOrProScreen} />

@@ -10,7 +10,7 @@ import { useTheme } from "@react-navigation/native";
 
 const ipString = process.env.IP_KEY;
 
-export default function NewArtisanScreen({ navigation }) {
+export default function NewArtisanScreen({ navigation }) {    // modifier le nom de la fonction
   const { colors } = useTheme();
 
   const [name, setName] = useState("");

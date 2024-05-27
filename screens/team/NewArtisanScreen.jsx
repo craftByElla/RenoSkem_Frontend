@@ -18,8 +18,9 @@ export default function NewArtisanScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
 
+const createArtisan =() => {
 
-  useEffect(() => {
+  useEffect(() => {                                  // useEffect 
     fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -30,8 +31,11 @@ export default function NewArtisanScreen({ navigation }) {
       }),
     })
       .then(response => response.json())
+      .then ((response) => navigation.navigate("TeamScreen"))
       .catch((error) => console.error("Error:", error));
   }, []);
+
+}
 
   
   return (
@@ -91,7 +95,7 @@ export default function NewArtisanScreen({ navigation }) {
               text="Enregistrer"
               background={colors.deepGreen}
               full={true}
-              onPress={() => navigation.navigate("TeamScreen")}
+              onPress={() => createArtisan()}
             />
           </TouchableOpacity>
       </View>

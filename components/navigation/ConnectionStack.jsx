@@ -10,10 +10,10 @@ import { MyLightTheme, MyDarkTheme } from '../Theme';  // Importation des thème
 
 export default function ConnectionStack() {    // Définition du composant ConnectionStack
     const Stack = createNativeStackNavigator(); // Création d'un Stack Navigator
-    return (                                // Cache l'en-tête pour tous les écrans
-        <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>  Définit l'animation de transition entre les écrans à 'fade'
-            <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />  {/* Définition des différentes routes du Stack Navigator */}
-            <Stack.Screen name="CreateAccount" component={CreateAccount} /> // Nom de la route + composant a afficher
+    return (                                
+        <Stack.Navigator screenOptions={{ headerShown: false, animation: 'fade' }}>
+            <Stack.Screen name="ConnectionScreen" component={ConnectionScreen} />  
+            <Stack.Screen name="CreateAccount" component={CreateAccount} /> 
             <Stack.Screen name="SetSkills" component={SetSkills} />
             <Stack.Screen name="Login_Id" component={Login_Id} />
             <Stack.Screen name="Login_password" component={Login_password} />

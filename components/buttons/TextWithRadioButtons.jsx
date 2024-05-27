@@ -18,7 +18,7 @@ const TextWithRadioButtons = ({ text }) => {
     const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;  // Détermine la couleur de l'icône en fonction de l'état de sélection
 
     return (
-      <TouchableOpacity key={index} onPress={() => handlePress(index)}>  // Utilise l'index comme clé pour l'élément
+      <TouchableOpacity key={index} onPress={() => handlePress(index)}>  {/* Utilise l'index comme clé pour l'élément*/}
         <FontAwesome 
           name={iconName} 
           size={24} 

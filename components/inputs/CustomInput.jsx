@@ -30,7 +30,8 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         style={[styles.input, search && styles.inputWithSearch]}
         placeholder={placeholder}
         placeholderTextColor="#6F797B"
-        secureTextEntry={!isPasswordVisible}  // Cache le texte si 'isPasswordVisible' est faux
+        secureTextEntry={!isPasswordVisible}  
+        //Cache le texte si 'isPasswordVisible' est faux
         onChangeText={handleTextChange}
         value={inputValue}
       />
