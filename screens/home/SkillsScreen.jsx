@@ -19,7 +19,7 @@ function SkillsScreen({ navigation }) {
     const styles = createStyles(colors);
     const route = useRoute();
     const { skillsFromBack } = route.params;
-    console.log('Compétences reçues :', skillsFromBack);
+    // console.log('Compétences reçues :', skillsFromBack);
 
     const [isShowModal, setIsShowModal] = useState(false);
     const toggleModal = () => {
@@ -35,12 +35,12 @@ function SkillsScreen({ navigation }) {
         const token = await AsyncStorage.getItem('userToken')
         // console.log('token', token)
         if (!token) {
-            console.log('token has been deleted')
+            // console.log('token has been deleted')
             const response = await fetch(`${ipString}/users/logout`) 
-            console.log('response', response.status)
+            // console.log('response', response.status)
             // console.log('data', data);
             if (response.status === 200) {
-                console.log('data.status', response.status)
+                // console.log('data.status', response.status)
                 Toast.show({
                     type: 'success',
                     text1: 'Succès',
@@ -48,7 +48,7 @@ function SkillsScreen({ navigation }) {
                 });
                 navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
             }else {
-                console.log('error')
+                // console.log('error')
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
