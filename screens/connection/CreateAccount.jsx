@@ -19,6 +19,7 @@ function CreateAccount({ navigation }) {
     const [password, setPassword] = useState('');
     const [avatar, setAvatar] = useState(null); 
     const [isModalVisible, setModalVisible] = useState(false); 
+    console.log(ipString);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../../screens/home/HomeScreen';
+import HomeScreen from '../../screens/home/HomeScreen'; // Importation des composants d'écran spécifiques à l'écran d'accueil
 import ChangeInformationsScreen from '../../screens/home/ChangeInformationsScreen';
 import SkillsScreen from '../../screens/home/SkillsScreen';
 import ChangeSkillsScreen from '../../screens/home/ChangeSkillsScreen';

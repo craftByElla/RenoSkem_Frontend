@@ -4,17 +4,34 @@ import LogoTransparent from "../../components/logos/LogoTransparent"
 import IconButton from "../../components/buttons/IconButton";
 import PageTitle from "../../components/text/ScreenTitle";
 import FilledButton from "../../components/buttons/FilledButton";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 
-export default function NewArtisanScreen({ navigation }) {
+const ipString = process.env.IP_ADDRESS;
+
+export default function NewArtisanScreen({ navigation }) {    // modifier le nom de la fonction
   const { colors } = useTheme();
 
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
+
+
+  useEffect(() => {
+    fetch(`${ipString}/artisans/editArtisan/${artisan._id}`,{   // fetch pour la modification de la fiche artisan
+        method:'PUT',
+        headers:{'Content-Type':'application.json'},
+        body: JSON.stringify({ email: email,
+                               phone: phoneNumber,
+                               field: job,
+                               company: name,
+                              })
+      })
+      .then (response => response.json)
+      .catch((error) => console.error("Error:", error));
+    }, []);
 
   
   return (
