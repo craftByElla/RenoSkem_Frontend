@@ -8,7 +8,7 @@ import { useState,useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 
-const ipString = process.env.IP_KEY;
+const ipString = process.env.IP_ADDRESS;
 
 export default function NewArtisanScreen({ navigation }) {
   const { colors } = useTheme();
@@ -18,8 +18,8 @@ export default function NewArtisanScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
 
-const createArtisan =() => {
-                                  
+const createArtisan = () => {
+                                 
     fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -33,8 +33,8 @@ const createArtisan =() => {
       .then ((response) => navigation.navigate("TeamScreen"))
       .catch((error) => console.error("Error:", error));
 
-}
-
+};
+ 
   
   return (
     <SafeAreaView style={{ flex: 1 }}>

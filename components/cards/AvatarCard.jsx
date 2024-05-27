@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+  
 
 function AvatarCard(props) {
   return (
@@ -8,7 +9,7 @@ function AvatarCard(props) {
       </View>
       <View>
         <TouchableOpacity onPress={props.onPress}>
-          <Image source={props.image} style={styles.avatarPicture} />
+          <Image source={props.image} style={styles.avatarPicture}/>
         </TouchableOpacity>
       </View>
     </View>

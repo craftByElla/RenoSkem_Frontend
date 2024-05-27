@@ -18,6 +18,7 @@ import Stars from "../../components/buttons/Stars";
 import TextWithRadioButton from "../../components/buttons/TextWithRadioButtons";
 import { useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+const ipString = process.env.IP_ADDRESS;
 
 const postesTravaux = [
   "Chauffage",
@@ -42,9 +43,34 @@ const postesTravaux = [
 ];
 
 export default function TeammateSkillsScreen({ navigation }) {
+
   const { colors } = useTheme();
 
   const [text, setText] = useState("");
+
+  const [skills, setSkills] = useState("");
+
+    // Mise à jour de l'état lorsqu'une compétence est sélectionnée
+    const handleSkillChange = (posteIndex, niveau) => {
+        const poste = postesTravaux[posteIndex];
+        setSkills(prevSkills => ({
+            ...prevSkills,
+            [poste]: niveau
+        }));
+    };
+
+    const createTeammate = () => {                    // fetch pour creer un teammates
+      fetch(`${ipString}/teammates/newTeammate`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({name:text}),
+      })
+      .then (response => response.json())
+      .then ((response) => navigation.navigate("TeamScreen"))
+      .catch((error) => console.error("Error:", error));
+    };
+
+
 
   return (
     <SafeAreaView>
@@ -74,7 +100,11 @@ export default function TeammateSkillsScreen({ navigation }) {
         contentContainerStyle={styles.scrollableContent}
       >
         {postesTravaux.map((poste, index) => (
-          <TextWithRadioButton key={index} text={poste} />
+          <TextWithRadioButton key={index} 
+                               text={poste} 
+                               selectedButton={skills[poste]} 
+                               handlePress={handleSkillChange} 
+                               index={index}/>
         ))}
       </ScrollView>
       <TouchableOpacity style={styles.enregistrer}>
@@ -82,7 +112,7 @@ export default function TeammateSkillsScreen({ navigation }) {
           text="Enregistrer"
           background={colors.deepGreen}
           full={true}
-          onPress={() => navigation.navigate("TeamScreen")}
+          onPress={() => createTeammate()}
         />
       </TouchableOpacity>
     </SafeAreaView>

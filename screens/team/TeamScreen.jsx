@@ -14,7 +14,7 @@ import { useTheme } from "@react-navigation/native";
 import { useSelector } from 'react-redux';
 
 const logo = require("../../assets/splash.png");
-const ipString = process.env.IP_KEY;
+const ipString = process.env.IP_ADDRESS;
 
 
 export default function TeamScreen({ navigation }) {

@@ -8,7 +8,7 @@ import { useState,useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 
-const ipString = process.env.IP_KEY;
+const ipString = process.env.IP_ADDRESS;
 
 export default function NewArtisanScreen({ navigation }) {    // modifier le nom de la fonction
   const { colors } = useTheme();
