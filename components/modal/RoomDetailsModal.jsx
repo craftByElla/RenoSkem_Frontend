@@ -1,19 +1,86 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Modal, View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
+import Hammers from '../../components/buttons/Hammers';
+import FilledButton from '../../components/buttons/FilledButton';
+import CommentModal from '../../components/modal/CommentModal';
+import PosteItem from '../../components/buttons/PosteItem';
 import { MyLightTheme } from '../Theme';
+
+// Liste des postes de travaux
+const postesTravaux = [
+    "Chauffage",
+    "Cloisonnement/Plâtrage",
+    "Démolition",
+    "Électricité",
+    "Étanchéité",
+    "Façade",
+    "Fondations",
+    "Installation cuisine/SDB",
+    "Isolation",
+    "Maçonnerie",
+    "Menuiserie",
+    "Montage de meuble",
+    "Peinture",
+    "Plomberie",
+    "Revêtements muraux",
+    "Revêtements sol",
+    "Revêtements extérieurs",
+    "Toiture",
+    "Ventilation"
+];
 
 const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
     const { colors } = useTheme();
     const [name, setName] = useState('');
     const [surface, setSurface] = useState('');
+    const [selectedPostes, setSelectedPostes] = useState([]);
+    const [fields, setFields] = useState(postesTravaux.reduce((acc, poste) => {
+        acc[poste] = null;
+        return acc;
+    }, {}));
+    const [comment, setComment] = useState('');
+    const [isCommentModalVisible, setCommentModalVisible] = useState(false);
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
 
     const handleSave = () => {
         onSave(name, surface, roomId);
         toggleModal();
+    };
+
+    const handleAddPoste = (poste) => {
+        if (poste && !selectedPostes.includes(poste)) {
+            setSelectedPostes([...selectedPostes, poste]);
+            setFields(prevFields => ({
+                ...prevFields,
+                [poste]: 1
+            }));
+            setDropdownVisible(false);
+        }
+    };
+
+    const handleRemovePoste = (poste) => {
+        setSelectedPostes(selectedPostes.filter(item => item !== poste));
+        setFields(prevFields => {
+            const newFields = { ...prevFields };
+            delete newFields[poste];
+            return newFields;
+        });
+    };
+
+    const handlePress = (index, value) => {
+        const poste = selectedPostes[index];
+        setFields(prevFields => ({
+            ...prevFields,
+            [poste]: value
+        }));
+    };
+
+    const toggleCommentModal = () => {
+        setCommentModalVisible(!isCommentModalVisible);
     };
 
     return (
@@ -24,51 +91,119 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
             onRequestClose={toggleModal}
         >
             <TouchableWithoutFeedback onPress={toggleModal}>
-                <View style={styles.modalContainer}>
+                <View style={styles.modalOverlay}>
                     <TouchableWithoutFeedback>
-                        <View style={[styles.modal, { backgroundColor: colors.modalBackgroundColor }]}>
-                            <View style={styles.textLine}>
-                                <Text style={styles.modalTitle}>Détails de la pièce</Text>
-                                <TouchableOpacity onPress={toggleModal}>
-                                    <Entypo name='cross' size={40} color={colors.deepGrey} />
+                        <View style={[styles.modalContainer, { backgroundColor: colors.modalBackgroundColor }]}>
+                            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                                <View style={styles.header}>
+                                    <Text style={styles.modalTitle}>Détails de la pièce</Text>
+                                    <TouchableOpacity onPress={toggleModal}>
+                                        <Entypo name='cross' size={40} color={colors.deepGrey} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.inputRow}>
+                                    <TouchableOpacity style={styles.iconWrapper}>
+                                        <FontAwesome name="close" size={20} color={colors.orange} />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                        style={[
+                                            styles.input,
+                                            {
+                                                borderColor: name ? colors.lightGreen : colors.grey,
+                                                width: 250,
+                                                marginLeft: 10,
+                                            }
+                                        ]}
+                                        placeholder="Nom de la pièce"
+                                        placeholderTextColor={colors.grey}
+                                        value={name}
+                                        onChangeText={setName}
+                                    />
+                                </View>
+                                <View style={styles.inputRow}>
+                                    <Text style={styles.label}>Surface de la pièce ►</Text>
+                                    <TextInput
+                                        style={[
+                                            styles.input,
+                                            {
+                                                borderColor: surface ? colors.lightGreen : colors.grey,
+                                                width: 120,
+                                                marginLeft: 15,
+                                            }
+                                        ]}
+                                        placeholder="m²"
+                                        placeholderTextColor={colors.grey}
+                                        value={surface}
+                                        onChangeText={setSurface}
+                                        keyboardType="numeric"
+                                    />
+                                </View>
+                                <View >
+                                    <Text style={styles.label}>Définissez les rénovations ▼</Text>
+                                </View>
+                                {selectedPostes.length > 0 && (
+                                    <View style={styles.hammersContainer}>
+                                        <Hammers style={styles.hammers} />
+                                    </View>
+                                )}
+                                <ScrollView style={styles.scrollableSection} contentContainerStyle={styles.scrollableContent}>
+                                    {selectedPostes.map((poste, index) => (
+                                        <PosteItem
+                                            key={index}
+                                            text={poste}
+                                            selectedButton={fields[poste]}
+                                            handlePress={handlePress}
+                                            index={index}
+                                            onRemove={() => handleRemovePoste(poste)}
+                                        />
+                                    ))}
+                                </ScrollView>
+                                <TouchableOpacity style={styles.addButton} onPress={() => setDropdownVisible(!isDropdownVisible)}>
+                                    <Text style={styles.addButtonText}>Ajouter un poste de travail</Text>
                                 </TouchableOpacity>
-                            </View>
-                            <View style={styles.roomDetailContainer}>
-                                <TouchableOpacity style={styles.iconContainer}>
-                                    <FontAwesome name="close" size={20} color={colors.orange} />
-                                </TouchableOpacity>
-                                <TextInput
-                                    style={[
-                                        styles.input,
-                                        { borderColor: name ? colors.lightGreen : colors.grey }
-                                    ]}
-                                    placeholder="Nom de la pièce"
-                                    placeholderTextColor={colors.grey}
-                                    value={name}
-                                    onChangeText={setName}
-                                />
-                            </View>
-                            <View style={styles.roomDetailContainer}>
-                                <Text style={styles.surfaceText}>Surface de la pièce ►</Text>
-                                <TextInput
-                                    style={[
-                                        styles.input,
-                                        { borderColor: surface ? colors.lightGreen : colors.grey }
-                                    ]}
-                                    placeholder="m2"
-                                    placeholderTextColor={colors.grey}
-                                    value={surface}
-                                    onChangeText={setSurface}
-                                    keyboardType="numeric"
-                                />
-                            </View>
-                            <View style={styles.roomDetailContainer}>
-                                <Text style={styles.renovationText}>Définissez les rénovations ▼</Text>
-                            </View>
+                                {isDropdownVisible && (
+                                    <View style={styles.dropdown}>
+                                        <ScrollView>
+                                            {postesTravaux.filter(poste => !selectedPostes.includes(poste)).map((poste, index) => (
+                                                <TouchableOpacity
+                                                    key={index}
+                                                    style={styles.dropdownItem}
+                                                    onPress={() => handleAddPoste(poste)}
+                                                >
+                                                    <Text>{poste}</Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </ScrollView>
+                                    </View>
+                                )}
+                                <View style={styles.commentSection}>
+                                    <Text style={styles.commentLabel}>Commentaire ▼</Text>
+                                    {comment ? (
+                                        <View style={styles.commentBox}>
+                                            <Text style={styles.commentText}>{comment}</Text>
+                                        </View>
+                                    ) : null}
+                                    <FilledButton
+                                        text={comment ? 'Modifier le commentaire' : 'Ajouter un commentaire'}
+                                        background="#194852"
+                                        full={true}
+                                        onPress={toggleCommentModal}
+                                        style={styles.commentButton}
+                                    />
+                                </View>
+                            </ScrollView>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
             </TouchableWithoutFeedback>
+            <CommentModal
+                isShow={isCommentModalVisible}
+                toggleModal={toggleCommentModal}
+                comment={comment}
+                onSave={(newComment) => {
+                    setComment(newComment);
+                }}
+            />
         </Modal>
     );
 };
@@ -81,44 +216,46 @@ RoomDetailsModal.propTypes = {
 };
 
 const styles = StyleSheet.create({
-    modalContainer: {
+    modalOverlay: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        paddingTop: 80,
     },
-    modal: {
+    modalContainer: {
         width: '90%',
         borderRadius: 12,
         padding: 20,
-        alignItems: 'center',
+        maxHeight: '80%',
     },
-    textLine: {
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
+    },
+    header: {
         flexDirection: 'row',
         width: '100%',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: '600',
         color: '#194852',
     },
-    roomDetailContainer: {
+    inputRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
     },
-    iconContainer: {
+    iconWrapper: {
         width: 44,
         height: 44,
         justifyContent: 'center',
         alignItems: 'center',
     },
     input: {
-        width: 222,
         height: 40,
         borderWidth: 1.5,
         borderRadius: 8,
@@ -130,7 +267,7 @@ const styles = StyleSheet.create({
         lineHeight: 19,
         letterSpacing: 0.15,
     },
-    surfaceText: {
+    label: {
         color: '#6F797B',
         fontFamily: 'Inter',
         fontSize: 15,
@@ -139,13 +276,84 @@ const styles = StyleSheet.create({
         letterSpacing: 0.15,
         marginRight: 10,
     },
-    renovationText: {
+    hammersContainer: {
+        alignItems: 'flex-end',
+        marginRight: -35,
+    },
+    scrollableSection: {
+        flexGrow: 1,
+    },
+    scrollableContent: {
+        paddingBottom: 15,
+    },
+    dropdown: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        width: '100%',
+        marginBottom: 15,
+    },
+    dropdownItem: {
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
+    addButton: {
+        backgroundColor: '#194852',
+        paddingVertical: 14,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        marginBottom: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    addButtonText: {
+        color: '#FFF',
+        textAlign: 'center',
+        fontFamily: 'Inter',
+        fontSize: 15,
+        fontWeight: '600',
+        lineHeight: 21,
+        letterSpacing: 0.25,
+    },
+    posteWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 10,
+        backgroundColor: '#f1f1f1', // même style de fond que le commentaire
+        padding: 10,
+        borderRadius: 8,
+    },
+    commentSection: {
+        marginTop: 10,
+    },
+    commentLabel: {
         color: '#6F797B',
         fontFamily: 'Inter',
         fontSize: 15,
         fontWeight: '400',
         lineHeight: 21,
         letterSpacing: 0.15,
+        marginBottom: 5,
+    },
+    commentBox: {
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: '#f1f1f1',
+        borderRadius: 8,
+    },
+    commentText: {
+        fontSize: 16,
+        color: '#333',
+    },
+    commentButton: {
+        width: '100%',
+        borderRadius: 8,
+    },
+    radioButtons: {
+        flexGrow: 1,
     },
 });
 

@@ -21,7 +21,7 @@ function RoomsScreen({ navigation, route }) {
     const [rooms, setRooms] = useState([]);
     const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
 
-    //Etat pour gérer la visibilité de la modale et l'ID de la pièce actuellement sélectionnée.
+    // Etat pour gérer la visibilité de la modale et l'ID de la pièce actuellement sélectionnée.
     const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState(null);
 
@@ -100,7 +100,7 @@ function RoomsScreen({ navigation, route }) {
         }
     };
 
-    //fonction au composant RoomsDisplay pour qu'il puisse ouvrir la modale et transmettre l'ID de la pièce.
+    // Fonction au composant RoomsDisplay pour qu'il puisse ouvrir la modale et transmettre l'ID de la pièce.
     const handleRoomPress = (roomId) => {
         setSelectedRoomId(roomId);
         setRoomDetailsModalVisible(true);
@@ -111,7 +111,6 @@ function RoomsScreen({ navigation, route }) {
         console.log('Saving room details:', { name, surface, roomId });
         setRoomDetailsModalVisible(false);
     };
-
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -148,17 +147,17 @@ function RoomsScreen({ navigation, route }) {
                     return acc;
                 }, {})}
             />
-            <RoomDetailsModal
-                isShow={isRoomDetailsModalVisible}
-                toggleModal={() => setRoomDetailsModalVisible(false)}
-                onSave={handleSaveRoomDetails}
-                roomId={selectedRoomId}
-            />
+            {selectedRoomId && (
+                <RoomDetailsModal
+                    isShow={isRoomDetailsModalVisible}
+                    toggleModal={() => setRoomDetailsModalVisible(false)}
+                    onSave={handleSaveRoomDetails}
+                    roomId={selectedRoomId}
+                />
+            )}
         </SafeAreaView>
     );
 }
-
-
 
 export default RoomsScreen;
 
@@ -229,12 +228,11 @@ const createStyles = (colors) => StyleSheet.create({
         resizeMode: 'contain',
     },
     emptyContainer: {
-        marginTop:100,
+        marginTop: 100,
         justifyContent: 'center',
         alignItems: 'center',
     },
     tentIcon: {
-        fontSize: 150, 
+        fontSize: 150,
     }
-    
 });

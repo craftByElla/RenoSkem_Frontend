@@ -35,7 +35,7 @@ const RoomTooltip = ({ type }) => (
 );
 
 // Composant principal RoomsDisplay pour afficher le plan des pièces
-const RoomsDisplay = ({ rooms }) => {
+const RoomsDisplay = ({ rooms, onRoomPress }) => {
     // État pour gérer la visibilité et le type de l'infobulle
     const [tooltip, setTooltip] = useState({ visible: false, type: '' });
     const [tooltipGrenier, setTooltipGrenier] = useState({ visible: false });
