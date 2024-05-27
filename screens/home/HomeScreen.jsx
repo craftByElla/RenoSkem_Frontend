@@ -1,49 +1,109 @@
-import React, { useState } from 'react'
-import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable} from 'react-native';
-import Project from '../../components/homeProject/Project';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable, Platform,  ScrollView, SafeAreaView as SafeAreaViewIOS } from 'react-native';
+import SmallProjectCard from '../../components/cards/SmallProjectCard';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addUserInfosToStore } from '../../reducers/user';
+import { useDispatch } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
+import BudgetPieChart from '../../components/charts/BudgetPieChart';
+const ipString = process.env.IP_ADDRESS;
+const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 function HomeScreen({ navigation }) {
+    const dispatch = useDispatch();
 
+    // console.log('userInfos', userInfos);
 
-    const projectNames = [
-        'Maison2.0',
-        'Chez Papy', 
-        'Mezzanine',
-    ]
+    const [avatar, setAvatar] = useState(null);
+    const [name, setName] = useState(null);
+    const [projects, setProjects] = useState([]);
+    const [skillsFromBack, setSkillsFromBack] = useState([])
 
-    const projectName = projectNames.map((data, i ) => {
-        return <Project key={i} name={data}/> 
-    })
-    const click = () => {
-        console.log('click')
-    }
+    useFocusEffect(
+        useCallback(() => { //permet d'optimiser les performances. A voir dans la doc pour plus de précision en vrai 
+            (async () => {
+                try {
+                    const token = await AsyncStorage.getItem('userToken');
+                    
+                    const response = await fetch(`${ipString}/users/getUserByToken/${token}`);
+                    // console.log('token', token);
+                    const userData = await response.json();
+                    // console.log(userData);
+                    if(response.status === 401) {
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Erreur',
+                            text2: 'Utilisateur introuvable'
+                        });
+                        // navigation.navigate('ConnectionStack',  { screen: 'ConnectionScreen' });
+                    } else if (response.status === 200) {
+                        // console.log('userDataName', userData.user.name);
+                        const skills = userData.user.skills;
+                        delete skills.__v;
+                        delete skills._id;
+                        dispatch(addUserInfosToStore({
+                            name: userData.user.name,
+                            avatar: userData.user.avatar,
+                            skills: skills,
+                            token: userData.user.token,
+                        }));
+                        setName(userData.user.name);
+                        setAvatar(userData.user.avatar);
+                        setSkillsFromBack(skills)
+                    }
+                    const secondResponse = await fetch(`${ipString}/projects/getUserProjects/${token}`)
+                    const projectsFromBack = await secondResponse.json();
+                    setProjects(projectsFromBack.projects)
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                }
+            })();
+        }, [])
+    );
+
+// console.log('projects', projects)
+
+    const projectName = projects.map((data, i) => {
+        return <SmallProjectCard key={i} name={data.name} picture={data.picture} /> 
+    });
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.main}>
-                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('ChangeInformationsScreen')}>
-                    <Image source={require('../../assets/Leyla.png')} style={styles.profilePicture} /> 
-                    <Text style={styles.helloText}>Hey Leyla !</Text>
+                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('SkillsScreen', { skillsFromBack })}>
+                    <View style={styles.avatarWrapper}>
+                        <Image source={{ uri: avatar }} style={styles.profilePicture} /> 
+                    </View>
+                    <Text style={styles.helloText}>Hey {name} !</Text>
                 </Pressable>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>Mes Projets</Text>
-                    <TouchableOpacity style={styles.nouveauBtn} onPress={() => navigation.navigate('CreateProjectStack')}><Text>Nouveau</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.nouveauBtn} onPress={() =>  navigation.navigate('TabNavigator', { screen: 'Projets', params: { screen: 'createProjectTabs' },  params: { screen: 'NewProjectScreen' }})}><Text>Nouveau</Text></TouchableOpacity>
                 </View>
-                <View style={styles.projects}>
+                <ScrollView contentContainerStyle={styles.projects} horizontal={true} showsHorizontalScrollIndicator={false}>
                     {projectName}
-                </View>
+                </ScrollView>
+                <Text style={styles.titleDashboard}>Dashboard</Text>
             </View>
-            <Text style={styles.titleDashboard}>Dashboard</Text>
             <View style={styles.dashboard}>
+                <BudgetPieChart 
+                    height={'20%'}
+                    width={'20%'}
+                /> 
             </View>
         </SafeAreaView>
-    )
+    );
 }
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
     main: {
-        flex: 1,
+        display: 'flex',
+        width: '100%',
+        height: '40%',
         alignItems: 'center',
         justifyContent: 'space-around',
         paddingHorizontal: 22,
@@ -53,6 +113,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
+    },
+    avatarWrapper: {
+        borderWidth: 1,
+        borderColor: 'rgba(41, 157, 142, 1)',
+        backgroundColor: 'rgba(217, 217, 217, 1)',
+        borderRadius: 70, // Assurez-vous que la bordure soit toujours ronde
+        overflow: 'hidden', // Assurez-vous que l'image soit coupée aux bords
     },
     profilePicture: {
         height: 50,
@@ -71,6 +138,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
+        paddingTop: 10,
     },
     title: {
         fontWeight: 'bold',
@@ -90,9 +158,9 @@ const styles = StyleSheet.create({
         width: 64,
     }, 
     projects : {
-        width: '100%',
         display: 'flex', 
         flexDirection: 'row',
+        paddingTop: 10,
         justifyContent: 'space-between',
     }, 
     titleDashboard: {
@@ -101,15 +169,15 @@ const styles = StyleSheet.create({
         lineHeight: 36,
         letterSpacing: 0.15,
         color: '#194852',
-        paddingHorizontal: 22
+        paddingHorizontal: 22,
+        alignSelf: 'flex-start'
     },
     dashboard: {
-        width: '100%',
-        height: '60%',  
+        display: 'flex', 
+        height: '60%',
+        width: '100%',  
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',
     },
-})
-
-
+});

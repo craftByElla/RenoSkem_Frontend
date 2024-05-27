@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Avatar from "../../components/avatar";
+import AvatarCard from "../../components/cards/AvatarCard";
 import IconButton from "../../components/buttons/IconButton";
-import PageTitle from "../../components/text/ScreenTitle"
+import ScreenTitle from "../../components/text/ScreenTitle"
 import LogoTransparent from "../../components/logos/LogoTransparent"
 import CustomInput from "../../components/inputs/CustomInput";
 import SimpleModal from '../../components/modal/SimpleModal';
@@ -27,7 +27,7 @@ export default function TeamScreen({navigation}) {
     ];
 
     const avatars = avatarsData.map((data, i) => {
-        return <Avatar key={i} name={data.name} image={data.image} onPress={() => navigation.navigate("TeammateSkillsScreen")}/>;
+        return <AvatarCard key={i} name={data.name} image={data.image} />;
     });
 
     const [isShowModal, setIsShowModal] = useState(false);
@@ -54,7 +54,7 @@ export default function TeamScreen({navigation}) {
                 <LogoTransparent/>
             </View>
             <View style={styles.h1}>
-                <PageTitle text="Mon équipe"/>
+                <ScreenTitle text="Mon équipe"/>
             </View>
             <View style={styles.iconsContainer}>
                 <IconButton iconName='plus-circle' onPress={() =>setIsShowModal_2(true) }/>
@@ -82,10 +82,10 @@ export default function TeamScreen({navigation}) {
                 }
                 button2={
                     <View style={{width: "90%" }}>
-                    <PlainButton text='Artisans' 
-                        background={colors.deepGreen} 
-                        full={true} 
-                    />
+                        <PlainButton text='Artisans' 
+                            background={colors.deepGreen} 
+                            full={true} 
+                        />
                     </View>
                     
                 }
@@ -102,12 +102,12 @@ export default function TeamScreen({navigation}) {
                     />
                 }
                 button2={
-                        <View style={{width: "90%" }}>
+                    <View style={{width: "90%" }}>
                         <PlainButton text='Artisan' 
                             onPress={() => navigation.navigate("NewArtisanScreen")}
                             background={colors.deepGreen} 
                             full={true} 
-                    /> 
+                        /> 
                     </View>   
                 }
                 />

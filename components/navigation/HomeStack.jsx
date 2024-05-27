@@ -1,15 +1,31 @@
+import { useEffect } from 'react';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../../screens/home/HomeScreen'; // Importation des composants d'écran spécifiques à l'écran d'accueil
 import ChangeInformationsScreen from '../../screens/home/ChangeInformationsScreen';
-import { MyLightTheme, MyDarkTheme } from '../Theme';  // Importation des thèmes personnalisés (thème clair et sombre)
+import SkillsScreen from '../../screens/home/SkillsScreen';
+import ChangeSkillsScreen from '../../screens/home/ChangeSkillsScreen';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
-export default function HomeStack() {  // Définition du composant HomeStack
-    const Stack = createNativeStackNavigator();  
+export default function HomeStack({ navigation, route }) {
+    const Stack = createNativeStackNavigator();
+
+    useEffect(() => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        if (routeName === 'SkillsScreen' || routeName === 'ChangeInformationsScreen' || routeName === 'ChangeSkillsScreen') {
+            navigation.setOptions({ tabBarStyle: { display: 'none' } });
+        } else {
+            navigation.setOptions({ tabBarStyle: { display: 'flex' } });
+        }
+    }, [navigation, route]);
+
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>  
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />   
-            <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} /> 
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen name="SkillsScreen" component={SkillsScreen} />
+            <Stack.Screen name="ChangeInformationsScreen" component={ChangeInformationsScreen} />
+            <Stack.Screen name="ChangeSkillsScreen" component={ChangeSkillsScreen}
+        />
         </Stack.Navigator>
     );
 };

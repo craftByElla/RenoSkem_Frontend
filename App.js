@@ -1,3 +1,4 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,19 +8,29 @@ import HomeStack from './components/navigation/HomeStack';
 import TutoStack from './components/navigation/TutoStack';
 import TabNavigator from './components/navigation/TabNavigator';
 import { MyLightTheme, MyDarkTheme } from './components/Theme';
-
+import Toast from 'react-native-toast-message';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import user from './reducers/user';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
 
+  const store = configureStore({
+    reducer: { user },
+  });
+
   return (
-    <NavigationContainer theme={MyLightTheme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="ConnectionStack" component={ConnectionStack} />
-        <Stack.Screen name='TutoStack' component={TutoStack} />
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer theme={MyLightTheme}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="ConnectionStack" component={ConnectionStack} />
+          <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        </Stack.Navigator>
+        <Toast />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

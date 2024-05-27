@@ -1,20 +1,18 @@
 import React from 'react';
 import { StyleSheet, Modal, Text, View, SafeAreaView, TouchableOpacity, Image, Pressable} from 'react-native';
-import { MyLightTheme } from '../Theme';
+import { useTheme } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-
 function SimpleModal(props) {
-    const styles = createStyles(MyLightTheme, props)
+    const { colors } = useTheme();
+    const styles = createStyles(colors, props)
 
     return (
         <Modal
-            transparent={true}   // Rendre le fond du modal transparent
-            animationType="slide"  // Animation de glissement lors de l'affichage et de la fermeture du modal
-            visible={props.isShow}  // Contrôle de la visibilité du modal basé sur la prop isShow
-            onRequestClose={props.toggleModal}  // Fonction appelée lorsque l'utilisateur demande à fermer le modal (bouton de retour)
-            onBackdropPress={() => console.log('test')} //Fonction appelée lorsque l'utilisateur appuie sur l'arrière-plan
-            
+            transparent={true}
+            animationType="slide"
+            visible={props.isShow} // true or false 
+            onRequestClose={props.toggleModal}
         >
             <Pressable style={styles.modalContainer} onPress={() => props.toggleModal()} > {/* Pressable permet de détecter les pressions sur le modal */}
                 <View style={styles.modal} >
@@ -33,6 +31,7 @@ function SimpleModal(props) {
                     {props.button1}
                     {props.button2}
                     {props.button3}
+                    {props.button4}
                 </View>
             </Pressable>
         </Modal>
@@ -41,7 +40,7 @@ function SimpleModal(props) {
 
 export default SimpleModal;
 
-const createStyles = (MyLightTheme, props) => StyleSheet.create({
+const createStyles = (colors, props) => StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -51,7 +50,7 @@ const createStyles = (MyLightTheme, props) => StyleSheet.create({
     },
     modal: {
         width: '90%',
-        backgroundColor: MyLightTheme.colors.modalBackgroundColor,
+        backgroundColor: colors.modalBackgroundColor,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 12,
@@ -64,6 +63,9 @@ const createStyles = (MyLightTheme, props) => StyleSheet.create({
         justifyContent: props.title ? 'space-between' : 'flex-end',
         paddingRight: 24,
         paddingLeft: props.title ? 24 : 0,
+        marginTop: 10,
+        marginBottom: 10,
+    
     },
     text: {
         fontWeight: '600',
@@ -72,7 +74,7 @@ const createStyles = (MyLightTheme, props) => StyleSheet.create({
         lineHeight: 21,
         letterSpacing: 0.25,
         color: '#194852',
-        justifySelf: 'flex-start'
+
     },
 })
 

@@ -2,9 +2,9 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-const PlainButton = ({ onPress, text }) => {
+const PlainButton = ({ onPress, text, style }) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
       <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>
   );
@@ -20,13 +20,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 1,
     borderColor: '#299d8e',
-    flexDirection: 'row',
     paddingVertical: 14,
     paddingHorizontal: 24,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    marginVertical: 8, // Ajout de marge verticale pour espacer les boutons
   },
   text: {
     color: '#194852', 

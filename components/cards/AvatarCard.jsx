@@ -1,22 +1,22 @@
 
 import {StyleSheet,Text, View, Image,TouchableOpacity,} from "react-native";
 
-function Avatar({name,image,onPress}) {
+function AvatarCard(props) {
   return (
     <View style={styles.container}>                                   
       <View>                                                           
-        <Text style={styles.avatarName}>{name}</Text>
+        <Text style={styles.avatarName}>{props.name}</Text>
       </View>
       <View>
       <TouchableOpacity onPress={onPress} >                                                         
-        <Image source={image} style={styles.avatarPicture}/>
+        <Image source={props.image} style={styles.avatarPicture}/>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-export default Avatar;
+export default AvatarCard;
 
 const styles = StyleSheet.create({
   container: {

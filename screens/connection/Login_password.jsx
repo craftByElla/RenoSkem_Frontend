@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, Platform, Text, TouchableOpacity } from 'react-native';
 import IconButton from "../../components/buttons/IconButton";
 import TwoStep from "../../components/progressIndicator/TwoStep";
@@ -8,8 +8,78 @@ import CustomInput from "../../components/inputs/CustomInput";
 import LogoTransparent from '../../components/logos/LogoTransparent';
 import FilledButton from '../../components/buttons/FilledButton';
 import { MyLightTheme } from '../../components/Theme';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const ipString = process.env.IP_ADDRESS;
 
 function Login_password({ navigation }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Tous les champs sont obligatoires'
+            });
+            return;
+        }
+    
+        const userData = { email, password };
+        const loginUrl = `${ipString}/users/login`;
+        // console.log('Sending login request to:', loginUrl);
+        // console.log('With data:', userData);
+    
+        try {
+            const response = await fetch(loginUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData),
+            });
+    
+            if (!response.ok) {
+                // Log response status and headers if request fails
+                console.error('Response Status:', response.status);
+                console.error('Response Headers:', response.headers);
+            }
+    
+            const data = await response.json();
+            // console.log('API Response:', data);
+    
+            if (response.status === 200) {
+                if (data.token) {
+                    await AsyncStorage.setItem('userToken', data.token);
+                    await AsyncStorage.setItem('userName', data.name);
+    
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Succès',
+                        text2: 'Connexion réussie'
+                    });
+                    navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } });
+                } else {
+                    throw new Error('Token manquant dans la réponse');
+                }
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la connexion'
+                });
+            }
+        } catch (error) {
+            console.error('Network Error:', error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la connexion'
+            });
+        }
+    };
+    
+    
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <KeyboardAvoidingView
@@ -22,18 +92,26 @@ function Login_password({ navigation }) {
                         <View style={styles.header}>
                             <IconButton
                                 style={styles.iconButton}
-                                onPress={() => navigation.navigate('Login_Id')}
-                                iconName="arrow-left"
+                                onPress={() => navigation.navigate('ConnectionScreen')}
+                                iconName="long-arrow-left"
                             />
                             <LogoTransparent />
                         </View>
-                        <View style={styles.progressIndicatorWrapper}>
-                            <TwoStep step={1} /> 
-                        </View>
-                        <ScreenTitle style={styles.ScreenTitle} text="Entrez votre mot de passe" />
+                        
+                        <ScreenTitle style={styles.ScreenTitle} text="Bon retour parmis nous 👋" />
                         <View style={styles.input}>
-                            <CustomInput placeholder="Email" validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i} />
-                            <CustomInput placeholder="Mot de passe" secureTextEntry={true} />
+                            <CustomInput 
+                                placeholder="Email" 
+                                validationRegex={/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i}
+                                value={email}
+                                onChangeText={setEmail} 
+                            />
+                            <CustomInput 
+                                placeholder="Mot de passe" 
+                                secureTextEntry={true}
+                                value={password}
+                                onChangeText={setPassword} 
+                            />
                             <View style={styles.forgotPasswordContainer}>
                                 <TouchableOpacity onPress={() => console.log('clic sur mot de passe oublié')}>
                                     <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
@@ -45,7 +123,7 @@ function Login_password({ navigation }) {
                                 text='Se connecter' 
                                 background={MyLightTheme.colors.deepGreen} 
                                 full={true}
-                                onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
+                                onPress={handleLogin}
                             /> 
                         </View>
                     </ScrollView>
@@ -77,6 +155,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 50,
         position: 'relative',
+        marginBottom: 50
     },
     iconButton: {
         position: 'absolute', 
@@ -120,5 +199,3 @@ const styles = StyleSheet.create({
         marginVertical: 10, 
     }
 });
-
-

@@ -3,19 +3,18 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-nativ
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex }) => {  // Définition du composant fonctionnel CustomInput avec des props
-  const [isPasswordVisible, setPasswordVisible] = useState(!secureTextEntry); // Définition de l'état local pour contrôler la visibilité du mot de passe
-  const [inputValue, setInputValue] = useState('');       // Définition de l'état local pour stocker la valeur de l'entrée utilisateur
-  const [error, setError] = useState('');     // Définition de l'état local pour gérer les messages d'erreur de validation
+const CustomInput = ({ placeholder, secureTextEntry = false, search = false, validationRegex, value, onChangeText, suffix }) => {
+  const [isPasswordVisible, setPasswordVisible] = useState(!secureTextEntry);
+  const [error, setError] = useState('');
 
   const togglePasswordVisibility = () => {    // Fonction pour basculer la visibilité du mot de passe
     setPasswordVisible(!isPasswordVisible);
   };
 
-  const handleTextChange = (text) => {        // Fonction pour gérer le changement de texte dans l'input
-    setInputValue(text);
-    if (validationRegex && !validationRegex.test(text)) {  // Validation du texte si un regex de validation est fourni
-      setError('Invalid email format');
+  const handleTextChange = (text) => {
+    onChangeText(text);
+    if (validationRegex && !validationRegex.test(text)) {
+      setError(`Invalid ${placeholder.toLowerCase()} format`);
     } else {
       setError('');
     }
@@ -33,28 +32,34 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         secureTextEntry={!isPasswordVisible}  
         //Cache le texte si 'isPasswordVisible' est faux
         onChangeText={handleTextChange}
-        value={inputValue}
+        value={value}
+        keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : placeholder.toLowerCase().includes('budget') ? 'numeric' : 'default'}
+        autoCapitalize={placeholder.toLowerCase().includes('email') ? 'none' : 'sentences'}
       />
       {secureTextEntry && (    // Affiche une icône de visibilité de mot de passe si 'secureTextEntry' est vrai
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
           <FontAwesome name={isPasswordVisible ? 'eye' : 'eye-slash'} size={20} color="#6F797B" />
         </TouchableOpacity>
       )}
+      {suffix && <Text style={styles.suffix}>{suffix}</Text>}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 };
 
-CustomInput.propTypes = {              // Validation des types des props du composant
-  placeholder: PropTypes.string.isRequired,  // Prop obligatoire pour le placeholder
-  secureTextEntry: PropTypes.bool,  // Prop optionnelle pour sécuriser l'entrée de texte (mot de passe)
-  search: PropTypes.bool,   // Prop optionnelle pour afficher une icône de recherche
-  validationRegex: PropTypes.instanceOf(RegExp),  // Prop optionnelle pour la validation du texte
+CustomInput.propTypes = {
+  placeholder: PropTypes.string.isRequired,
+  secureTextEntry: PropTypes.bool,
+  search: PropTypes.bool,
+  validationRegex: PropTypes.instanceOf(RegExp),
+  value: PropTypes.string.isRequired,
+  onChangeText: PropTypes.func.isRequired,
+  suffix: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: 300,
+    width: '80%',
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#D5CDD2',
@@ -63,7 +68,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    color: '#000000', // Texte principal en noir
+    color: '#000000',
     fontFamily: 'Inter',
     fontSize: 18,
     fontStyle: 'normal',
@@ -72,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputWithSearch: {
-    marginLeft: 10, // Add margin to make space for the search icon
+    marginLeft: 10,
   },
   eyeIcon: {
     marginLeft: 10,
@@ -81,6 +86,18 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 5,
     fontSize: 12,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  suffix: {
+    color: '#6F797B',
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: 21,
+    marginLeft: 5,
   },
 });
 

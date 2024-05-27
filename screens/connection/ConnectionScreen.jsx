@@ -30,10 +30,12 @@ function ConnectionScreen({ navigation }) {
                 <PlainButton
                     onPress={() => navigation.navigate('CreateAccount')}
                     text="Créez un compte"
+                    style={styles.btn} 
                 />
                 <PlainButton
                     onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                     text="Go to Home"
+                    style={styles.btn} 
                 />
                
             </View>
@@ -41,7 +43,7 @@ function ConnectionScreen({ navigation }) {
                 En créant un compte, vous acceptez nos <Text style={styles.linkText}>Conditions</Text> et notre <Text style={styles.linkText}>Politique de confidentialité</Text>.
             </Text>
             <Text style={styles.footerText}>
-                Vous avez déjà un compte ? <Text style={styles.footerLinkText} onPress={() => navigation.navigate('Login_Id')}>Connectez-vous</Text>
+                Vous avez déjà un compte ? <Text style={styles.footerLinkText} onPress={() => navigation.navigate('Login_password')}>Connectez-vous</Text>
             </Text>
         </View>
     );
@@ -122,5 +124,8 @@ const styles = StyleSheet.create({
     },
     footerLinkText: {
         color: '#E56F52',
-    }
+    },
+    btn: {
+        marginVertical: 5,
+    },
 });

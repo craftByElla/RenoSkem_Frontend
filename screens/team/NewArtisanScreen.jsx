@@ -20,7 +20,7 @@ export default function NewArtisanScreen({ navigation }) {
 
 const createArtisan =() => {
 
-  useEffect(() => {                                  // useEffect 
+  useEffect(() => {                                   
     fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
       method:'POST',
       headers:{'Content-Type':'application/json'},
