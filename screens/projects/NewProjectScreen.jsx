@@ -91,6 +91,7 @@ function NewProjectScreen({ navigation }) {
                     const projectId = data.project._id;
                     
                     // Naviguez vers la page projet avec l'ID
+                    
                     navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { projectId, screen: 'RoomsScreen' } });
                     // navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } });
                 } else {

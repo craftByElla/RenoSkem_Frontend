@@ -30,28 +30,28 @@ function SmallProjectCard(props) {
                     <PlainButton 
                         text='1 - Périmètre' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen' } }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'RoomsScreen', projectId: props.projectId } }))}
                     />
                 }
                 button2={
                     <PlainButton 
                         text='2 - Artisans' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'ArtisanScreen' } }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'ArtisanScreen', projectId: props.projectId } }))}
                     />
                 }
                 button3={
                     <PlainButton 
                         text='3 - DYI ou PRO' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'DIYOrProScreen' } }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'DIYOrProScreen', projectId: props.projectId } }))}
                     />
                 }
                 button4={
                     <PlainButton 
                         text='4 - Planification' 
                         style={styles.btn} 
-                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'PlanningScreen' } }))}
+                        onPress={() => handleButtonPress(() =>  navigation.navigate('Projets', { screen: 'CreateProjectTabs', params: { screen: 'PlanningScreen', projectId: props.projectId } }))}
                     />
                 }
             />

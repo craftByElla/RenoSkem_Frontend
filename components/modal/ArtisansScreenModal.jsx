@@ -7,14 +7,25 @@ import FillableIcons from '../buttons/FillableIcons';
 import FilledButton from '../buttons/FilledButton';
 import CustomInput from '../inputs/CustomInput';
 import CommentModal from '../../components/modal/CommentModal';
+const ipString = process.env.IP_ADDRESS;
 
-function ArtisansScreenModal({ isShow, toggleModal, setter }) {
+function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
     const { colors } = useTheme();
     const styles = createStyles(colors, devis)
 
     const [devis, setDevis] = useState(0);
     const [comment, setComment] = useState('');
+    const [chooseJob, setChooseJob] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const [artisanEmail, setArtisanEmail] = useState('');
+    const [artisanPhone, setArtisanPhone] = useState('');
+    const [trustLevel, setTrustLevel] = useState(0);
+    const [date, setDate] = useState(new Date())
     // const [currentComment, setCurrentComment] = useState(comment);
+
+    const updateTrustLevel = (stars) => {
+        setTrustLevel(stars.length)
+    }
 
     const handleClose = () => {
         console.log('click')
@@ -27,6 +38,68 @@ function ArtisansScreenModal({ isShow, toggleModal, setter }) {
         setCommentModalVisible(!isCommentModalVisible);
     };
 
+    const onDateChange = (value, selectedDate) => {
+        if (selectedDate) {
+            setDate(selectedDate)
+        }
+    }
+
+    const addArtisanToProject = async () => {
+        // const dateString = date.toISOString()
+        // const pattern = /^\d{4}-\d{2}-\d{2}/;
+        // const match = dateString.match(pattern);
+        // const extractedDate = match ? match[0] : '';
+        console.log('email', artisanEmail)
+        console.log('phone', artisanPhone)
+        console.log('job', chooseJob)
+        console.log('ccompany', companyName)
+        const responseFromArtisanRoute = await fetch(`${ipString}/artisans/newArtisan`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: artisanEmail,
+                phone: artisanPhone,
+                field: chooseJob,
+                company: companyName,
+            })
+        });
+        const artisan = await responseFromArtisanRoute.json()
+        if (responseFromArtisanRoute.status === 500) {
+            return;
+        } else {
+            const responseFromProjectsRoute = await fetch(`${ipString}/projects/addArtisanToProject/`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    artisanId: artisan.artisan._id,
+                    availability: date,
+                    trustLevel: trustLevel,
+                    comment: comment,
+                    projectId: projectId,
+                }),
+            });
+            if (responseFromProjectsRoute === 401){
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: 'Projet introuvable'
+                });
+            }else if (responseFromProjectsRoute === 500) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: 'Erreur pendant l\'envoie'
+                });
+            }else {
+                Toast.show({
+                    type: 'success',
+                    text1: 'succès',
+                    text2: 'Artisan ajouté'
+                });
+            }
+        }
+    }
+console.log('date', date)
 
     return (
         <Modal
@@ -39,13 +112,15 @@ function ArtisansScreenModal({ isShow, toggleModal, setter }) {
                     <TouchableWithoutFeedback>
                         <View style={styles.modal}>
                             <Text style={styles.textTitle}>Nouvel Artisan :</Text>
-                            <CustomInput placeholder='Choisir un métier' /> 
-                            <CustomInput placeholder="Nom de l'artisan" />
+                            <CustomInput placeholder='Choisir un métier' value={chooseJob} onChangeText={value => setChooseJob(value)}/> 
+                            <CustomInput placeholder="Entreprise/nom" vaue={companyName} onChangeText={value => setCompanyName(value)}/>
+                            <CustomInput placeholder="email" vaue={artisanEmail} onChangeText={value => setArtisanEmail(value)}/>
+                            <CustomInput placeholder="téléphone" vaue={artisanPhone} onChangeText={value => setArtisanPhone(value)}/>
                             <View style={styles.indiceContainer}>
                                 <Text style={styles.text}>Indice de confiance</Text>
                                 <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
                                 <View style={styles.starsContainer}>
-                                    <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' />
+                                    <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' updateTrustLevel={updateTrustLevel} />
                                 </View>
                             </View>
                             <View style={styles.indiceContainer}>
@@ -66,8 +141,9 @@ function ArtisansScreenModal({ isShow, toggleModal, setter }) {
                                 <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
                                 <View style={styles.dateContainer}>
                                     <DateTimePicker 
-                                        value={new Date()}
+                                        value={date}
                                         locale='fr-FR'
+                                        onChange={onDateChange}
                                     />
                                 </View>
                             </View>
@@ -91,7 +167,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter }) {
                                     />
                                 </View>
                                 <View style={styles.buttonContainer}>
-                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={handleClose}/>
+                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={addArtisanToProject}/>
                                 </View>
                             </View>
                         </View>
