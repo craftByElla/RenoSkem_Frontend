@@ -7,7 +7,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
   const [isPasswordVisible, setPasswordVisible] = useState(!secureTextEntry);
   const [error, setError] = useState('');
 
-  const togglePasswordVisibility = () => {
+  const togglePasswordVisibility = () => {    // Fonction pour basculer la visibilité du mot de passe
     setPasswordVisible(!isPasswordVisible);
   };
 
@@ -29,13 +29,14 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         style={[styles.input, search && styles.inputWithSearch]}
         placeholder={placeholder}
         placeholderTextColor="#6F797B"
-        secureTextEntry={!isPasswordVisible}
+        secureTextEntry={!isPasswordVisible}  
+        //Cache le texte si 'isPasswordVisible' est faux
         onChangeText={handleTextChange}
         value={value}
         keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : placeholder.toLowerCase().includes('budget') ? 'numeric' : 'default'}
         autoCapitalize={placeholder.toLowerCase().includes('email') ? 'none' : 'sentences'}
       />
-      {secureTextEntry && (
+      {secureTextEntry && (    // Affiche une icône de visibilité de mot de passe si 'secureTextEntry' est vrai
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
           <FontAwesome name={isPasswordVisible ? 'eye' : 'eye-slash'} size={20} color="#6F797B" />
         </TouchableOpacity>

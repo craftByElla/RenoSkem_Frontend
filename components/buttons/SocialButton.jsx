@@ -13,7 +13,7 @@ const SocialButton = ({ onPress, icon, text }) => {
 };
 
 SocialButton.propTypes = {
-  onPress: PropTypes.func,
+  onPress: PropTypes.func,  // La propriété onPress est de type fonction
   icon: PropTypes.oneOf(['google', 'facebook']).isRequired, // Nom des icônes FontAwesome
   text: PropTypes.string.isRequired, // Texte à afficher
 };

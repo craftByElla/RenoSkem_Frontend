@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ProjectsStack from './ProjectsStack';
+import ProjectsStack from './ProjectsStack';  // Importation des différents Stack Navigators pour chaque onglet
 import HomeStack from './HomeStack';
 import TeamStack from './TeamStack';
 import TutoStack from './TutoStack';

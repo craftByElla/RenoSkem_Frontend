@@ -56,6 +56,7 @@ function SetSkills({ navigation }) {
         // Récupération du token et de l'ID utilisateur
         const token = await AsyncStorage.getItem('userToken');
         const userId = await AsyncStorage.getItem('userId');
+        console.log(ipString)
     
         // Données des compétences
         const skillsData = {

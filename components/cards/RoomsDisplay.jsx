@@ -122,7 +122,7 @@ const RoomsDisplay = ({ rooms, onRoomPress }) => {
             {/* Triangle représentant le toit */}
             <TouchableOpacity 
                 style={[styles.roofContainer, { width: triangleWidth }]} 
-                onPress={() => hasGrenier && console.log("Clicked on Grenier")}
+                onPress={() => hasGrenier && onRoomPress(sortedRooms.find(room => room.type === "Grenier/Combles")._id)}
                 onLongPress={handleLongPressGrenier}
                 onPressOut={handlePressOutGrenier}
                 disabled={!hasGrenier}
@@ -132,6 +132,7 @@ const RoomsDisplay = ({ rooms, onRoomPress }) => {
                 </Svg>
                 {hasGrenier && <Text style={styles.iconInRoof}>🕸️</Text>}
             </TouchableOpacity>
+
             {/* Affichage des pièces dans la grille */}
             {grid.map((row, rowIndex) => (
                 <View style={styles.row} key={rowIndex}>
@@ -139,7 +140,7 @@ const RoomsDisplay = ({ rooms, onRoomPress }) => {
                         <TouchableOpacity 
                             key={colIndex} 
                             style={styles.room} 
-                            onPress={() => onRoomPress(room._id)} // Passer l'ID de la pièce à la fonction de rappel}
+                            onPress={() => onRoomPress(room._id)} // Passer l'ID de la pièce
                             onLongPress={() => handleLongPress(room.type)} 
                             onPressOut={handlePressOut}
                         >

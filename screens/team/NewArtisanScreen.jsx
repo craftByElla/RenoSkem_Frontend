@@ -4,9 +4,11 @@ import LogoTransparent from "../../components/logos/LogoTransparent"
 import IconButton from "../../components/buttons/IconButton";
 import PageTitle from "../../components/text/ScreenTitle";
 import FilledButton from "../../components/buttons/FilledButton";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
+
+const ipString = process.env.IP_ADDRESS;
 
 export default function NewArtisanScreen({ navigation }) {
   const { colors } = useTheme();
@@ -16,6 +18,23 @@ export default function NewArtisanScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
 
+const createArtisan = () => {
+                                 
+    fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email,
+                           phone:phoneNumber,
+                           fiel:job,
+                           company:name,
+      }),
+    })
+      .then(response => response.json())
+      .then ((response) => navigation.navigate("TeamScreen"))
+      .catch((error) => console.error("Error:", error));
+
+};
+ 
   
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -74,7 +93,7 @@ export default function NewArtisanScreen({ navigation }) {
               text="Enregistrer"
               background={colors.deepGreen}
               full={true}
-              onPress={() => navigation.navigate("TeamScreen")}
+              onPress={() =>  createArtisan()}
             />
           </TouchableOpacity>
       </View>
@@ -89,7 +108,7 @@ const styles = StyleSheet.create({
      },
 
     emailContainer:{
-        marginLeft:-120,
+        marginRight:120,
     },
 
     jobContainer:{

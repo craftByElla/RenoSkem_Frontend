@@ -9,7 +9,9 @@ import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Stars from "../../components/buttons/Stars";
 import TextWithRadioButton from "../../components/buttons/TextWithRadioButtons"
+import { useEffect,useState } from 'react';
 
+const ipString = process.env.IP_ADDRESS;
 
 const postesTravaux = [
     "Chauffage",
@@ -37,6 +39,48 @@ const postesTravaux = [
 export default function TeammateSkillsScreen({ navigation }) {
   const { colors } = useTheme();
 
+const skillsTeammate =
+
+    useEffect(() => {
+      fetch(`${ipString}/skills/editSkills/${teammate.skills}`, {     // fetch pour modifier les compétences d'un teammates
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chauffage: 1,
+            cloisonnementPlatrage: 1,
+            demolition: 1,
+            electricite: 1,
+            facade: 1,
+            fondations: 1,
+            installationCuisineSDB: 1,
+            isolation: 1,
+            maconnerie: 1,
+            menuiserie: 1,
+            montageDeMeuble: 1,
+            peinture: 1,
+            plomberie: 1,
+            revetementsMuraux: 1,
+            revetementsSol: 1,
+            revetementsExterieurs: 1,
+            toiture: 1,
+            ventilation: 1,
+        }),
+      })
+        .then((response) => response.json())
+        .catch((error) => console.error("Error:", error));
+    }, []); 
+
+    const [skills, setSkills] = useState("");
+
+    // Mise à jour de l'état lorsqu'une compétence est sélectionnée
+    const handleSkillChange = (posteIndex, niveau) => {
+        const poste = postesTravaux[posteIndex];
+        setSkills(prevSkills => ({
+            ...prevSkills,
+            [poste]: niveau
+        }));
+    };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.main}>
@@ -61,7 +105,14 @@ export default function TeammateSkillsScreen({ navigation }) {
       <Stars style={styles.stars}/>
         <ScrollView style={styles.scrollableSection} contentContainerStyle={styles.scrollableContent}>
         {postesTravaux.map((poste, index) => (
-        <TextWithRadioButton key={index} text={poste} />
+        <TextWithRadioButton
+        key={index} 
+        text={poste} 
+        selectedButton={skills[poste]} 
+        handlePress={handleSkillChange} 
+        index={index}
+        />
+                    
         ))}
      </ScrollView>
         <TouchableOpacity style={styles.enregistrer}>
