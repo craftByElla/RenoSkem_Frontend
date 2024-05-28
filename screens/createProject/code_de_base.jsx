@@ -1,134 +1,78 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
+import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import PlainButton from '../../components/buttons/PlainButton';
-import FilledButton from '../../components/buttons/FilledButton';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import ScreenTitle from '../../components/text/ScreenTitle';
+import Toast from 'react-native-toast-message';
 
-const FilterModal = ({ isVisible, onClose, onApplyFilters, roomTypes, workTypes }) => {
+import IconButton from "../../components/buttons/IconButton";
+
+
+const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
+
+const ipString = process.env.IP_ADDRESS;
+
+function PlanningScreen({ navigation, route }) {
     const { colors } = useTheme();
-    const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
-    const [selectedWorkTypes, setSelectedWorkTypes] = useState([]);
-
-    const toggleRoomType = (type) => {
-        setSelectedRoomTypes((prev) =>
-            prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-        );
-    };
-
-    const toggleWorkType = (type) => {
-        setSelectedWorkTypes((prev) =>
-            prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-        );
-    };
-
-    const handleApplyFilters = () => {
-        onApplyFilters({ roomTypes: selectedRoomTypes, workTypes: selectedWorkTypes });
-    };
-
-    const handleResetFilters = () => {
-        setSelectedRoomTypes([]);
-        setSelectedWorkTypes([]);
-    };
-
-    const renderCheckbox = (label, selected, onPress) => (
-        <TouchableOpacity style={styles.checkboxContainer} onPress={onPress}>
-            <FontAwesome
-                name={selected ? 'dot-circle-o' : 'circle-o'}
-                size={24}
-                color={selected ? colors.lightGreen : colors.deepGreen}
-                style={styles.icon}
-            />
-            <Text style={[styles.checkboxLabel, { color: colors.deepGreen }]}>{label}</Text>
-        </TouchableOpacity>
-    );
+    const styles = createStyles(colors);
+    const { projectId } = route.params;
+    
+   
 
     return (
-        <Modal visible={isVisible} transparent={true} animationType="slide">
-            <Pressable style={styles.modalOverlay} onPress={onClose}>
-                <View style={[styles.modalContainer, { backgroundColor: colors.modalBackgroundColor }]}>
-                    <View style={styles.textLine}>
-                        <Text style={styles.text}>Filtrer les Pièces</Text>
-                        <TouchableOpacity onPress={onClose}>
-                            <Entypo name="cross" size={40} color={"#6F797B"} />
-                        </TouchableOpacity>
-                    </View>
-                    <ScrollView contentContainerStyle={styles.scrollContent}>
-                        <Text style={styles.sectionTitle}>Type de Pièce</Text>
-                        {roomTypes.map((type) =>
-                            renderCheckbox(type, selectedRoomTypes.includes(type), () => toggleRoomType(type))
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.main}>
+                    <View style={styles.biggerContainer}>
+                        <View style={styles.titleContainer}>
+                            <ScreenTitle style={styles.screenTitle} text="Planification" />
+                        </View>
+                        {step.length > 0 ? (
+                            <StepDisplay  />
+                        ) : (
+                            <View style={styles.emptyContainer}>
+                                <Text style={styles.tentIcon}>🏖️</Text>
+                            </View>
                         )}
-                        <Text style={styles.sectionTitle}>Type de Travaux</Text>
-                        {workTypes.map((type) =>
-                            renderCheckbox(type, selectedWorkTypes.includes(type), () => toggleWorkType(type))
-                        )}
-                    </ScrollView>
-                    <View style={styles.footer}>
-                        <PlainButton text="Réinitialiser" onPress={handleResetFilters} />
-                        <FilledButton text="Appliquer" onPress={handleApplyFilters} background={colors.deepGreen} />
                     </View>
                 </View>
-            </Pressable>
-        </Modal>
+            </ScrollView>
+        </SafeAreaView>
     );
-};
+}
 
-const styles = StyleSheet.create({
-    modalOverlay: {
-        flex: 1,
+export default PlanningScreen;
+
+const createStyles = (colors) => StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+    },
+    main: {
+        display: 'flex',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    biggerContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContainer: {
-        width: '90%',
-        borderRadius: 12,
-        paddingBottom: 20,
-    },
-    textLine: {
-        flexDirection: 'row',
         width: '100%',
+        marginTop: 20,
+        marginBottom: 50,
+    },
+    titleContainer: {
+        display: 'flex',
+        width: '80%',
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingRight: 24,
-        paddingLeft: 24,
-        marginTop: 10,
-        marginBottom: 10,
     },
-    text: {
-        fontWeight: '600',
-        fontSize: 20,
-        lineHeight: 21,
-        letterSpacing: 0.25,
-        color: '#194852',
-    },
-    scrollContent: {
-        paddingBottom: 20,
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    checkboxContainer: {
-        flexDirection: 'row',
+    emptyContainer: {
+        marginTop: 100,
+        justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
     },
-    checkboxLabel: {
-        fontSize: 16,
-        marginLeft: 10,
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        width: '100%',
-    },
-    icon: {
-        marginHorizontal: 5,
+    tentIcon: {
+        fontSize: 150,
     },
 });
-
-export default FilterModal;
