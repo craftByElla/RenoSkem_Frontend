@@ -8,6 +8,7 @@ import Hammers from '../../components/buttons/Hammers';
 import FilledButton from '../../components/buttons/FilledButton';
 import CommentModal from '../../components/modal/CommentModal';
 import PosteItem from '../../components/buttons/PosteItem';
+import Toast from 'react-native-toast-message';
 
 const postesTravaux = [
     "Chauffage",
@@ -31,7 +32,7 @@ const postesTravaux = [
     "Ventilation"
 ];
 
-const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) => {
+const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, onRoomDeleted }) => {
     const { colors } = useTheme();
     const [name, setName] = useState('');
     const [surface, setSurface] = useState('');
@@ -44,18 +45,23 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) 
     useEffect(() => {
         if (roomDetails) {
             setName(roomDetails.name || '');
-            setSurface(roomDetails.surface !== null ? String(roomDetails.surface) : ''); 
+            setSurface(roomDetails.surface !== null ? String(roomDetails.surface) : '');
             setComment(roomDetails.comment || '');
             setSelectedPostes(roomDetails.items ? roomDetails.items.map(item => item.field) : []);
             setFields(roomDetails.items ? roomDetails.items.reduce((acc, item) => {
                 acc[item.field] = item.difficulty;
                 return acc;
             }, {}) : {});
+        } else {
+            setName('');
+            setSurface('');
+            setComment('');
+            setSelectedPostes([]);
+            setFields({});
         }
     }, [roomDetails]);
 
     const handleSave = () => {
-        console.log('handleSave called with:', { name, surface, selectedPostes, comment });
         const items = selectedPostes.map(poste => ({
             field: poste,
             difficulty: fields[poste],
@@ -64,7 +70,6 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) 
         toggleModal();
     };
     
-
     const handleAddPoste = (poste) => {
         if (poste && !selectedPostes.includes(poste)) {
             setSelectedPostes([...selectedPostes, poste]);
@@ -97,6 +102,38 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) 
         setCommentModalVisible(!isCommentModalVisible);
     };
 
+    const handleDeleteRoom = async () => {
+        try {
+            const response = await fetch(`${process.env.IP_ADDRESS}/rooms/deleteRoom/${roomId}`, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+    
+            if (response.ok) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: 'La pièce a été supprimée avec succès'
+                });
+                onRoomDeleted(roomId);
+                toggleModal();
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la suppression de la pièce'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la suppression de la pièce'
+            });
+        }
+    };
+    
+
     return (
         <Modal
             transparent={true}
@@ -116,7 +153,7 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) 
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.inputRow}>
-                                    <TouchableOpacity style={styles.iconWrapper}>
+                                    <TouchableOpacity style={styles.iconWrapper} onPress={handleDeleteRoom}>
                                         <FontAwesome name="close" size={20} color={colors.orange} />
                                     </TouchableOpacity>
                                     <TextInput
@@ -152,7 +189,7 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails }) 
                                         keyboardType="numeric"
                                     />
                                 </View>
-                                <View >
+                                <View>
                                     <Text style={styles.label}>Définissez les rénovations ▼</Text>
                                 </View>
                                 {selectedPostes.length > 0 && (
@@ -227,10 +264,10 @@ RoomDetailsModal.propTypes = {
     toggleModal: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     roomId: PropTypes.string.isRequired,
-    roomDetails: PropTypes.object.isRequired,
+    roomDetails: PropTypes.object,
+    onRoomDeleted: PropTypes.func.isRequired,
 };
 
-// Définir les styles ici
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
@@ -344,6 +381,7 @@ const styles = StyleSheet.create({
     },
     commentSection: {
         marginTop: 10,
+        
     },
     commentLabel: {
         color: '#6F797B',
@@ -367,6 +405,7 @@ const styles = StyleSheet.create({
     commentButton: {
         width: '100%',
         borderRadius: 8,
+        marginLeft: 0,
     },
     radioButtons: {
         flexGrow: 1,

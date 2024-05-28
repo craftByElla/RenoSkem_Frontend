@@ -6,18 +6,18 @@ import { MyLightTheme } from '../../components/Theme'; // Importation du thème 
 // Composant RoomIcon pour afficher les icônes des pièces
 const RoomIcon = ({ type }) => {
     const icons = {
-        "Salle de bain": "🚿",
-        "Cuisine": "🍳",
-        "Salon": "🛋️",
-        "Chambre": "🛏️",
-        "Grenier/Combles": "🕸️",
-        "Garage": "🚗",
-        "Cave": "🍷",
-        "Bureau": "📚",
         "Balcon": "🌇",
         "Buanderie": "🧺",
-        "Salle à manger": "🍽️",
+        "Bureau": "👨‍💻",
+        "Cave": "🍷",
+        "Chambre": "🛏️",
+        "Cuisine": "🍳",
+        "Entrée": "🚪",
+        "Garage": "🚗",
+        "Grenier/Combles": "🕸️",
         "Jardin": "🌳",
+        "Salle à manger": "🍽️",
+        "Salle de bain": "🚿"
     };
 
     return (
@@ -35,7 +35,7 @@ const RoomTooltip = ({ type }) => (
 );
 
 // Composant principal RoomsDisplay pour afficher le plan des pièces
-const RoomsDisplay = ({ rooms }) => {
+const RoomsDisplay = ({ rooms, onRoomPress }) => {
     // État pour gérer la visibilité et le type de l'infobulle
     const [tooltip, setTooltip] = useState({ visible: false, type: '' });
     const [tooltipGrenier, setTooltipGrenier] = useState({ visible: false });
@@ -62,17 +62,35 @@ const RoomsDisplay = ({ rooms }) => {
 
     // Répartition des pièces dans une grille de 3 lignes
     const grid = [[], [], []]; // 3 lignes
-    let rowIndex = 2;
-    let colIndex = 0;
+    let rowIndex = 2; // Initialiser l'index de ligne à la dernière ligne
+    let colIndex = 0; // Initialiser l'index de colonne à la première colonne
+
     sortedRooms.forEach(room => {
-        if (room.type === "Grenier/Combles") return;
-        if (colIndex === 5) {
-            colIndex = 0;
-            rowIndex--;
+        if (room.type === "Grenier/Combles") return; // Ignorer le grenier
+
+        // Initialiser la ligne si elle n'existe pas encore
+        if (!grid[rowIndex]) {
+            grid[rowIndex] = [];
         }
-        grid[rowIndex][colIndex] = room;
-        colIndex++;
+
+         //Si colIndex atteint 5 (indiquant la sixième colonne)
+         //cela signifie que la ligne est complète : 
+         //Il faut donc réinitialiser colIndex à 0 pour recommencer à la première colonne & Décrémenter rowIndex pour passer à la ligne précédente.
+         
+        if (colIndex === 5) {
+            colIndex = 0; // Réinitialiser l'index de colonne à la première colonne
+            rowIndex--; // Décrémenter l'index de ligne pour passer à la ligne précédente
+
+            // Initialiser la ligne si elle n'existe pas encore
+            if (!grid[rowIndex]) {
+                grid[rowIndex] = [];
+            }
+        }
+    
+        grid[rowIndex][colIndex] = room; // Ajouter la pièce à la position actuelle dans la grille
+        colIndex++; // Incrémenter l'index de colonne pour la prochaine pièce
     });
+    
 
     // Vérifier si un grenier est présent parmi les pièces
     const hasGrenier = sortedRooms.some(room => room.type === "Grenier/Combles");
@@ -104,7 +122,7 @@ const RoomsDisplay = ({ rooms }) => {
             {/* Triangle représentant le toit */}
             <TouchableOpacity 
                 style={[styles.roofContainer, { width: triangleWidth }]} 
-                onPress={() => hasGrenier && console.log("Clicked on Grenier")}
+                onPress={() => hasGrenier && onRoomPress(sortedRooms.find(room => room.type === "Grenier/Combles")._id)}
                 onLongPress={handleLongPressGrenier}
                 onPressOut={handlePressOutGrenier}
                 disabled={!hasGrenier}
@@ -114,6 +132,7 @@ const RoomsDisplay = ({ rooms }) => {
                 </Svg>
                 {hasGrenier && <Text style={styles.iconInRoof}>🕸️</Text>}
             </TouchableOpacity>
+
             {/* Affichage des pièces dans la grille */}
             {grid.map((row, rowIndex) => (
                 <View style={styles.row} key={rowIndex}>
@@ -121,7 +140,7 @@ const RoomsDisplay = ({ rooms }) => {
                         <TouchableOpacity 
                             key={colIndex} 
                             style={styles.room} 
-                            onPress={() => console.log(`Clicked on ${room.type}`)}
+                            onPress={() => onRoomPress(room._id)} // Passer l'ID de la pièce
                             onLongPress={() => handleLongPress(room.type)} 
                             onPressOut={handlePressOut}
                         >
