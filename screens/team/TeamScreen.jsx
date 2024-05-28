@@ -19,13 +19,13 @@ const ipString = process.env.IP_ADDRESS;
 
 export default function TeamScreen({ navigation }) {
   const { colors } = useTheme();
-  const avatarsData = [
+  /*const avatarsData = [
     { name: "martin", image: require("../../assets/Martin.jpg") },
     { name: "jc", image: require("../../assets/jc.jpg") },
     { name: "ella", image: require("../../assets/Ella.jpg") },
     { name: "gaël", image: require("../../assets/henry.jpg") },
     { name: "cece", image: require("../../assets/Gabin.jpg") },
-  ];
+  ];*/
 
   const avatars = avatarsData.map((data, i) => {
     return <AvatarCard key={i} name={data.name} image={data.image} onPress={() => navigation.navigate("TeammateSkillsScreen")} />;

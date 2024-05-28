@@ -25,7 +25,7 @@ const createArtisan = () => {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email:email,
                            phone:phoneNumber,
-                           fiel:job,
+                           field:job,
                            company:name,
       }),
     })
