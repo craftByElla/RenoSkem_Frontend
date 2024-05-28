@@ -49,7 +49,7 @@ const DeleteButton = ({ onPress, text, style, onLongPress }) => {
                 onPress={()=> Toast.show({
                     type: 'info',
                     text1: 'Long Press Required',
-                    text2: 'Rester appuyer pour supprimer',
+                    text2: 'Rester appuyé pour supprimer',
                     position: 'top',
                 })} 
                 onLongPress={handleLongPress} 
