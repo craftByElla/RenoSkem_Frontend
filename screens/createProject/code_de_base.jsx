@@ -1,80 +1,134 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import React, { useState } from 'react';
+import { Modal, View, Text, StyleSheet, ScrollView, TouchableOpacity, Pressable } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import PropTypes from 'prop-types';
+import Entypo from 'react-native-vector-icons/Entypo';
+import PlainButton from '../../components/buttons/PlainButton';
+import FilledButton from '../../components/buttons/FilledButton';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const PosteItem = ({ text, selectedButton, handlePress, index, onRemove }) => {
-  const { colors } = useTheme();
+const FilterModal = ({ isVisible, onClose, onApplyFilters, roomTypes, workTypes }) => {
+    const { colors } = useTheme();
+    const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
+    const [selectedWorkTypes, setSelectedWorkTypes] = useState([]);
 
-  const renderButton = (buttonIndex) => {
-    const isSelected = selectedButton === buttonIndex;
-    const iconName = isSelected ? 'dot-circle-o' : 'circle-o';
-    const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;
-    
-    return (
-      <TouchableOpacity key={buttonIndex} onPress={() => handlePress(index, buttonIndex)}>
-        <FontAwesome 
-          name={iconName} 
-          size={24} 
-          color={iconColor} 
-          style={styles.icon} 
-        />
-      </TouchableOpacity>
+    const toggleRoomType = (type) => {
+        setSelectedRoomTypes((prev) =>
+            prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+        );
+    };
+
+    const toggleWorkType = (type) => {
+        setSelectedWorkTypes((prev) =>
+            prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+        );
+    };
+
+    const handleApplyFilters = () => {
+        onApplyFilters({ roomTypes: selectedRoomTypes, workTypes: selectedWorkTypes });
+    };
+
+    const handleResetFilters = () => {
+        setSelectedRoomTypes([]);
+        setSelectedWorkTypes([]);
+    };
+
+    const renderCheckbox = (label, selected, onPress) => (
+        <TouchableOpacity style={styles.checkboxContainer} onPress={onPress}>
+            <FontAwesome
+                name={selected ? 'dot-circle-o' : 'circle-o'}
+                size={24}
+                color={selected ? colors.lightGreen : colors.deepGreen}
+                style={styles.icon}
+            />
+            <Text style={[styles.checkboxLabel, { color: colors.deepGreen }]}>{label}</Text>
+        </TouchableOpacity>
     );
-  };
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onRemove}>
-        <FontAwesome name="close" size={20} color={colors.deepGrey} />
-      </TouchableOpacity>
-      <Text style={[styles.text, { color: colors.deepGreen }]}>{text}</Text>
-      <View style={styles.buttonContainer}>
-        {renderButton(1)}
-        {renderButton(2)}
-        {renderButton(3)}
-      </View>
-    </View>
-  );
-};
-
-PosteItem.propTypes = {
-  text: PropTypes.string.isRequired,
-  selectedButton: PropTypes.number,
-  handlePress: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
-  onRemove: PropTypes.func.isRequired,
+    return (
+        <Modal visible={isVisible} transparent={true} animationType="slide">
+            <Pressable style={styles.modalOverlay} onPress={onClose}>
+                <View style={[styles.modalContainer, { backgroundColor: colors.modalBackgroundColor }]}>
+                    <View style={styles.textLine}>
+                        <Text style={styles.text}>Filtrer les Pièces</Text>
+                        <TouchableOpacity onPress={onClose}>
+                            <Entypo name="cross" size={40} color={"#6F797B"} />
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView contentContainerStyle={styles.scrollContent}>
+                        <Text style={styles.sectionTitle}>Type de Pièce</Text>
+                        {roomTypes.map((type) =>
+                            renderCheckbox(type, selectedRoomTypes.includes(type), () => toggleRoomType(type))
+                        )}
+                        <Text style={styles.sectionTitle}>Type de Travaux</Text>
+                        {workTypes.map((type) =>
+                            renderCheckbox(type, selectedWorkTypes.includes(type), () => toggleWorkType(type))
+                        )}
+                    </ScrollView>
+                    <View style={styles.footer}>
+                        <PlainButton text="Réinitialiser" onPress={handleResetFilters} />
+                        <FilledButton text="Appliquer" onPress={handleApplyFilters} background={colors.deepGreen} />
+                    </View>
+                </View>
+            </Pressable>
+        </Modal>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#f1f1f1',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  text: {
-    flex: 1,
-    fontFamily: 'Inter',
-    fontSize: 15,
-    fontStyle: 'normal',
-    fontWeight: '400',
-    lineHeight: 21,
-    letterSpacing: 0.15,
-    marginLeft: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  icon: {
-    marginHorizontal: 5,
-  },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '90%',
+        borderRadius: 12,
+        paddingBottom: 20,
+    },
+    textLine: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingRight: 24,
+        paddingLeft: 24,
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    text: {
+        fontWeight: '600',
+        fontSize: 20,
+        lineHeight: 21,
+        letterSpacing: 0.25,
+        color: '#194852',
+    },
+    scrollContent: {
+        paddingBottom: 20,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    checkboxLabel: {
+        fontSize: 16,
+        marginLeft: 10,
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        width: '100%',
+    },
+    icon: {
+        marginHorizontal: 5,
+    },
 });
 
-export default PosteItem;
+export default FilterModal;

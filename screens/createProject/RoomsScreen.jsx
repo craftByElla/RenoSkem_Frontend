@@ -8,6 +8,8 @@ import RoomsDisplay from '../../components/cards/RoomsDisplay';
 import AddRoomModal from '../../components/modal/AddRoomModal';
 import RoomDetailsModal from '../../components/modal/RoomDetailsModal';
 import CardRoomDetails from '../../components/cards/CardRoomDetails';
+import IconButton from "../../components/buttons/IconButton";
+import FilterModal from '../../components/modal/FilterModal';
 
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
@@ -19,10 +21,15 @@ function RoomsScreen({ navigation, route }) {
     const styles = createStyles(colors);
     const { projectId } = route.params;
     const [rooms, setRooms] = useState([]);
+    const [roomTypes, setRoomTypes] = useState([]);
+    const [workTypes, setWorkTypes] = useState([]);
     const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
     const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false);
+    const [isFilterModalVisible, setFilterModalVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState(null);
     const [roomDetails, setRoomDetails] = useState(null);
+    const [filteredRooms, setFilteredRooms] = useState([]);
+    const [filters, setFilters] = useState({ roomTypes: [], workTypes: [] });
 
     //pour recharger l'affichage après la suppression d'une pièce
     const [reload, setReload] = useState(false);
@@ -35,14 +42,32 @@ function RoomsScreen({ navigation, route }) {
                 const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
                 const response = await fetch(url);
                 const data = await response.json();
-
+    
                 if (response.ok) {
                     setRooms(data.rooms);
+                    setFilteredRooms(data.rooms);
                     const roomCounts = data.rooms.reduce((acc, room) => {
                         acc[room.type] = (acc[room.type] || 0) + 1;
                         return acc;
                     }, {});
                     setInitialRoomCounts(roomCounts);
+    
+                    const roomTypesSet = new Set();
+                    const workTypesSet = new Set();
+                    data.rooms.forEach(room => {
+                        roomTypesSet.add(room.type);
+                        room.items.forEach(item => {
+                            workTypesSet.add(item.field);
+                        });
+                    });
+    
+                    setRoomTypes([...roomTypesSet]);
+                    setWorkTypes([...workTypesSet]);
+                    setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'] });
+    
+                    console.log("Rooms fetched: ", data.rooms);
+                    console.log("Room types: ", [...roomTypesSet]);
+                    console.log("Work types: ", [...workTypesSet]);
                 } else {
                     Toast.show({
                         type: 'error',
@@ -58,14 +83,39 @@ function RoomsScreen({ navigation, route }) {
                 });
             }
         };
-
+    
         fetchRooms();
     }, [projectId, reload]);
+    
 
-    const toggleAddRoomModal = () => {
+     //Toggle des modales
+     const toggleAddRoomModal = () => {
         setAddRoomModalVisible(!isAddRoomModalVisible);
     };
+    const toggleFilterModal = () => {
+        setFilterModalVisible(!isFilterModalVisible);
+    };
 
+    //Gestion filtres
+    const applyFilters = (selectedFilters) => {
+        const { roomTypes, workTypes } = selectedFilters;
+        setFilters(selectedFilters);
+    
+        const filteredRooms = rooms.filter(room => {
+            const roomTypeMatch = roomTypes.length === 0 || roomTypes.includes(room.type);
+            const workTypeMatch = workTypes.includes('Sans type') ? (room.items.length === 0 || room.items.some(item => workTypes.includes(item.field))) : room.items.some(item => workTypes.includes(item.field));
+    
+            return roomTypeMatch && workTypeMatch;
+        });
+    
+        setFilteredRooms(filteredRooms);
+    
+        console.log("Filters applied: ", selectedFilters);
+        console.log("Filtered rooms: ", filteredRooms);
+    };
+    
+    
+   
     const handleSaveRooms = async (roomCounts) => {
         try {
             const response = await fetch(`${ipString}/rooms/updateRooms`, {
@@ -218,8 +268,13 @@ function RoomsScreen({ navigation, route }) {
                         <View style={styles.recapContainer}>
                             <View style={styles.recapTitle}>
                                 <ScreenTitle  text="Récapitulatif" />
+                                <IconButton
+                                    style={styles.iconButtonRight}
+                                    onPress={toggleFilterModal}
+                                    iconName="filter"
+                                />
                             </View>
-                            {rooms.map(room => (
+                            {filteredRooms.map(room => (
                                 <CardRoomDetails key={room._id} room={room} onPress={() => handleRoomPress(room._id)} />
                             ))}
                         </View>
@@ -241,6 +296,14 @@ function RoomsScreen({ navigation, route }) {
                         onRoomDeleted={handleRoomDeleted}
                     />
                 )}
+                <FilterModal
+                    isVisible={isFilterModalVisible}
+                    onClose={toggleFilterModal}
+                    onApplyFilters={applyFilters}
+                    roomTypes={roomTypes}
+                    workTypes={workTypes}
+                    currentFilters={filters}
+                />
             </ScrollView>
         </SafeAreaView>
     );
@@ -271,7 +334,6 @@ const createStyles = (colors) => StyleSheet.create({
         width: '80%',
         flexDirection: 'row',
         alignItems: 'center',
-        flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
     addBtn: {
@@ -295,9 +357,13 @@ const createStyles = (colors) => StyleSheet.create({
     },
     recapContainer: {
         width: '80%',
+        
     },
     recapTitle: {
         marginBottom: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     imageContainer: {
         position: 'absolute',
