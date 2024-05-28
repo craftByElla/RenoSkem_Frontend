@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import ScreenTitle from '../../components/text/ScreenTitle';
@@ -195,58 +195,64 @@ function RoomsScreen({ navigation, route }) {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.main}>
-                <View style={styles.biggerContainer}>
-                    <View style={styles.titleContainer}>
-                        <ScreenTitle style={styles.screenTitle} text="Périmètre" />
-                        <TouchableOpacity style={styles.addBtn} onPress={toggleAddRoomModal}>
-                            <Text>Ajouter une pièce</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {rooms.length > 0 ? (
-                        <RoomsDisplay rooms={rooms} onRoomPress={handleRoomPress} />
-                    ) : (
-                        <View style={styles.emptyContainer}>
-                            <Text style={styles.tentIcon}>🏕️</Text>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.main}>
+                    <View style={styles.biggerContainer}>
+                        <View style={styles.titleContainer}>
+                            <ScreenTitle style={styles.screenTitle} text="Périmètre" />
+                            <TouchableOpacity style={styles.addBtn} onPress={toggleAddRoomModal}>
+                                <Text>Ajouter une pièce</Text>
+                            </TouchableOpacity>
                         </View>
-                    )}
-                </View>
-            </View>
-            {rooms.length > 0 && (
-                <View style={styles.fondVert}>
-                    <View style={styles.recapContainer}>
-                        <View style={styles.recapTitle}>
-                            <ScreenTitle  text="Récapitulatif" />
-                        </View>
-                        {rooms.map(room => (
-                            <CardRoomDetails key={room._id} room={room} onPress={() => handleRoomPress(room._id)} />
-                        ))}
+                        {rooms.length > 0 ? (
+                            <RoomsDisplay rooms={rooms} onRoomPress={handleRoomPress} />
+                        ) : (
+                            <View style={styles.emptyContainer}>
+                                <Text style={styles.tentIcon}>🏕️</Text>
+                            </View>
+                        )}
                     </View>
                 </View>
-            )}
-            <AddRoomModal
-                isShow={isAddRoomModalVisible}
-                toggleModal={toggleAddRoomModal}
-                onSave={handleSaveRooms}
-                initialRoomCounts={initialRoomCounts}
-            />
-            {isRoomDetailsModalVisible && selectedRoomId && (
-                <RoomDetailsModal
-                    isShow={isRoomDetailsModalVisible}
-                    toggleModal={() => setRoomDetailsModalVisible(false)}
-                    onSave={handleSaveRoomDetails}
-                    roomId={selectedRoomId}
-                    roomDetails={roomDetails}
-                    onRoomDeleted={handleRoomDeleted}
+                {rooms.length > 0 && (
+                    <View style={styles.fondVert}>
+                        <View style={styles.recapContainer}>
+                            <View style={styles.recapTitle}>
+                                <ScreenTitle  text="Récapitulatif" />
+                            </View>
+                            {rooms.map(room => (
+                                <CardRoomDetails key={room._id} room={room} onPress={() => handleRoomPress(room._id)} />
+                            ))}
+                        </View>
+                    </View>
+                )}
+                <AddRoomModal
+                    isShow={isAddRoomModalVisible}
+                    toggleModal={toggleAddRoomModal}
+                    onSave={handleSaveRooms}
+                    initialRoomCounts={initialRoomCounts}
                 />
-            )}
+                {isRoomDetailsModalVisible && selectedRoomId && (
+                    <RoomDetailsModal
+                        isShow={isRoomDetailsModalVisible}
+                        toggleModal={() => setRoomDetailsModalVisible(false)}
+                        onSave={handleSaveRoomDetails}
+                        roomId={selectedRoomId}
+                        roomDetails={roomDetails}
+                        onRoomDeleted={handleRoomDeleted}
+                    />
+                )}
+            </ScrollView>
         </SafeAreaView>
     );
+    
 }
 
 export default RoomsScreen;
 
 const createStyles = (colors) => StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+    },
     main: {
         display: 'flex',
         width: '100%',
