@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import PropTypes from "prop-types";
 import { MyLightTheme } from '../../components/Theme';
+import Toast from 'react-native-toast-message';
 
 // Composant DeleteButton
 const DeleteButton = ({ onPress, text, style, onLongPress }) => {
@@ -45,7 +46,12 @@ const DeleteButton = ({ onPress, text, style, onLongPress }) => {
         <View style={[styles.container, style]}>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={onPress} 
+                onPress={()=> Toast.show({
+                    type: 'info',
+                    text1: 'Long Press Required',
+                    text2: 'Rester appuyer pour supprimer',
+                    position: 'top',
+                })} 
                 onLongPress={handleLongPress} 
                 onPressOut={handlePressOut}
             >
