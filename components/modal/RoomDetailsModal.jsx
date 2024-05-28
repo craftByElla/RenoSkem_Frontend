@@ -9,6 +9,9 @@ import FilledButton from '../../components/buttons/FilledButton';
 import CommentModal from '../../components/modal/CommentModal';
 import PosteItem from '../../components/buttons/PosteItem';
 import Toast from 'react-native-toast-message';
+import SimpleModal from '../modal/SimpleModal';
+import DeleteButton from '../buttons/DeleteButton';
+
 
 const postesTravaux = [
     "Chauffage",
@@ -41,6 +44,9 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, on
     const [comment, setComment] = useState('');
     const [isCommentModalVisible, setCommentModalVisible] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    //modale de suppression pièce
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
 
     useEffect(() => {
         if (roomDetails) {
@@ -102,6 +108,7 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, on
         setCommentModalVisible(!isCommentModalVisible);
     };
 
+    //Pour supprimer une pièce
     const handleDeleteRoom = async () => {
         try {
             const response = await fetch(`${process.env.IP_ADDRESS}/rooms/deleteRoom/${roomId}`, {
@@ -133,7 +140,12 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, on
         }
     };
     
+     //modale de suppression pièce
+     const toggleDeleteModal = () => {
+        setIsDeleteModalVisible(!isDeleteModalVisible);
+      };
 
+   
     return (
         <Modal
             transparent={true}
@@ -153,7 +165,7 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, on
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.inputRow}>
-                                    <TouchableOpacity style={styles.iconWrapper} onPress={handleDeleteRoom}>
+                                    <TouchableOpacity style={styles.iconWrapper} onPress={toggleDeleteModal}>
                                         <FontAwesome name="close" size={20} color={colors.orange} />
                                     </TouchableOpacity>
                                     <TextInput
@@ -254,6 +266,21 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, on
                 onSave={(newComment) => {
                     setComment(newComment);
                 }}
+            />
+            <SimpleModal 
+                isShow={isDeleteModalVisible} 
+                toggleModal={toggleDeleteModal} 
+                title="Supprimer la pièce ?"
+                button1={
+                <DeleteButton 
+                    text="Appui long pour confirmer"
+                    style={styles.btn}
+                    onLongPress={() => {
+                    handleDeleteRoom();
+                    toggleDeleteModal();
+                    }}
+                />
+                }
             />
         </Modal>
     );
@@ -410,6 +437,11 @@ const styles = StyleSheet.create({
     radioButtons: {
         flexGrow: 1,
     },
+    btn: {
+        width: '90%',
+        margin: 'auto',
+        marginVertical: 5,
+    }
 });
 
 export default RoomDetailsModal;
