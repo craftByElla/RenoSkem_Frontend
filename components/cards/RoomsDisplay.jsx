@@ -27,7 +27,7 @@ const RoomIcon = ({ type }) => {
 };
 
 const getBorderColor = (room) => {
-    const { deepGrey, orange, lightGreen } = MyLightTheme.colors;
+    const { grey, orange, lightGreen } = MyLightTheme.colors;
     const hasName = room.name && room.name.trim() !== '';
     const hasSurface = room.surface !== null;
     const hasComment = room.comment && room.comment.trim() !== '';
@@ -38,7 +38,7 @@ const getBorderColor = (room) => {
     } else if (hasName || hasSurface || hasComment || hasItems) {
         return orange;
     } else {
-        return deepGrey;
+        return grey;
     }
 };
 

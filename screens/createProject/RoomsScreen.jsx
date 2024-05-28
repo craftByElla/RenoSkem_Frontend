@@ -7,6 +7,8 @@ import Toast from 'react-native-toast-message';
 import RoomsDisplay from '../../components/cards/RoomsDisplay';
 import AddRoomModal from '../../components/modal/AddRoomModal';
 import RoomDetailsModal from '../../components/modal/RoomDetailsModal';
+import CardRoomDetails from '../../components/cards/CardRoomDetails';
+
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -18,7 +20,6 @@ function RoomsScreen({ navigation, route }) {
     const { projectId } = route.params;
     const [rooms, setRooms] = useState([]);
     const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
-
     const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState(null);
     const [roomDetails, setRoomDetails] = useState(null);
@@ -214,7 +215,12 @@ function RoomsScreen({ navigation, route }) {
             {rooms.length > 0 && (
                 <View style={styles.fondVert}>
                     <View style={styles.recapContainer}>
-                        <ScreenTitle style={styles.recapTitle} text="Récapitulatif" />
+                        <View style={styles.recapTitle}>
+                            <ScreenTitle  text="Récapitulatif" />
+                        </View>
+                        {rooms.map(room => (
+                            <CardRoomDetails key={room._id} room={room} onPress={() => handleRoomPress(room._id)} />
+                        ))}
                     </View>
                 </View>
             )}
@@ -284,7 +290,9 @@ const createStyles = (colors) => StyleSheet.create({
     recapContainer: {
         width: '80%',
     },
-    recapTitle: {},
+    recapTitle: {
+        marginBottom: 20,
+    },
     imageContainer: {
         position: 'absolute',
         top: 50,
