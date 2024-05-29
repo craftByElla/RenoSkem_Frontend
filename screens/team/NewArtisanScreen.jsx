@@ -7,6 +7,7 @@ import FilledButton from "../../components/buttons/FilledButton";
 import { useState,useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
+import { useSelector } from 'react-redux';
 
 const ipString = process.env.IP_ADDRESS;
 
@@ -17,10 +18,11 @@ export default function NewArtisanScreen({ navigation }) {
   const [job, setJob] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setphoneNumber] = useState("");
+  const token = useSelector((state) => state.user.userInfos.token)
 
 const createArtisan = () => {
                                  
-    fetch(`${ipString}/artisans/newArtisan`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
+    fetch(`${ipString}/artisans/newArtisan/${token}`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email:email,

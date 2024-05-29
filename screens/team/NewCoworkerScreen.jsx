@@ -16,6 +16,7 @@ import PageTitle from "../../components/text/ScreenTitle";
 import FilledButton from "../../components/buttons/FilledButton";
 import Stars from "../../components/buttons/Stars";
 import TextWithRadioButton from "../../components/buttons/TextWithRadioButtons";
+import { useSelector } from 'react-redux';
 
 const picture = require("../../assets/Gabin.jpg");
 const ipString = process.env.IP_ADDRESS;
@@ -46,6 +47,7 @@ export default function TeammateSkillsScreen({ navigation }) {
   const { colors } = useTheme();
   const [text, setText] = useState("");
   const [skills, setSkills] = useState({});
+  const token = useSelector((state) => state.user.userInfos.token)
 
   // Mise à jour de l'état lorsqu'une compétence est sélectionnée
   const handleSkillChange = (posteIndex, niveau) => {
@@ -80,12 +82,14 @@ export default function TeammateSkillsScreen({ navigation }) {
     };
 
     try {
-      const response = await fetch(`${ipString}/teammates/newTeammate`, {
+      const response = await fetch(`${ipString}/teammates/newTeammate/${token}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: text }),
+        body: JSON.stringify({ 
+                  name: text,
+                 }),
       });
 
       if (response.status === 201) {

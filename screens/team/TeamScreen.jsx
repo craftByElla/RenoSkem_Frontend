@@ -20,14 +20,22 @@ const ipString = process.env.IP_ADDRESS;
 export default function TeamScreen({ navigation }) {
   const { colors } = useTheme();
   const [teammatesData, setTeammatesData] = useState([]);
-  const [artisansData, setArtisansData] = useState([]);
+  //const [artisansData, setArtisansData] = useState([]);
   const token = useSelector((state) => state.user.userInfos.token)    // recuperation du token dans redux
   
 
   useEffect(() => {                                                   //fetch pour recuperer tout les teammates de l'utilisateur
-    fetch(`${ipString}/users/getUserTeammates/${token}`)
+    fetch(`${ipString}/users/getUserTeammates/${token}`,{
+       headers:{'Content-Type':'application.json'},
+    })
         .then (response => response.json())
-        .then(data => setTeammatesData(data))
+        .then(data => {
+          if (data) {
+          console.log(data);
+      } else {
+          console.log("Data is undefined or empty");
+      }
+      })
         .catch ((error) => console.log("error:",error));
   },[ipString, token]);
 
@@ -37,7 +45,7 @@ export default function TeamScreen({ navigation }) {
   });
 
 
-  useEffect(() => {
+  /*useEffect(() => {
     fetch(`${ipString}/users/getUserArtisans/${token}`)               // fetch pour recuperer tout les artisans de l'utilisateur
         .then(response => response.json())
         .then (data => setArtisansData(data))
@@ -46,7 +54,7 @@ export default function TeamScreen({ navigation }) {
 
     const artisans = artisansData.map((data, i) => {
       return <AvatarCard key={i} name={data.name} image={data.avatar} onPress={() => navigation.navigate("ConfigureExpertiseScreen")} />;  // .map pour afficher les artisans sur teamScreen
-    });
+    });*/
   
 
   const [isShowModal, setIsShowModal] = useState(false);

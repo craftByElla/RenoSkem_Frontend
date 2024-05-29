@@ -65,7 +65,7 @@ function HomeScreen({ navigation }) {
 
 // console.log('projects', projects)
 
-    const projectName = projects.map((data, i) => {
+    const projectName = projects?.map((data, i) => {
         return <SmallProjectCard key={i} name={data.name} picture={data.picture} /> 
     });
 
