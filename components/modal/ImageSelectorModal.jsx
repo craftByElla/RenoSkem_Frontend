@@ -21,15 +21,14 @@ function ImageSelectorModal({ isShow, toggleModal, onSelectImage }) {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleImageSelect = (index) => {
-    // console.log('Index sélectionné :', index, 'Image :', images[index].uri);
     setSelectedImage(index);
   };
 
   const handleCloseModal = () => {
     if (selectedImage !== null) {
-      const imageUri = Image.resolveAssetSource(images[selectedImage].uri);
-      // console.log('Image confirmée :', imageUri);
-      onSelectImage(imageUri);
+      const selectedImageName = images[selectedImage].name;
+      // console.log('Image confirmée :', selectedImageName);
+      onSelectImage({ name: selectedImageName });
     }
     toggleModal();
   };

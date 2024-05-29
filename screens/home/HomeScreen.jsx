@@ -6,8 +6,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addUserInfosToStore } from '../../reducers/user';
 import { useDispatch } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
 import BudgetPieChart from '../../components/charts/BudgetPieChart';
+
+
 const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -15,11 +18,19 @@ function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
 
     // console.log('userInfos', userInfos);
-
+    const userInfos = useSelector((state) => state.user.userInfos);
     const [avatar, setAvatar] = useState(null);
     const [name, setName] = useState(null);
     const [projects, setProjects] = useState([]);
     const [skillsFromBack, setSkillsFromBack] = useState([])
+
+    const getAvatarUrl = (avatarName) => {
+        if (!avatarName) {
+            return null;
+        }
+        return `${ipString}/assets/${avatarName}`;
+    };
+    
 
     useFocusEffect(
         useCallback(() => { //permet d'optimiser les performances. A voir dans la doc pour plus de précision en vrai 
@@ -45,12 +56,12 @@ function HomeScreen({ navigation }) {
                         delete skills._id;
                         dispatch(addUserInfosToStore({
                             name: userData.user.name,
-                            avatar: userData.user.avatar,
+                            avatar: getAvatarUrl(userData.user.avatar),
                             skills: skills,
                             token: userData.user.token,
                         }));
                         setName(userData.user.name);
-                        setAvatar(userData.user.avatar);
+                        setAvatar(getAvatarUrl(userData.user.avatar));
                         setSkillsFromBack(skills)
                     }
                     const secondResponse = await fetch(`${ipString}/projects/getUserProjects/${token}`)
@@ -74,7 +85,7 @@ function HomeScreen({ navigation }) {
             <View style={styles.main}>
                 <Pressable style={styles.userContainer} onPress={() => navigation.navigate('SkillsScreen', { skillsFromBack })}>
                     <View style={styles.avatarWrapper}>
-                        <Image source={{ uri: avatar }} style={styles.profilePicture} /> 
+                        <Image source={{uri: userInfos.avatar}} style={styles.profilePicture} /> 
                     </View>
                     <Text style={styles.helloText}>Hey {name} !</Text>
                 </Pressable>
@@ -160,7 +171,7 @@ const styles = StyleSheet.create({
     projects : {
         display: 'flex', 
         flexDirection: 'row',
-        paddingTop: 10,
+        paddingTop: 25,
         justifyContent: 'space-between',
     }, 
     titleDashboard: {
@@ -169,7 +180,6 @@ const styles = StyleSheet.create({
         lineHeight: 36,
         letterSpacing: 0.15,
         color: '#194852',
-        paddingHorizontal: 22,
         alignSelf: 'flex-start'
     },
     dashboard: {

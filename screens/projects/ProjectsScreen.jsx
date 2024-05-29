@@ -196,10 +196,13 @@ function ProjectsScreen({ navigation }) {
             </View>
             <View style={styles.biggerScrollContainer}>
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    {filteredProjects.map((project) => (
+                {filteredProjects.map((project) => {
+                    const imageUrl = `${ipString}/assets/${project.picture}`;
+                    // console.log(`Image URL for project ${project._id}: ${imageUrl}`); 
+                    return (
                         <ProjectCard
                             key={project._id}
-                            imageSrc={{ uri: project.picture }}
+                            imageSrc={{ uri: imageUrl }}
                             title={project.name}
                             archived={project.archived}
                             pinned={project.pinned}
@@ -208,7 +211,8 @@ function ProjectsScreen({ navigation }) {
                             deleteProject={() => deleteProject(project._id)}
                             projectId={project._id} 
                         />
-                    ))}
+                    );
+                })}
                 </ScrollView>
             </View>
             <SimpleModal 

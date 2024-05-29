@@ -15,13 +15,10 @@ import { useRoute } from '@react-navigation/native';
 const ipString = process.env.IP_ADDRESS;
 
 function EditProjectScreen({ navigation }) {
-    // Récupère le token utilisateur à partir de l'état global (Redux)
     const userToken = useSelector((state) => state.user.userInfos.token);
-    // Récupère les paramètres de la route, y compris projectId
     const route = useRoute();
     const { projectId } = route.params;
 
-    // Déclaration des états pour stocker les valeurs des champs du formulaire
     const [name, setName] = useState('');
     const [budget, setBudget] = useState('');
     const [location, setLocation] = useState('');
@@ -30,14 +27,9 @@ function EditProjectScreen({ navigation }) {
     const [isModalVisible, setModalVisible] = useState(false);
     const [isCommentModalVisible, setCommentModalVisible] = useState(false);
 
-    // Utilise useEffect pour récupérer les détails du projet lors du montage du composant
     useEffect(() => {
         const fetchProjectDetails = async () => {
-            // console.log("projectId:", projectId);
-            
-
             try {
-                // Effectue une requête GET pour récupérer les détails du projet
                 const response = await fetch(`${ipString}/projects/getProject/${projectId}`, {
                     method: 'GET',
                     headers: {
@@ -45,16 +37,12 @@ function EditProjectScreen({ navigation }) {
                     },
                 });
                 const data = await response.json();
-
-                // console.log("Response status:", response.status);
-                // console.log("Response data:", data);
-
-                // Si la réponse est OK, met à jour les états avec les détails du projet
+    
                 if (response.ok) {
                     setName(data.project.name);
                     setBudget(data.project.budget.toString());
                     setLocation(data.project.location);
-                    setPicture(data.project.picture ? { uri: data.project.picture } : null);
+                    setPicture(data.project.picture);
                     setComment(data.project.comment);
                 } else {
                     Toast.show({
@@ -64,7 +52,6 @@ function EditProjectScreen({ navigation }) {
                     });
                 }
             } catch (error) {
-                console.log("Fetch error:", error);
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
@@ -72,15 +59,12 @@ function EditProjectScreen({ navigation }) {
                 });
             }
         };
-
-        // Appelle la fonction pour récupérer les détails du projet
+    
         fetchProjectDetails();
     }, [projectId, userToken]);
 
-    // Fonction pour gérer l'enregistrement des modifications
     const handleSave = () => {
-        // Vérifie que le nom du projet n'est pas vide
-        if (!name ) {
+        if (!name) {
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
@@ -88,19 +72,24 @@ function EditProjectScreen({ navigation }) {
             });
             return;
         }
-
-        // Prépare les données du projet à mettre à jour
+    
+        let picturePath = picture;
+        if (picture) {
+            const parts = picture.split('/');
+            picturePath = parts.pop(); // Conserve uniquement la dernière partie du chemin
+            console.log(`split picturePath = ${picturePath}`);
+        }
+    
         const updatedProjectData = {
             name,
             budget: parseFloat(budget),
             location,
-            picture: picture ? picture.uri : null,
+            picture: picturePath,
             comment,
         };
+        
+        console.log(`split UpdatedpicturePath = ${updatedProjectData.picture}`)
 
-        // console.log("Updated project data:", updatedProjectData);
-
-        // Effectue une requête PUT pour mettre à jour le projet
         fetch(`${ipString}/projects/editproject/${projectId}`, {
             method: 'PUT',
             headers: {
@@ -109,12 +98,8 @@ function EditProjectScreen({ navigation }) {
             },
             body: JSON.stringify(updatedProjectData),
         })
-        .then(response => {
-            // console.log("Response status:", response.status);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            // console.log("Response data:", data);
             if (data.message === 'Project profile updated successfully') {
                 Toast.show({
                     type: 'success',
@@ -131,7 +116,6 @@ function EditProjectScreen({ navigation }) {
             }
         })
         .catch((error) => {
-            // console.log("Update error:", error);
             Toast.show({
                 type: 'error',
                 text1: 'Erreur',
@@ -139,21 +123,26 @@ function EditProjectScreen({ navigation }) {
             });
         });
     };
-
-    // Fonction pour gérer la sélection de l'image
+    
     const handleImageSelect = (image) => {
-        setPicture(image);
+        setPicture(`projectIcon/${image.name}`);
     };
 
-    // Fonction pour basculer la visibilité de la modale de sélection d'image
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
 
-    // Fonction pour basculer la visibilité de la modale de commentaire
     const toggleCommentModal = () => {
         setCommentModalVisible(!isCommentModalVisible);
     };
+
+    const getProjectImageUrl = (imageName) => {
+        if (!imageName) {
+            return null;
+        }
+        return `${ipString}/assets/${imageName}`;
+    };
+    
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -188,7 +177,7 @@ function EditProjectScreen({ navigation }) {
                                 <TouchableOpacity onPress={toggleModal}>
                                     <View style={styles.pictureWrapper}>
                                         {picture ? (
-                                            <Image source={picture} style={styles.picture} />
+                                            <Image source={{ uri: getProjectImageUrl(picture) }} style={styles.picture} />
                                         ) : (
                                             <ProjectPicture />
                                         )}

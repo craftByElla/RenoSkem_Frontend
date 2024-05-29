@@ -26,7 +26,7 @@ function SkillsScreen({ navigation }) {
         setIsShowModal(!isShowModal);
     };
 
-
+    
 
 //---------------------------FONCTION FETCH POUR VIDER LE LOCAL STORAGE, DECONNECTION--------------------------------
 
