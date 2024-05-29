@@ -48,7 +48,7 @@ function ChangeInformationsScreen({ navigation }) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({                 
                 name: name ? name : currentName,
-                avatar: avatar.uri,
+                avatar: avatar.name,
                 currentPassword: currentPassword,
                 newPassword: newPassword
             })
