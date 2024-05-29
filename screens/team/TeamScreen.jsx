@@ -19,17 +19,35 @@ const ipString = process.env.IP_ADDRESS;
 
 export default function TeamScreen({ navigation }) {
   const { colors } = useTheme();
-  /*const avatarsData = [
-    { name: "martin", image: require("../../assets/Martin.jpg") },
-    { name: "jc", image: require("../../assets/jc.jpg") },
-    { name: "ella", image: require("../../assets/Ella.jpg") },
-    { name: "gaël", image: require("../../assets/henry.jpg") },
-    { name: "cece", image: require("../../assets/Gabin.jpg") },
-  ];*/
+  const [teammatesData, setTeammatesData] = useState([]);
+  const [artisansData, setArtisansData] = useState([]);
+  const token = useSelector((state) => state.user.userInfos.token)    // recuperation du token dans redux
+  
 
-  const avatars = avatarsData.map((data, i) => {
-    return <AvatarCard key={i} name={data.name} image={data.image} onPress={() => navigation.navigate("TeammateSkillsScreen")} />;
+  useEffect(() => {                                                   //fetch pour recuperer tout les teammates de l'utilisateur
+    fetch(`${ipString}/users/getUserTeammates/${token}`)
+        .then (response => response.json())
+        .then(data => setTeammatesData(data))
+        .catch ((error) => console.log("error:",error));
+  },[ipString, token]);
+
+
+  const avatars = teammatesData.map((data, i) => {
+    return <AvatarCard key={i} name={data.name} image={data.avatar} onPress={() => navigation.navigate("TeammateSkillsScreen")} />;  // .map pour afficher les teammates sur teamScreen
   });
+
+
+  useEffect(() => {
+    fetch(`${ipString}/users/getUserArtisans/${token}`)               // fetch pour recuperer tout les artisans de l'utilisateur
+        .then(response => response.json())
+        .then (data => setArtisansData(data))
+    },[ipString, token]);
+
+
+    const artisans = artisansData.map((data, i) => {
+      return <AvatarCard key={i} name={data.name} image={data.avatar} onPress={() => navigation.navigate("ConfigureExpertiseScreen")} />;  // .map pour afficher les artisans sur teamScreen
+    });
+  
 
   const [isShowModal, setIsShowModal] = useState(false);
   const toggleModal = () => {
@@ -41,13 +59,7 @@ export default function TeamScreen({ navigation }) {
     setIsShowModal_2(!isShowModal_2);
   };
 
-  const token = useSelector((state) => state.user.userInfos.token)
-
-  useEffect(() => {
-    fetch(`${ipString}/users/getUserTeammates/${token}`) //fetch pour recuperer tout les teammates de l'utilisateur
-      .then((response) => response.json())
-      .catch((error) => console.error("Error:", error));
-  }, []);
+ 
 
   return (
     <View style={styles.Teammates}>
@@ -67,7 +79,8 @@ export default function TeamScreen({ navigation }) {
       <View style={styles.searchContainer}>
         <CustomInput placeholder="Rechercher" search={true} />
       </View>
-      <View style={styles.avatarContainer}>{avatars}</View>
+      <View style={styles.avatarContainer}>
+        {avatars}</View>
       <SimpleModal
         isShow={isShowModal}
         toggleModal={toggleModal}
