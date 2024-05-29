@@ -33,7 +33,7 @@ const CustomInput = ({ placeholder, secureTextEntry = false, search = false, val
         //Cache le texte si 'isPasswordVisible' est faux
         onChangeText={handleTextChange}
         value={value}
-        keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : placeholder.toLowerCase().includes('budget') ? 'numeric' : 'default'}
+        keyboardType={placeholder.toLowerCase().includes('email') ? 'email-address' : placeholder.toLowerCase().includes('budget') ? 'numeric' : placeholder.toLowerCase().includes('téléphone') ? 'numeric'  :'default'}
         autoCapitalize={placeholder.toLowerCase().includes('email') ? 'none' : 'sentences'}
       />
       {secureTextEntry && (    // Affiche une icône de visibilité de mot de passe si 'secureTextEntry' est vrai

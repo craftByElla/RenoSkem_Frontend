@@ -53,7 +53,7 @@ function HomeScreen({ navigation }) {
                         setAvatar(userData.user.avatar);
                         setSkillsFromBack(skills)
                     }
-                    const secondResponse = await fetch(`${ipString}/projects/getUserProjects/${token}`)
+                    const secondResponse = await fetch(`${ipString}/user/getUserProjects/${token}`)
                     const projectsFromBack = await secondResponse.json();
                     setProjects(projectsFromBack.projects)
                 } catch (error) {
@@ -63,7 +63,7 @@ function HomeScreen({ navigation }) {
         }, [])
     );
 
-// console.log('projects', projects)
+console.log('projects', projects)
 
     const projectName = projects.map((data, i) => {
         return <SmallProjectCard key={i} name={data.name} picture={data.picture} projectId={data._id}/> 
