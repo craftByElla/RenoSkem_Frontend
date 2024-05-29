@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TextInput, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,9 +8,11 @@ import Hammers from '../../components/buttons/Hammers';
 import FilledButton from '../../components/buttons/FilledButton';
 import CommentModal from '../../components/modal/CommentModal';
 import PosteItem from '../../components/buttons/PosteItem';
-import { MyLightTheme } from '../Theme';
+import Toast from 'react-native-toast-message';
+import SimpleModal from '../modal/SimpleModal';
+import DeleteButton from '../buttons/DeleteButton';
 
-// Liste des postes de travaux
+
 const postesTravaux = [
     "Chauffage",
     "Cloisonnement/Plâtrage",
@@ -33,24 +35,47 @@ const postesTravaux = [
     "Ventilation"
 ];
 
-const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
+const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId, roomDetails, onRoomDeleted }) => {
     const { colors } = useTheme();
     const [name, setName] = useState('');
     const [surface, setSurface] = useState('');
     const [selectedPostes, setSelectedPostes] = useState([]);
-    const [fields, setFields] = useState(postesTravaux.reduce((acc, poste) => {
-        acc[poste] = null;
-        return acc;
-    }, {}));
+    const [fields, setFields] = useState({});
     const [comment, setComment] = useState('');
     const [isCommentModalVisible, setCommentModalVisible] = useState(false);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    //modale de suppression pièce
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
+
+    useEffect(() => {
+        if (roomDetails) {
+            setName(roomDetails.name || '');
+            setSurface(roomDetails.surface !== null ? String(roomDetails.surface) : '');
+            setComment(roomDetails.comment || '');
+            setSelectedPostes(roomDetails.items ? roomDetails.items.map(item => item.field) : []);
+            setFields(roomDetails.items ? roomDetails.items.reduce((acc, item) => {
+                acc[item.field] = item.difficulty;
+                return acc;
+            }, {}) : {});
+        } else {
+            setName('');
+            setSurface('');
+            setComment('');
+            setSelectedPostes([]);
+            setFields({});
+        }
+    }, [roomDetails]);
 
     const handleSave = () => {
-        onSave(name, surface, roomId);
+        const items = selectedPostes.map(poste => ({
+            field: poste,
+            difficulty: fields[poste],
+        }));
+        onSave(name, surface, items, comment, roomId);
         toggleModal();
     };
-
+    
     const handleAddPoste = (poste) => {
         if (poste && !selectedPostes.includes(poste)) {
             setSelectedPostes([...selectedPostes, poste]);
@@ -83,6 +108,44 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
         setCommentModalVisible(!isCommentModalVisible);
     };
 
+    //Pour supprimer une pièce
+    const handleDeleteRoom = async () => {
+        try {
+            const response = await fetch(`${process.env.IP_ADDRESS}/rooms/deleteRoom/${roomId}`, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+    
+            if (response.ok) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: 'La pièce a été supprimée avec succès'
+                });
+                onRoomDeleted(roomId);
+                toggleModal();
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la suppression de la pièce'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la suppression de la pièce'
+            });
+        }
+    };
+    
+     //modale de suppression pièce
+     const toggleDeleteModal = () => {
+        setIsDeleteModalVisible(!isDeleteModalVisible);
+      };
+
+   
     return (
         <Modal
             transparent={true}
@@ -97,12 +160,12 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
                             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                                 <View style={styles.header}>
                                     <Text style={styles.modalTitle}>Détails de la pièce</Text>
-                                    <TouchableOpacity onPress={toggleModal}>
+                                    <TouchableOpacity onPress={() => { handleSave(); toggleModal(); }}>
                                         <Entypo name='cross' size={40} color={colors.deepGrey} />
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.inputRow}>
-                                    <TouchableOpacity style={styles.iconWrapper}>
+                                    <TouchableOpacity style={styles.iconWrapper} onPress={toggleDeleteModal}>
                                         <FontAwesome name="close" size={20} color={colors.orange} />
                                     </TouchableOpacity>
                                     <TextInput
@@ -138,7 +201,7 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
                                         keyboardType="numeric"
                                     />
                                 </View>
-                                <View >
+                                <View>
                                     <Text style={styles.label}>Définissez les rénovations ▼</Text>
                                 </View>
                                 {selectedPostes.length > 0 && (
@@ -204,6 +267,21 @@ const RoomDetailsModal = ({ isShow, toggleModal, onSave, roomId }) => {
                     setComment(newComment);
                 }}
             />
+            <SimpleModal 
+                isShow={isDeleteModalVisible} 
+                toggleModal={toggleDeleteModal} 
+                title="Supprimer la pièce ?"
+                button1={
+                <DeleteButton 
+                    text="Appui long pour confirmer"
+                    style={styles.btn}
+                    onLongPress={() => {
+                    handleDeleteRoom();
+                    toggleDeleteModal();
+                    }}
+                />
+                }
+            />
         </Modal>
     );
 };
@@ -213,6 +291,8 @@ RoomDetailsModal.propTypes = {
     toggleModal: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     roomId: PropTypes.string.isRequired,
+    roomDetails: PropTypes.object,
+    onRoomDeleted: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -322,12 +402,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         marginBottom: 10,
-        backgroundColor: '#f1f1f1', // même style de fond que le commentaire
+        backgroundColor: '#f1f1f1',
         padding: 10,
         borderRadius: 8,
     },
     commentSection: {
         marginTop: 10,
+        
     },
     commentLabel: {
         color: '#6F797B',
@@ -351,10 +432,16 @@ const styles = StyleSheet.create({
     commentButton: {
         width: '100%',
         borderRadius: 8,
+        marginLeft: 0,
     },
     radioButtons: {
         flexGrow: 1,
     },
+    btn: {
+        width: '90%',
+        margin: 'auto',
+        marginVertical: 5,
+    }
 });
 
 export default RoomDetailsModal;
