@@ -51,7 +51,7 @@ function CreateAccount({ navigation }) {
     const [avatar, setAvatar] = useState(null); 
     const [isModalVisible, setModalVisible] = useState(false); 
 
-    console.log('IP Address:', ipString);
+    // console.log('IP Address:', ipString);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -74,7 +74,7 @@ function CreateAccount({ navigation }) {
             avatar: avatar ? avatar.name : null
         };
     
-        console.log('Données utilisateur envoyées :', userData);
+        // console.log('Données utilisateur envoyées :', userData);
 
         fetch(`${ipString}/users/signup`, {
             method: 'POST',
@@ -85,7 +85,7 @@ function CreateAccount({ navigation }) {
         })
         .then(async response => {
             const data = await response.json();
-            console.log('Response from server:', data);
+            // console.log('Response from server:', data);
             if (data.message) {
                 if (data.message === 'User successfully registered') {
                     await AsyncStorage.setItem('userToken', data.user.token);
@@ -139,15 +139,15 @@ function CreateAccount({ navigation }) {
             return null;
         }
         const { uri } = Asset.fromModule(asset);
-        console.log('Generated Avatar URL:', uri);
+        // console.log('Generated Avatar URL:', uri);
         return uri;
     };
 
     useEffect(() => {
-        console.log('Current Avatar:', avatar);
+        // console.log('Current Avatar:', avatar);
         if (avatar) {
             const url = getAvatarUrl(avatar.name);
-            console.log('Avatar URL:', url);
+            // console.log('Avatar URL:', url);
         }
     }, [avatar]);
 
@@ -179,7 +179,6 @@ function CreateAccount({ navigation }) {
                                         <Image 
                                             source={{ uri: getAvatarUrl(avatar.name) }} 
                                             style={styles.avatar} 
-                                            onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
                                         />
                                     ) : (
                                         <UserPicture />

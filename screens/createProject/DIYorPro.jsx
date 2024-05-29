@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,  useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import Toast from 'react-native-toast-message';
 import RoomsDisplayDIYPRO from '../../components/cards/RoomsDisplayDIYPRO';
@@ -49,9 +49,9 @@ function DIYorProScreen({ navigation, route }) {
                     setWorkTypes([...workTypesSet]);
                     setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'], diy: 'Voir tout' });
     
-                    console.log("Rooms fetched: ", data.rooms);
-                    console.log("Room types: ", [...roomTypesSet]);
-                    console.log("Work types: ", [...workTypesSet]);
+                    // console.log("Rooms fetched: ", data.rooms);
+                    // console.log("Room types: ", [...roomTypesSet]);
+                    // console.log("Work types: ", [...workTypesSet]);
                 } else {
                     Toast.show({
                         type: 'error',
@@ -71,6 +71,50 @@ function DIYorProScreen({ navigation, route }) {
         fetchRooms();
     }, [projectId]);
 
+    useFocusEffect(
+        useCallback(() => {
+            reloadRooms();
+        }, [projectId])
+    );
+
+        const reloadRooms = async () => {
+        try {
+            const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
+            const response = await fetch(url);
+            const data = await response.json();
+    
+            if (response.ok) {
+                setRooms(data.rooms);
+                setFilteredRooms(data.rooms);
+    
+                const roomTypesSet = new Set();
+                const workTypesSet = new Set();
+                data.rooms.forEach(room => {
+                    roomTypesSet.add(room.type);
+                    room.items.forEach(item => {
+                        workTypesSet.add(item.field);
+                    });
+                });
+    
+                setRoomTypes([...roomTypesSet]);
+                setWorkTypes([...workTypesSet]);
+                setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'], diy: 'Voir tout' });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la récupération des pièces'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la récupération des pièces'
+            });
+        }
+    };
+
     const toggleFilterModal = () => {
         setFilterModalVisible(!isFilterModalVisible);
     };
@@ -89,12 +133,12 @@ function DIYorProScreen({ navigation, route }) {
     
         setFilteredRooms(filteredRooms);
     
-        console.log("Filters applied: ", selectedFilters);
-        console.log("Filtered rooms: ", filteredRooms);
+        // console.log("Filters applied: ", selectedFilters);
+        // console.log("Filtered rooms: ", filteredRooms);
     };
 
     const handleRoomPress = (roomId) => {
-        console.log(`Click on room with id: ${roomId}`);
+        // console.log(`Click on room with id: ${roomId}`);
     };
 
     return (
