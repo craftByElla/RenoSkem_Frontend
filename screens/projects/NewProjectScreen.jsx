@@ -154,7 +154,7 @@ function NewProjectScreen({ navigation }) {
             return null;
         }
         const { uri } = Asset.fromModule(asset);
-        console.log('Generated Project icon URL:', uri);
+        // console.log('Generated Project icon URL:', uri);
         return uri;
     };
 
@@ -194,7 +194,6 @@ function NewProjectScreen({ navigation }) {
                                             <Image 
                                             source={{ uri: getProjectIconUrl(picture.name) }} 
                                             style={styles.picture} 
-                                            onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
                                             />
                                         ) : (
                                             <ProjectPicture />
@@ -249,7 +248,7 @@ function NewProjectScreen({ navigation }) {
                     toggleModal={toggleCommentModal}
                     comment={comment}
                     onSave={(newComment) => {
-                        console.log("onSave - newComment:", newComment); // Log the new comment
+                        // console.log("onSave - newComment:", newComment); // Log the new comment
                         setComment(newComment);
                     }}
                 />

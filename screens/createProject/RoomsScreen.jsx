@@ -16,7 +16,7 @@ const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 const ipString = process.env.IP_ADDRESS;
 
-function RoomsScreen({ navigation, route }) {
+function RoomsScreen({ navigation, route, onRoomsChanged  }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
     const { projectId } = route.params;
@@ -42,8 +42,9 @@ function RoomsScreen({ navigation, route }) {
                 const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
                 const response = await fetch(url);
                 const data = await response.json();
-    
+        
                 if (response.ok) {
+                    // console.log("Fetched rooms data:", data.rooms);
                     setRooms(data.rooms);
                     setFilteredRooms(data.rooms);
                     const roomCounts = data.rooms.reduce((acc, room) => {
@@ -51,7 +52,7 @@ function RoomsScreen({ navigation, route }) {
                         return acc;
                     }, {});
                     setInitialRoomCounts(roomCounts);
-    
+        
                     const roomTypesSet = new Set();
                     const workTypesSet = new Set();
                     data.rooms.forEach(room => {
@@ -60,14 +61,14 @@ function RoomsScreen({ navigation, route }) {
                             workTypesSet.add(item.field);
                         });
                     });
-    
+        
                     setRoomTypes([...roomTypesSet]);
                     setWorkTypes([...workTypesSet]);
                     setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'] });
-    
-                    console.log("Rooms fetched: ", data.rooms);
-                    console.log("Room types: ", [...roomTypesSet]);
-                    console.log("Work types: ", [...workTypesSet]);
+        
+                    // console.log("Rooms fetched: ", data.rooms);
+                    // console.log("Room types: ", [...roomTypesSet]);
+                    // console.log("Work types: ", [...workTypesSet]);
                 } else {
                     Toast.show({
                         type: 'error',
@@ -83,6 +84,7 @@ function RoomsScreen({ navigation, route }) {
                 });
             }
         };
+        
     
         fetchRooms();
     }, [projectId, reload]);
@@ -110,11 +112,48 @@ function RoomsScreen({ navigation, route }) {
     
         setFilteredRooms(filteredRooms);
     
-        console.log("Filters applied: ", selectedFilters);
-        console.log("Filtered rooms: ", filteredRooms);
+        // console.log("Filters applied: ", selectedFilters);
+        // console.log("Filtered rooms: ", filteredRooms);
     };
     
-    
+   // Ajouter cette fonction pour recharger les données
+    const reloadRooms = async () => {
+        try {
+            const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (response.ok) {
+                setRooms(data.rooms);
+                setFilteredRooms(data.rooms);
+
+                const roomTypesSet = new Set();
+                const workTypesSet = new Set();
+                data.rooms.forEach(room => {
+                    roomTypesSet.add(room.type);
+                    room.items.forEach(item => {
+                        workTypesSet.add(item.field);
+                    });
+                });
+
+                setRoomTypes([...roomTypesSet]);
+                setWorkTypes([...workTypesSet]);
+                setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'] });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la récupération des pièces'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la récupération des pièces'
+            });
+        }
+    }; 
    
     const handleSaveRooms = async (roomCounts) => {
         try {
@@ -128,7 +167,8 @@ function RoomsScreen({ navigation, route }) {
             const data = await response.json();
 
             if (response.ok) {
-                setRooms(data.rooms);
+                // setRooms(data.rooms);
+                await reloadRooms();
                 setInitialRoomCounts(roomCounts);
                 Toast.show({
                     type: 'success',
@@ -198,12 +238,17 @@ function RoomsScreen({ navigation, route }) {
             const data = await response.json();
     
             if (response.ok) {
-                setRooms(prevRooms => prevRooms.map(room => room._id === roomId ? data.room : room));
+                // setRooms(prevRooms => prevRooms.map(room => room._id === roomId ? data.room : room));
+                await reloadRooms();
                 Toast.show({
                     type: 'success',
                     text1: 'Succès',
                     text2: 'Les détails de la pièce ont été mis à jour avec succès'
                 });
+                // Notifier le changement
+                if (onRoomsChanged) {
+                    onRoomsChanged();
+                }
             } else {
                 Toast.show({
                     type: 'error',

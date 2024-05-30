@@ -77,7 +77,7 @@ function EditProjectScreen({ navigation }) {
         if (picture) {
             const parts = picture.split('/');
             picturePath = parts.pop(); // Conserve uniquement la dernière partie du chemin
-            console.log(`split picturePath = ${picturePath}`);
+            // console.log(`split picturePath = ${picturePath}`);
         }
     
         const updatedProjectData = {
@@ -88,7 +88,7 @@ function EditProjectScreen({ navigation }) {
             comment,
         };
         
-        console.log(`split UpdatedpicturePath = ${updatedProjectData.picture}`)
+        // console.log(`split UpdatedpicturePath = ${updatedProjectData.picture}`)
 
         fetch(`${ipString}/projects/editproject/${projectId}`, {
             method: 'PUT',

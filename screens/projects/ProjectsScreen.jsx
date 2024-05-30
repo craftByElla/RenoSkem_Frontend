@@ -132,13 +132,13 @@ function ProjectsScreen({ navigation }) {
 
     //Pour supprimer un projet
     const deleteProject = async (projectId) => {
-        console.log("Suppression du projet avec l'ID:", projectId);
+        // console.log("Suppression du projet avec l'ID:", projectId);
         try {
             const url = `${ipString}/projects/deleteProject/${projectId}`;
-            console.log("URL de suppression:", url);
+            // console.log("URL de suppression:", url);
             const response = await fetch(url, { method: 'DELETE' });
             const data = await response.json();
-            console.log("Réponse de la suppression:", data);
+            // console.log("Réponse de la suppression:", data);
     
             if (response.ok) {
                 Toast.show({

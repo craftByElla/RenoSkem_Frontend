@@ -1,196 +1,174 @@
-import React, { useState, useCallback } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Pressable, Platform, ScrollView, SafeAreaView as SafeAreaViewIOS } from 'react-native';
-import SmallProjectCard from '../../components/cards/SmallProjectCard';
-import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { addUserInfosToStore } from '../../reducers/user';
-import { useDispatch } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Image, StyleSheet, Text, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
-import BudgetPieChart from '../../components/charts/BudgetPieChart';
-import { Asset } from 'expo-asset';  // Importer expo-asset
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import RoomsScreen from '../../screens/createProject/RoomsScreen';
+import ArtisanScreen from '../../screens/createProject/ArtisansScreen';
+import DIYOrProScreen from '../../screens/createProject/DIYorPro';
+import PlanningScreen from '../../screens/createProject/Planning';
+import LogoTransparent from '../logos/LogoTransparent';
+import IconButton from '../buttons/IconButton';
+import { MyLightTheme } from '../Theme';
+import Toast from 'react-native-toast-message';
 
-const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
+const Tab = createMaterialTopTabNavigator();
+const ipString = process.env.IP_ADDRESS;
 
-function HomeScreen({ navigation }) {
-    const dispatch = useDispatch();
+export default function CreateProjectTabs({ navigation, route }) {
+    const { projectId } = route.params;
+    const [projectImage, setProjectImage] = useState(null);
+    const [projectName, setProjectName] = useState(null);
+    const roomsReloadRef = useRef(() => {}); // Create a ref to store the reload function
 
-    const [avatar, setAvatar] = useState(null);
-    const [name, setName] = useState(null);
-    const [projects, setProjects] = useState([]);
-    const [skillsFromBack, setSkillsFromBack] = useState([]);
+    // Function to fetch project data
+    const fetchProject = async () => {
+        try {
+            const url = `${ipString}/projects/getProject/${projectId}`;
+            const response = await fetch(url);
+            const data = await response.json();
 
-    const getAvatarUrl = (relativePath) => {
-        if (!relativePath) {
-            return null;
+            if (response.ok) {
+                setProjectImage(data.project.picture);
+                setProjectName(data.project.name);
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: data.message || 'Une erreur est survenue lors de la récupération du projet'
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la récupération du projet'
+            });
         }
-
-        const asset = Asset.fromModule(require(`../../${relativePath}`));
-        return `${asset.localUri}?unstable_path=.%2F${relativePath}&platform=${Platform.OS}`;
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            (async () => {
-                try {
-                    const token = await AsyncStorage.getItem('userToken');
-                    
-                    const response = await fetch(`${ipString}/users/getUserByToken/${token}`);
-                    const userData = await response.json();
+    useEffect(() => {
+        fetchProject();
+    }, [projectId]);
 
-                    if (response.status === 401) {
-                        Toast.show({
-                            type: 'error',
-                            text1: 'Erreur',
-                            text2: 'Utilisateur introuvable'
-                        });
-                    } else if (response.status === 200) {
-                        const skills = userData.user.skills;
-                        delete skills.__v;
-                        delete skills._id;
-                        dispatch(addUserInfosToStore({
-                            name: userData.user.name,
-                            avatar: userData.user.avatar,
-                            skills: skills,
-                            token: userData.user.token,
-                        }));
-                        setName(userData.user.name);
-                        setAvatar(userData.user.avatar);
-                        setSkillsFromBack(skills);
-                    }
-                    const secondResponse = await fetch(`${ipString}/projects/getUserProjects/${token}`);
-                    const projectsFromBack = await secondResponse.json();
-                    setProjects(projectsFromBack.projects);
-                } catch (error) {
-                    console.error('There was a problem with the fetch operation:', error);
-                }
-            })();
-        }, [])
-    );
+    const getProjectImageUrl = (imageName) => {
+        if (!imageName) {
+            return null;
+        }
+        return `${ipString}/assets/${imageName}`;
+    };
 
-    const projectName = projects.map((data, i) => {
-        return <SmallProjectCard key={i} name={data.name} picture={data.picture} />;
-    });
+    const imageUrl = getProjectImageUrl(projectImage);
+
+    // Define the reloadRooms function
+    const reloadRooms = async () => {
+        if (roomsReloadRef.current) {
+            roomsReloadRef.current();
+        }
+    };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.main}>
-                <Pressable style={styles.userContainer} onPress={() => navigation.navigate('SkillsScreen', { skillsFromBack })}>
-                    <View style={styles.avatarWrapper}>
-                        {avatar ? (
-                            <Image source={{ uri: getAvatarUrl(avatar) }} style={styles.profilePicture} />
-                        ) : (
-                            <View style={styles.placeholder} />
-                        )}
-                    </View>
-                    <Text style={styles.helloText}>Hey {name} !</Text>
-                </Pressable>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>Mes Projets</Text>
-                    <TouchableOpacity style={styles.nouveauBtn} onPress={() =>  navigation.navigate('TabNavigator', { screen: 'Projets', params: { screen: 'createProjectTabs' },  params: { screen: 'NewProjectScreen' }})}><Text>Nouveau</Text></TouchableOpacity>
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.header}>
+                <IconButton
+                    style={styles.iconButtonLeft}
+                    onPress={() => navigation.navigate('TabNavigator', { screen: 'Projets', params: { screen: 'ProjectsScreen' } })}
+                    iconName="long-arrow-left"
+                />
+                <View style={styles.projectInfoContainer}>
+                    {projectImage ? (
+                        <Image source={{ uri: imageUrl }} style={styles.image} />
+                    ) : (
+                        <LogoTransparent />
+                    )}
+                    {projectName && (
+                        <Text style={styles.projectName}>{projectName}</Text>
+                    )}
                 </View>
-                <ScrollView contentContainerStyle={styles.projects} horizontal={true} showsHorizontalScrollIndicator={false}>
-                    {projectName}
-                </ScrollView>
-                <Text style={styles.titleDashboard}>Dashboard</Text>
             </View>
-            <View style={styles.dashboard}>
-                <BudgetPieChart 
-                    height={'20%'}
-                    width={'20%'}
-                /> 
-            </View>
+            <Tab.Navigator 
+                screenOptions={{ 
+                    headerShown: false, 
+                    tabBarStyle: styles.tabBarStyle,
+                    tabBarActiveTintColor: 'rgba(231, 111, 81, 1)',
+                    tabBarInactiveTintColor: 'rgba(231, 111, 81, 0.2)', 
+                    tabBarIndicatorStyle: styles.tabBarIndicatorStyle,
+                }}
+            >
+                <Tab.Screen 
+                    name="RoomsScreen" 
+                    options={{ tabBarLabel: '1' }} 
+                >
+                    {props => <RoomsScreen {...props} projectId={projectId} reloadRooms={reloadRooms} />}
+                </Tab.Screen>
+                <Tab.Screen 
+                    name="ArtisanScreen" 
+                    component={ArtisanScreen} 
+                    options={{ tabBarLabel: '2' }} 
+                    initialParams={{ projectId }} 
+                />
+                <Tab.Screen 
+                    name="DIYOrProScreen" 
+                    options={{ tabBarLabel: '3' }} 
+                >
+                    {props => <DIYOrProScreen {...props} projectId={projectId} setReloadRef={(ref) => { roomsReloadRef.current = ref; }} />}
+                </Tab.Screen>
+                <Tab.Screen 
+                    name="PlanningScreen" 
+                    component={PlanningScreen} 
+                    options={{ tabBarLabel: '4' }} 
+                    initialParams={{ projectId }} 
+                />
+            </Tab.Navigator>
         </SafeAreaView>
     );
 }
 
-export default HomeScreen;
-
 const styles = StyleSheet.create({
-    main: {
-        display: 'flex',
-        width: '100%',
-        height: '40%',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        paddingHorizontal: 22,
+    safeArea: {
+        flex: 1,
+        backgroundColor: MyLightTheme.colors.background,
     },
-    userContainer: {
-        display: 'flex',
+    header: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%',
-    },
-    avatarWrapper: {
-        borderWidth: 1,
-        borderColor: 'rgba(41, 157, 142, 1)',
-        backgroundColor: 'rgba(217, 217, 217, 1)',
-        borderRadius: 70, // Assurez-vous que la bordure soit toujours ronde
-        overflow: 'hidden', // Assurez-vous que l'image soit coupée aux bords
-    },
-    profilePicture: {
+        marginBottom: 10,
         height: 50,
-        width: 50,
-    },
-    placeholder: {
-        height: 50,
-        width: 50,
-        backgroundColor: 'rgba(217, 217, 217, 1)',
-    },
-    helloText: {
-        paddingLeft: 10,
-        fontSize: 24,
-        lineHeight: 23,
-        letterSpacing: 0.15,
-        color: '#194852',
-    },
-    titleContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingTop: 10,
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 24,
-        lineHeight: 34,
-        letterSpacing: 0.15,
-        color: '#194852',
-    },
-    nouveauBtn: {
-        display: 'flex',
+        position: 'relative',
         justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: '#299D8E',
-        borderRadius: 8,
-        height: 25,
-        width: 64,
-    }, 
-    projects : {
-        display: 'flex', 
-        flexDirection: 'row',
-        paddingTop: 10,
-        justifyContent: 'space-between',
-    }, 
-    titleDashboard: {
-        fontWeight: 'bold',
-        fontSize: 24,
-        lineHeight: 36,
-        letterSpacing: 0.15,
-        color: '#194852',
-        paddingHorizontal: 22,
-        alignSelf: 'flex-start'
     },
-    dashboard: {
-        display: 'flex', 
-        height: '60%',
-        width: '100%',  
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        backgroundColor: 'rgba(41, 157, 142, 0.2)',
+    iconButtonLeft: {
+        position: 'absolute', 
+        left: 20, 
+        top: '50%', 
+        marginTop: -25, 
+    },
+    projectInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    tabBarStyle: {
+        shadowOffset: { width: 0, height: 0 },
+        shadowRadius: 0,
+        alignSelf: 'center',
+        width: '60%',
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(231, 111, 81, 0.2)',
+        backgroundColor: MyLightTheme.colors.background,
+    },
+    tabBarIndicatorStyle: {
+        backgroundColor: 'rgba(231, 111, 81, 1)',
+        height: 2,
+    },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: MyLightTheme.colors.lightGreen,
+        marginRight: 10,
+    },
+    projectName: {
+        alignSelf: 'center',
     },
 });
