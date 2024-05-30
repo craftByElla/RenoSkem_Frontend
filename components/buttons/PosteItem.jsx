@@ -6,10 +6,13 @@ import PropTypes from 'prop-types';
 
 const PosteItem = ({ text, selectedButton, handlePress, index, onRemove }) => {
   const { colors } = useTheme();
-
+    // Fonction pour rendre un bouton avec une icône, en fonction de l'index du bouton
   const renderButton = (buttonIndex) => {
+    // Vérifie si le bouton courant est sélectionné
     const isSelected = selectedButton === buttonIndex;
+    // Détermine le nom de l'icône à afficher (icône pleine si sélectionné, icône vide sinon)
     const iconName = isSelected ? 'dot-circle-o' : 'circle-o';
+     // Détermine la couleur de l'icône (couleur différente si sélectionné)
     const iconColor = isSelected ? colors.lightGreen : colors.deepGreen;
     
     return (

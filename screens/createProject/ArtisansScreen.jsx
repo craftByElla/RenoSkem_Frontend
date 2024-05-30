@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { StyleSheet, SafeAreaView as SafeAreaViewIOS, View, Platform, ScrollView } from 'react-native'
+import { StyleSheet, SafeAreaView as SafeAreaViewIOS, View, Platform, TouchableOpacity, ScrollView, Text } from 'react-native'
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import IconButton from '../../components/buttons/IconButton';
@@ -8,6 +8,7 @@ import ArtisansScreenModal from '../../components/modal/ArtisansScreenModal';
 import { useFocusEffect } from '@react-navigation/native';
 import ArtisansProjectCard from '../../components/cards/ArtisansProjectCard';
 import UpdateArtisansScreenModal from '../../components/modal/UpdateArtisansScreenModal';
+import Toast from 'react-native-toast-message';
 const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -23,13 +24,14 @@ function ArtisanScreen({route}) {
     };
     const [retrievedProjectCardInfos, setRetrievedProjectCardInfos] = useState({})
     let test;
-    const retrieveProjectCardInfos = (availability, quote, comment, trustLevel, artisanId) => {
+    const retrieveProjectCardInfos = (availability, quote, comment, trustLevel, artisanId, isShow) => {
         setRetrievedProjectCardInfos({
             availability: availability,
             quote: quote,
             comment: comment,
             trustLevel: trustLevel,
             artisanId: artisanId,
+            isShow: isShow,
         })
         test = {
             availability: availability,
@@ -55,13 +57,13 @@ function ArtisanScreen({route}) {
                     Toast.show({
                         type: 'error',
                         text1: 'Erreur',
-                        text2: 'Aucun artisan'
+                        text2: 'Projet introuvable'
                     });
                 }else {
                     setArtisans(data.artisans)
                 }
             })();
-        }, [])
+        }, [isShowModal, isShowModal_2, retrieveProjectCardInfos?.isShow])
     );
     // console.log('artisans', artisans)
 
@@ -116,16 +118,18 @@ function ArtisanScreen({route}) {
                 />
     })
 
-    
+ 
 
     return (
         <SafeAreaView style={styles.main}>  
             <View style={styles.main}>
-                <View style={styles.headerContainer}>
-                    <IconButton iconName='helmet-safety' />
-                    <ScreenTitle text='Artisans' />
-                    <IconButton iconName='plus-circle' onPress={() => toggleModal(setIsShowModal_2, isShowModal_2)} />
-                    <IconButton iconName='filter' onPress={() => toggleModal(setIsShowModal, isShowModal)} />
+                <View style={styles.biggerContainer}>
+                    <View style={styles.titleContainer}>
+                        <ScreenTitle style={styles.screenTitle} text="Artisans" />
+                        <TouchableOpacity style={styles.addBtn} onPress={() => toggleModal(setIsShowModal_2, isShowModal_2)} >
+                            <Text>Ajouter un artisan</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={styles.customInputnputContainer}>
                     <CustomInput placeholder='Rechercher' search={true} value={search} onChangeText={(value) => setSearch(value)}/>
@@ -157,17 +161,31 @@ const styles = StyleSheet.create({
     main: {
         flex: 1,
     }, 
-    headerContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+    biggerContainer:{
         width: '100%',
-        paddingTop: 10,
+        alignItems: 'center',
+        marginTop: 20,
+    
+    },
+    titleContainer: {
+        display: 'flex',
+        width: '80%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    addBtn: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 0.5,
+        borderColor: '#299D8E',
+        borderRadius: 8,
+        height: 25,
+        width: '40%',
     },
     customInputnputContainer: {
         display: 'flex',
-        width: '80%',
+        width: '100%',
         alignItems: 'center'
     },
 })

@@ -28,21 +28,23 @@ const RoomIcon = ({ type }) => {
 
 const getBorderColor = (room) => {
     const { grey, orange, lightGreen } = MyLightTheme.colors;
-    const hasName = room.name && room.name.trim() !== '';
-    const hasSurface = room.surface !== null;
-    const hasComment = room.comment && room.comment.trim() !== '';
-    const hasItems = room.items && room.items.length > 0;
 
-    if (hasName && hasSurface && hasComment && hasItems) {
+    let hasArtisanOrTeammates = false;
+
+    room.items.forEach(item => {
+        if (item.artisan !== null || (item.teammates && item.teammates.length > 0)) {
+            hasArtisanOrTeammates = true;
+        }
+    });
+
+    if (hasArtisanOrTeammates) {
         return lightGreen;
-    } else if (hasName || hasSurface || hasComment || hasItems) {
-        return orange;
     } else {
         return grey;
     }
 };
 
-const RoomsDisplay = ({ rooms, onRoomPress }) => {
+const RoomsDisplayDIYPRO = ({ rooms, onRoomPress }) => {
     const [tooltip, setTooltip] = useState({ visible: false, type: '' });
     const [tooltipGrenier, setTooltipGrenier] = useState({ visible: false });
 
@@ -205,4 +207,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RoomsDisplay;
+export default RoomsDisplayDIYPRO;

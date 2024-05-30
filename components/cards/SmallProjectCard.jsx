@@ -4,6 +4,8 @@ import { useTheme, useNavigation } from '@react-navigation/native';
 import SimpleModal from '../modal/SimpleModal';
 import PlainButton from '../buttons/PlainButton';
 
+const ipString = process.env.IP_ADDRESS;
+
 function SmallProjectCard(props) {
     const { colors } = useTheme();
     const navigation = useNavigation();
@@ -18,9 +20,20 @@ function SmallProjectCard(props) {
         action();
     };
 
+    const getProjectImageUrl = (imageName) => {
+        if (!imageName) {
+            return null;
+        }
+        return `${ipString}/assets/${imageName}`;
+    };
+
+    const imageUrl = getProjectImageUrl(props.picture);
+    console.log(`Image URL: ${imageUrl}`);
+
+
     return (
         <TouchableOpacity style={styles.projectContainer} onPress={() => toggleModal()}>
-            <Image source={{ uri: props.picture}} width={40} height={40}/>
+            <Image source={{ uri: imageUrl }} width={50} height={50}/>
             <Text style={styles.projectName}>{props.name}</Text>
             <SimpleModal 
                 isShow={isShowModal} 
@@ -66,7 +79,7 @@ const createStyles = (colors) => StyleSheet.create({
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-        height: 125,
+        height: 100,
         width: 100,
         borderRadius: 10,
         backgroundColor: colors.modalBackgroundColor,

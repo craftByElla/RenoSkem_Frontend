@@ -11,9 +11,30 @@ import Toast from 'react-native-toast-message';
 import ProjectIconSelectorModal from '../../components/modal/ProjectIconSelectorModal';
 import CommentModal from '../../components/modal/CommentModal'; 
 import { useSelector } from 'react-redux';
+import { Asset } from 'expo-asset'; // Nouvelle importation
+
 
 // Récupération de l'adresse IP à partir des variables d'environnement
 const ipString = process.env.IP_ADDRESS;
+
+// Importation explicite de chaque image
+import House from '../../assets/projectIcon/House.png';
+import LivingRoom from '../../assets/projectIcon/LivingRoom.png';
+import DinnerRoom from '../../assets/projectIcon/DinnerRoom.png';
+import Bedroom from '../../assets/projectIcon/Bedroom.png';
+import Bathroom from '../../assets/projectIcon/Bathroom.png';
+import Kitchen from '../../assets/projectIcon/Kitchen.png';
+
+// Mappage des noms d'icone projet aux imports d'images
+const projectIconMap = {
+  'House.png': House,
+  'LivingRoom.png': LivingRoom,
+  'DinnerRoom.png': DinnerRoom,
+  'Bedroom.png': Bedroom,
+  'Bathroom.png': Bathroom,
+  'Kitchen.png': Kitchen,
+};
+
 
 function NewProjectScreen({ navigation }) {
     // Utilisation de Redux pour récupérer le token de l'utilisateur
@@ -54,7 +75,7 @@ function NewProjectScreen({ navigation }) {
             name,
             location,
             budget,
-            picture: picture ? picture.uri : null,
+            picture: picture ? picture.name : null,
             comment,
         };
 
@@ -121,7 +142,20 @@ function NewProjectScreen({ navigation }) {
 
     // Fonction pour gérer la sélection de l'image
     const handleImageSelect = (image) => {
+        // console.log('Image sélectionnée :', image);
         setPicture(image);
+    };
+
+    const getProjectIconUrl = (projectIconName) => {
+        // Utilisation du mappage des icones projets
+        const asset = projectIconMap[projectIconName];
+        if (!asset) {
+            // console.error('Project Icon non trouvé pour le nom:', projectIconName);
+            return null;
+        }
+        const { uri } = Asset.fromModule(asset);
+        console.log('Generated Project icon URL:', uri);
+        return uri;
     };
 
     return (
@@ -157,7 +191,11 @@ function NewProjectScreen({ navigation }) {
                                 <TouchableOpacity onPress={toggleModal}>
                                     <View style={styles.pictureWrapper}>
                                         {picture ? (
-                                            <Image source={picture} style={styles.picture} />
+                                            <Image 
+                                            source={{ uri: getProjectIconUrl(picture.name) }} 
+                                            style={styles.picture} 
+                                            onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
+                                            />
                                         ) : (
                                             <ProjectPicture />
                                         )}

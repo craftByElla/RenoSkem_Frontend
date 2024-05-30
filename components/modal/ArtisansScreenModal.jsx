@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTheme } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { Modal, StyleSheet, Text, TextInput, TouchableWithoutFeedback, SafeAreaView, ScrollView, View, Pressable } from 'react-native';
+import { Modal, StyleSheet, Text, TextInput, Keyboard, TouchableWithoutFeedback, SafeAreaView, ScrollView, View, Pressable } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FillableIcons from '../buttons/FillableIcons';
 import FilledButton from '../buttons/FilledButton';
@@ -105,13 +105,12 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
         >
             
                 <Pressable style={styles.modalContainer} onPress={() => handleClose()}>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.modal}>
                             <Text style={styles.textTitle}>Nouvel Artisan :</Text>
                             <Picker
                                 selectedValue={chooseJob}
                                 onValueChange={(itemValue, itemIndex) => setChooseJob(itemValue)}
-                                style={{minHeight: 100}}
                             >
                                 <Picker.Item label="Chauffage" value="Chauffage" />
                                 <Picker.Item label="Maçonnerie" value="Maçonnerie" />
@@ -182,7 +181,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
                                     />
                                 </View>
                                 <View style={styles.buttonContainer}>
-                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={addArtisanToProject}/>
+                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => {addArtisanToProject(), handleClose()}}/>
                                 </View>
                             </View>
                         </View>

@@ -54,6 +54,17 @@ export default function CreateProjectTabs({ navigation, route }) {
         fetchProject(); // Appeler la fonction pour récupérer les données du projet
     }, [projectId]);
 
+    const getProjectImageUrl = (imageName) => {
+        if (!imageName) {
+            return null;
+        }
+        return `${ipString}/assets/${imageName}`;
+    };
+
+    const imageUrl = getProjectImageUrl(projectImage);
+    console.log(`Image URL: ${imageUrl}`);
+
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
@@ -64,7 +75,7 @@ export default function CreateProjectTabs({ navigation, route }) {
                 />
                 <View style={styles.projectInfoContainer}>
                     {projectImage ? (
-                        <Image source={{ uri: projectImage }} style={styles.image} />
+                        <Image source={{ uri: imageUrl }} style={styles.image} />
                     ) : (
                         <LogoTransparent />
                     )}

@@ -5,7 +5,11 @@ import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
 const FilledButton = ({ onPress, text, background, full, style, onLongPress }) => {
+    // Utilisation de la fonction createStyles pour générer des styles dynamiques basés sur la couleur de fond
     const styles = createStyles(background);
+    // Détermination de la largeur du bouton en fonction de la prop `full`
+    // Si `full` est vrai, la largeur du bouton sera 90% de son conteneur parent
+    // Sinon, la largeur sera 50% de son conteneur parent
     const sizeStyle = full ? { width: '90%' } : { width: '50%' };
 
     return (

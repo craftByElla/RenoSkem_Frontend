@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import ScreenTitle from '../../components/text/ScreenTitle';
@@ -7,6 +7,10 @@ import Toast from 'react-native-toast-message';
 import RoomsDisplay from '../../components/cards/RoomsDisplay';
 import AddRoomModal from '../../components/modal/AddRoomModal';
 import RoomDetailsModal from '../../components/modal/RoomDetailsModal';
+import CardRoomDetails from '../../components/cards/CardRoomDetails';
+import IconButton from "../../components/buttons/IconButton";
+import FilterModal from '../../components/modal/FilterModal';
+
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -17,11 +21,15 @@ function RoomsScreen({ navigation, route }) {
     const styles = createStyles(colors);
     const { projectId } = route.params;
     const [rooms, setRooms] = useState([]);
+    const [roomTypes, setRoomTypes] = useState([]);
+    const [workTypes, setWorkTypes] = useState([]);
     const [isAddRoomModalVisible, setAddRoomModalVisible] = useState(false);
-
     const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false);
+    const [isFilterModalVisible, setFilterModalVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState(null);
     const [roomDetails, setRoomDetails] = useState(null);
+    const [filteredRooms, setFilteredRooms] = useState([]);
+    const [filters, setFilters] = useState({ roomTypes: [], workTypes: [] });
 
     //pour recharger l'affichage après la suppression d'une pièce
     const [reload, setReload] = useState(false);
@@ -34,14 +42,32 @@ function RoomsScreen({ navigation, route }) {
                 const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
                 const response = await fetch(url);
                 const data = await response.json();
-
+    
                 if (response.ok) {
                     setRooms(data.rooms);
+                    setFilteredRooms(data.rooms);
                     const roomCounts = data.rooms.reduce((acc, room) => {
                         acc[room.type] = (acc[room.type] || 0) + 1;
                         return acc;
                     }, {});
                     setInitialRoomCounts(roomCounts);
+    
+                    const roomTypesSet = new Set();
+                    const workTypesSet = new Set();
+                    data.rooms.forEach(room => {
+                        roomTypesSet.add(room.type);
+                        room.items.forEach(item => {
+                            workTypesSet.add(item.field);
+                        });
+                    });
+    
+                    setRoomTypes([...roomTypesSet]);
+                    setWorkTypes([...workTypesSet]);
+                    setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'] });
+    
+                    console.log("Rooms fetched: ", data.rooms);
+                    console.log("Room types: ", [...roomTypesSet]);
+                    console.log("Work types: ", [...workTypesSet]);
                 } else {
                     Toast.show({
                         type: 'error',
@@ -57,14 +83,39 @@ function RoomsScreen({ navigation, route }) {
                 });
             }
         };
-
+    
         fetchRooms();
     }, [projectId, reload]);
+    
 
-    const toggleAddRoomModal = () => {
+     //Toggle des modales
+     const toggleAddRoomModal = () => {
         setAddRoomModalVisible(!isAddRoomModalVisible);
     };
+    const toggleFilterModal = () => {
+        setFilterModalVisible(!isFilterModalVisible);
+    };
 
+    //Gestion filtres
+    const applyFilters = (selectedFilters) => {
+        const { roomTypes, workTypes } = selectedFilters;
+        setFilters(selectedFilters);
+    
+        const filteredRooms = rooms.filter(room => {
+            const roomTypeMatch = roomTypes.length === 0 || roomTypes.includes(room.type);
+            const workTypeMatch = workTypes.includes('Sans type') ? (room.items.length === 0 || room.items.some(item => workTypes.includes(item.field))) : room.items.some(item => workTypes.includes(item.field));
+    
+            return roomTypeMatch && workTypeMatch;
+        });
+    
+        setFilteredRooms(filteredRooms);
+    
+        console.log("Filters applied: ", selectedFilters);
+        console.log("Filtered rooms: ", filteredRooms);
+    };
+    
+    
+   
     const handleSaveRooms = async (roomCounts) => {
         try {
             const response = await fetch(`${ipString}/rooms/updateRooms`, {
@@ -194,53 +245,77 @@ function RoomsScreen({ navigation, route }) {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.main}>
-                <View style={styles.biggerContainer}>
-                    <View style={styles.titleContainer}>
-                        <ScreenTitle style={styles.screenTitle} text="Périmètre" />
-                        <TouchableOpacity style={styles.addBtn} onPress={toggleAddRoomModal}>
-                            <Text>Ajouter une pièce</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {rooms.length > 0 ? (
-                        <RoomsDisplay rooms={rooms} onRoomPress={handleRoomPress} />
-                    ) : (
-                        <View style={styles.emptyContainer}>
-                            <Text style={styles.tentIcon}>🏕️</Text>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.main}>
+                    <View style={styles.biggerContainer}>
+                        <View style={styles.titleContainer}>
+                            <ScreenTitle style={styles.screenTitle} text="Périmètre" />
+                            <TouchableOpacity style={styles.addBtn} onPress={toggleAddRoomModal}>
+                                <Text>Ajouter une pièce</Text>
+                            </TouchableOpacity>
                         </View>
-                    )}
-                </View>
-            </View>
-            {rooms.length > 0 && (
-                <View style={styles.fondVert}>
-                    <View style={styles.recapContainer}>
-                        <ScreenTitle style={styles.recapTitle} text="Récapitulatif" />
+                        {rooms.length > 0 ? (
+                            <RoomsDisplay rooms={rooms} onRoomPress={handleRoomPress} />
+                        ) : (
+                            <View style={styles.emptyContainer}>
+                                <Text style={styles.tentIcon}>🏕️</Text>
+                            </View>
+                        )}
                     </View>
                 </View>
-            )}
-            <AddRoomModal
-                isShow={isAddRoomModalVisible}
-                toggleModal={toggleAddRoomModal}
-                onSave={handleSaveRooms}
-                initialRoomCounts={initialRoomCounts}
-            />
-            {isRoomDetailsModalVisible && selectedRoomId && (
-                <RoomDetailsModal
-                    isShow={isRoomDetailsModalVisible}
-                    toggleModal={() => setRoomDetailsModalVisible(false)}
-                    onSave={handleSaveRoomDetails}
-                    roomId={selectedRoomId}
-                    roomDetails={roomDetails}
-                    onRoomDeleted={handleRoomDeleted}
+                {rooms.length > 0 && (
+                    <View style={styles.fondVert}>
+                        <View style={styles.recapContainer}>
+                            <View style={styles.recapTitle}>
+                                <ScreenTitle  text="Récapitulatif" />
+                                <IconButton
+                                    style={styles.iconButtonRight}
+                                    onPress={toggleFilterModal}
+                                    iconName="filter"
+                                />
+                            </View>
+                            {filteredRooms.map(room => (
+                                <CardRoomDetails key={room._id} room={room} onPress={() => handleRoomPress(room._id)} />
+                            ))}
+                        </View>
+                    </View>
+                )}
+                <AddRoomModal
+                    isShow={isAddRoomModalVisible}
+                    toggleModal={toggleAddRoomModal}
+                    onSave={handleSaveRooms}
+                    initialRoomCounts={initialRoomCounts}
                 />
-            )}
+                {isRoomDetailsModalVisible && selectedRoomId && (
+                    <RoomDetailsModal
+                        isShow={isRoomDetailsModalVisible}
+                        toggleModal={() => setRoomDetailsModalVisible(false)}
+                        onSave={handleSaveRoomDetails}
+                        roomId={selectedRoomId}
+                        roomDetails={roomDetails}
+                        onRoomDeleted={handleRoomDeleted}
+                    />
+                )}
+                <FilterModal
+                    isVisible={isFilterModalVisible}
+                    onClose={toggleFilterModal}
+                    onApplyFilters={applyFilters}
+                    roomTypes={roomTypes}
+                    workTypes={workTypes}
+                    currentFilters={filters}
+                />
+            </ScrollView>
         </SafeAreaView>
     );
+    
 }
 
 export default RoomsScreen;
 
 const createStyles = (colors) => StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+    },
     main: {
         display: 'flex',
         width: '100%',
@@ -259,7 +334,6 @@ const createStyles = (colors) => StyleSheet.create({
         width: '80%',
         flexDirection: 'row',
         alignItems: 'center',
-        flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
     addBtn: {
@@ -283,26 +357,13 @@ const createStyles = (colors) => StyleSheet.create({
     },
     recapContainer: {
         width: '80%',
+        
     },
-    recapTitle: {},
-    imageContainer: {
-        position: 'absolute',
-        top: 50,
-        width: 80,
-        height: 80,
-        borderWidth: 1,
-        borderColor: colors.lightGreen,
-        justifyContent: 'center',
+    recapTitle: {
+        marginBottom: 20,
+        flexDirection: 'row',
         alignItems: 'center',
-        left: '50%',
-        marginLeft: -(80 / 2),
-        borderRadius: 40,
-        zIndex: 1,
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
+        justifyContent: 'space-between',
     },
     emptyContainer: {
         marginTop: 100,

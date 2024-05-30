@@ -59,7 +59,7 @@ function ArtisansProjectCard(props) {
     };
     return (
         
-    <TouchableOpacity style={styles.card} onPress={() => {console.log('ava', props.availability), console.log('retrieve', props.retrieveProjectCardInfos(props.availability, props.quote, props.comment, props.trustLevel, props.artisanId)), handleClose()}}>
+    <TouchableOpacity style={styles.card} onPress={() => {console.log('ava', props.availability), props.retrieveProjectCardInfos(props.availability, props.quote, props.comment, props.trustLevel, props.artisanId, props.isShow), handleClose()}}>
         {workToJobName[props.field].icon}
         <View style={{ width: '35%', display: 'flex', justifyContent: 'center' }}>
                 <Text>{workToJobName[props.field].job}</Text>
@@ -99,7 +99,7 @@ createStyles = (colors) => StyleSheet.create({
         backgroundColor: colors.modalBackgroundColor,
         marginTop: 10, 
         paddingVertical: 5,
-        width: '90%',
+        width: '80%',
         alignSelf: 'center',
         borderRadius: 10,
 

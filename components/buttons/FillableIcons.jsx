@@ -5,7 +5,9 @@ import { useTheme } from '@react-navigation/native';
 function FillableIcons({plainIcon, filledIcon, color, updateTrustLevel, trustLevel}) {
     const { colors } = useTheme();
     const [personalNote, setPersonalNote] = useState(0);
+    // Tableau pour stocker les icônes à afficher
     const personalStars = [];
+    // Boucle pour créer trois icônes
     for (let i = 0; i < 3; i++) {
     
         useEffect(()=> {
