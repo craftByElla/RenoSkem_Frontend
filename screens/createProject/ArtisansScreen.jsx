@@ -42,30 +42,34 @@ function ArtisanScreen({route}) {
         return {retrievedProjectCardInfos};
     };
 
+   
+    const fetchData = async () => {
+        const response = await fetch(`${ipString}/projects/getProjectArtisans/${projectId}`);
+        const data = await response.json();
+        if (response.status === 500) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Erreur pendant l\'envoi'
+            });
+        } else if (response.status === 401) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Projet introuvable'
+            });
+        } else {
+            setArtisans(data.artisans);
+        }
+    };
+   
+    // console.log('artisans', artisans)
+
     useFocusEffect(
-        useCallback(() => { //permet d'optimiser les performances. A voir dans la doc pour plus de précision en vrai 
-            (async () => {
-                const response = await fetch(`${ipString}/projects/getProjectArtisans/${projectId}`);
-                const data = await response.json();
-                if (response.status === 500){
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'Erreur pendant l\'envoie'
-                    });
-                }else if (response.status === 401) {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'Projet introuvable'
-                    });
-                }else {
-                    setArtisans(data.artisans)
-                }
-            })();
+        useCallback(() => {
+            fetchData();
         }, [reload])
     );
-    // console.log('artisans', artisans)
 
     const workToJobName = {
         Chauffage: "Chauffagiste",
@@ -145,7 +149,8 @@ function ArtisanScreen({route}) {
                 setter={setIsShowModal_2} 
                 toggleModal={toggleModal} 
                 projectId={projectId}
-                onClose={() => setReload(prev => !prev)} // Ajouter un callback onClose pour déclencher le reload
+                onClose={() => setReload(prev => !prev)}
+                reloadData={fetchData}            
             />
             <UpdateArtisansScreenModal 
                 isShow={isShowModal}
@@ -153,7 +158,8 @@ function ArtisanScreen({route}) {
                 toggleModal={toggleModal}
                 retrievedProjectCardInfos={retrievedProjectCardInfos}
                 projectId={projectId}
-                onClose={() => setReload(prev => !prev)} // Ajouter un callback onClose pour déclencher le reload
+                onClose={() => setReload(prev => !prev)}
+                reloadData={fetchData}           
             />
         </SafeAreaView>
     )

@@ -18,7 +18,7 @@ function UpdateArtisansScreenModal(props) {
     const [trustLevel, setTrustLevel] = useState('');
     const [availability, setAvailability] = useState(new Date());
     const [artisanId, setArtisanID] = useState('');
-    
+
     useEffect(() => {
         if (props.retrievedProjectCardInfos) {
             setComment(props.retrievedProjectCardInfos.comment || '');
@@ -55,7 +55,7 @@ function UpdateArtisansScreenModal(props) {
     const updateArtisanProject = async () => {
         const response = await fetch(`${ipString}/projects/editProjectArtisan/${props.projectId}/${artisanId}`, {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 availability: availability,
                 trustLevel: trustLevel,
@@ -82,6 +82,7 @@ function UpdateArtisansScreenModal(props) {
                 text1: 'Succès',
                 text2: 'Artisan modifié'
             });
+            handleClose(); // Appel de handleClose pour fermer la modale et relancer le fetch
         }
     };
 
@@ -108,6 +109,7 @@ function UpdateArtisansScreenModal(props) {
                 text1: 'Succès',
                 text2: 'Artisan supprimé'
             });
+            handleClose(); // Appel de handleClose pour fermer la modale et relancer le fetch
         }
     };
 
@@ -124,29 +126,29 @@ function UpdateArtisansScreenModal(props) {
                         <Text style={styles.textTitle}>Nouvel Artisan :</Text>
                         <View style={styles.indiceContainer}>
                             <Text style={styles.text}>Indice de confiance</Text>
-                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
+                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey} />
                             <View style={styles.starsContainer}>
                                 <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' updateTrustLevel={updateTrustLevel} trustLevel={trustLevel} />
                             </View>
                         </View>
                         <View style={styles.indiceContainer}>
                             <Text style={styles.text}>Devis</Text>
-                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
+                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey} />
                             <View style={styles.inputquote}>
                                 <TextInput
-                                    style={{width: 96}}
+                                    style={{ width: 96 }}
                                     value={quote.toString()}
                                     onChangeText={(value) => setQuote(value)}
                                     keyboardType="numeric"
                                 />
-                                <FontAwesome name='euro' size={24} color={colors.deepGrey}/>
+                                <FontAwesome name='euro' size={24} color={colors.deepGrey} />
                             </View>
                         </View>
                         <View style={styles.indiceContainer}>
                             <Text style={styles.text}>1ère disponibilité</Text>
-                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
+                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey} />
                             <View style={styles.dateContainer}>
-                                <DateTimePicker 
+                                <DateTimePicker
                                     value={typeof availability === 'object' ? availability : new Date()}
                                     locale='fr-FR'
                                     onChange={onDateChange}
@@ -156,7 +158,7 @@ function UpdateArtisansScreenModal(props) {
                         <View>
                             <View style={styles.commonContainer}>
                                 <Text style={styles.text}>Commentaire</Text>
-                                <FontAwesome name='caret-down' size={24} color={colors.deepGrey}/>
+                                <FontAwesome name='caret-down' size={24} color={colors.deepGrey} />
                             </View>
                             <View style={styles.commentSection}>
                                 {comment ? (
@@ -173,10 +175,10 @@ function UpdateArtisansScreenModal(props) {
                                 />
                             </View>
                             <View style={styles.buttonContainer}>
-                                <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => { updateArtisanProject(); handleClose(); }} />
+                                <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={updateArtisanProject} />
                             </View>
                             <View style={styles.buttonContainer}>
-                                <FilledButton text='Supprimer' full={true} background={colors.deepGreen} onPress={() => { removeArtisanFromProject(); handleClose(); }} />
+                                <FilledButton text='Supprimer' full={true} background={colors.deepGreen} onPress={removeArtisanFromProject} />
                             </View>
                         </View>
                     </View>
