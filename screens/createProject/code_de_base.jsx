@@ -1,174 +1,168 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Image, StyleSheet, Text, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { StyleSheet, SafeAreaView as SafeAreaViewIOS, View, Platform, TouchableOpacity, ScrollView, Text } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import RoomsScreen from '../../screens/createProject/RoomsScreen';
-import ArtisanScreen from '../../screens/createProject/ArtisansScreen';
-import DIYOrProScreen from '../../screens/createProject/DIYorPro';
-import PlanningScreen from '../../screens/createProject/Planning';
-import LogoTransparent from '../logos/LogoTransparent';
-import IconButton from '../buttons/IconButton';
-import { MyLightTheme } from '../Theme';
+import ScreenTitle from '../../components/text/ScreenTitle';
+import IconButton from '../../components/buttons/IconButton';
+import CustomInput from '../../components/inputs/CustomInput';
+import ArtisansScreenModal from '../../components/modal/ArtisansScreenModal';
+import { useFocusEffect } from '@react-navigation/native';
+import ArtisansProjectCard from '../../components/cards/ArtisansProjectCard';
+import UpdateArtisansScreenModal from '../../components/modal/UpdateArtisansScreenModal';
 import Toast from 'react-native-toast-message';
 
-const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
-const Tab = createMaterialTopTabNavigator();
 const ipString = process.env.IP_ADDRESS;
+const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
-export default function CreateProjectTabs({ navigation, route }) {
+function ArtisanScreen({ route }) {
     const { projectId } = route.params;
-    const [projectImage, setProjectImage] = useState(null);
-    const [projectName, setProjectName] = useState(null);
-    const roomsReloadRef = useRef(() => {}); // Create a ref to store the reload function
+    const [isShowModal, setIsShowModal] = useState(false);
+    const [isShowModal_2, setIsShowModal_2] = useState(false);
+    const [artisans, setArtisans] = useState([]);
+    const [search, setSearch] = useState('');
+    const [filteredArtisans, setFilteredArtisans] = useState([]);
+    const [reload, setReload] = useState(false); // Nouvel état pour gérer le reload
+    const [retrievedProjectCardInfos, setRetrievedProjectCardInfos] = useState({});
 
-    // Function to fetch project data
-    const fetchProject = async () => {
-        try {
-            const url = `${ipString}/projects/getProject/${projectId}`;
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (response.ok) {
-                setProjectImage(data.project.picture);
-                setProjectName(data.project.name);
-            } else {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Erreur',
-                    text2: data.message || 'Une erreur est survenue lors de la récupération du projet'
-                });
-            }
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: 'Erreur',
-                text2: 'Une erreur est survenue lors de la récupération du projet'
-            });
-        }
+    const toggleModal = (setter) => {
+        setter(prev => !prev);
     };
+
+    const retrieveProjectCardInfos = (availability, quote, comment, trustLevel, artisanId, isShow) => {
+        setRetrievedProjectCardInfos({
+            availability,
+            quote,
+            comment,
+            trustLevel,
+            artisanId,
+            isShow,
+        });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                const response = await fetch(`${ipString}/projects/getProjectArtisans/${projectId}`);
+                const data = await response.json();
+                if (response.status === 500) {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: 'Erreur pendant l\'envoi'
+                    });
+                } else if (response.status === 401) {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Erreur',
+                        text2: 'Projet introuvable'
+                    });
+                } else {
+                    setArtisans(data.artisans);
+                }
+            })();
+        }, [reload])
+    );
 
     useEffect(() => {
-        fetchProject();
-    }, [projectId]);
-
-    const getProjectImageUrl = (imageName) => {
-        if (!imageName) {
-            return null;
+        if (search !== '') {
+            const searchPattern = new RegExp(search, 'i');
+            const filter = artisans.filter(artisan =>
+                searchPattern.test(artisan.artisanId.company) || searchPattern.test(workToJobName[artisan.artisanId.field])
+            );
+            setFilteredArtisans(filter);
+        } else {
+            setFilteredArtisans(artisans);
         }
-        return `${ipString}/assets/${imageName}`;
-    };
+    }, [search, artisans]);
 
-    const imageUrl = getProjectImageUrl(projectImage);
-
-    // Define the reloadRooms function
-    const reloadRooms = async () => {
-        if (roomsReloadRef.current) {
-            roomsReloadRef.current();
-        }
-    };
+    const artisansOnScreen = filteredArtisans?.map((artisan, i) => {
+        return (
+            <ArtisansProjectCard
+                key={i}
+                availability={artisan.availability}
+                quote={artisan.quote}
+                comment={artisan.comment}
+                company={artisan.artisanId.company}
+                field={artisan.artisanId.field}
+                trustLevel={artisan.trustLevel}
+                artisanId={artisan._id}
+                retrieveProjectCardInfos={retrieveProjectCardInfos}
+                isShow={isShowModal}
+                setter={setIsShowModal}
+                toggleModal={toggleModal}
+            />
+        );
+    });
 
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <View style={styles.header}>
-                <IconButton
-                    style={styles.iconButtonLeft}
-                    onPress={() => navigation.navigate('TabNavigator', { screen: 'Projets', params: { screen: 'ProjectsScreen' } })}
-                    iconName="long-arrow-left"
-                />
-                <View style={styles.projectInfoContainer}>
-                    {projectImage ? (
-                        <Image source={{ uri: imageUrl }} style={styles.image} />
-                    ) : (
-                        <LogoTransparent />
-                    )}
-                    {projectName && (
-                        <Text style={styles.projectName}>{projectName}</Text>
-                    )}
+        <SafeAreaView style={styles.main}>
+            <View style={styles.main}>
+                <View style={styles.biggerContainer}>
+                    <View style={styles.titleContainer}>
+                        <ScreenTitle style={styles.screenTitle} text="Artisans" />
+                        <TouchableOpacity style={styles.addBtn} onPress={() => toggleModal(setIsShowModal_2)}>
+                            <Text>Ajouter un artisan</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+                <View style={styles.customInputContainer}>
+                    <CustomInput placeholder='Rechercher' search={true} value={search} onChangeText={(value) => setSearch(value)} />
+                </View>
+                <ScrollView style={styles.artisansContainer}>
+                    {artisansOnScreen}
+                </ScrollView>
             </View>
-            <Tab.Navigator 
-                screenOptions={{ 
-                    headerShown: false, 
-                    tabBarStyle: styles.tabBarStyle,
-                    tabBarActiveTintColor: 'rgba(231, 111, 81, 1)',
-                    tabBarInactiveTintColor: 'rgba(231, 111, 81, 0.2)', 
-                    tabBarIndicatorStyle: styles.tabBarIndicatorStyle,
-                }}
-            >
-                <Tab.Screen 
-                    name="RoomsScreen" 
-                    options={{ tabBarLabel: '1' }} 
-                >
-                    {props => <RoomsScreen {...props} projectId={projectId} reloadRooms={reloadRooms} />}
-                </Tab.Screen>
-                <Tab.Screen 
-                    name="ArtisanScreen" 
-                    component={ArtisanScreen} 
-                    options={{ tabBarLabel: '2' }} 
-                    initialParams={{ projectId }} 
-                />
-                <Tab.Screen 
-                    name="DIYOrProScreen" 
-                    options={{ tabBarLabel: '3' }} 
-                >
-                    {props => <DIYOrProScreen {...props} projectId={projectId} setReloadRef={(ref) => { roomsReloadRef.current = ref; }} />}
-                </Tab.Screen>
-                <Tab.Screen 
-                    name="PlanningScreen" 
-                    component={PlanningScreen} 
-                    options={{ tabBarLabel: '4' }} 
-                    initialParams={{ projectId }} 
-                />
-            </Tab.Navigator>
+            <ArtisansScreenModal
+                isShow={isShowModal_2}
+                setter={setIsShowModal_2}
+                toggleModal={toggleModal}
+                projectId={projectId}
+                onClose={() => setReload(prev => !prev)} // Ajouter un callback onClose pour déclencher le reload
+            />
+            <UpdateArtisansScreenModal
+                isShow={isShowModal}
+                setter={setIsShowModal}
+                toggleModal={toggleModal}
+                retrievedProjectCardInfos={retrievedProjectCardInfos}
+                projectId={projectId}
+                onClose={() => setReload(prev => !prev)} // Ajouter un callback onClose pour déclencher le reload
+            />
         </SafeAreaView>
     );
 }
 
+export default ArtisanScreen;
+
 const styles = StyleSheet.create({
-    safeArea: {
+    main: {
         flex: 1,
-        backgroundColor: MyLightTheme.colors.background,
     },
-    header: {
+    biggerContainer: {
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    titleContainer: {
+        display: 'flex',
+        width: '80%',
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
-        height: 50,
-        position: 'relative',
+        justifyContent: 'space-between',
+    },
+    addBtn: {
         justifyContent: 'center',
-    },
-    iconButtonLeft: {
-        position: 'absolute', 
-        left: 20, 
-        top: '50%', 
-        marginTop: -25, 
-    },
-    projectInfoContainer: {
-        flexDirection: 'row',
         alignItems: 'center',
+        borderWidth: 0.5,
+        borderColor: '#299D8E',
+        borderRadius: 8,
+        height: 25,
+        width: '40%',
     },
-    tabBarStyle: {
-        shadowOffset: { width: 0, height: 0 },
-        shadowRadius: 0,
-        alignSelf: 'center',
-        width: '60%',
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(231, 111, 81, 0.2)',
-        backgroundColor: MyLightTheme.colors.background,
+    customInputContainer: {
+        display: 'flex',
+        width: '100%',
+        alignItems: 'center'
     },
-    tabBarIndicatorStyle: {
-        backgroundColor: 'rgba(231, 111, 81, 1)',
-        height: 2,
-    },
-    image: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        borderWidth: 1,
-        borderColor: MyLightTheme.colors.lightGreen,
-        marginRight: 10,
-    },
-    projectName: {
-        alignSelf: 'center',
-    },
+    artisansContainer: {
+        width: '100%',
+    }
 });
