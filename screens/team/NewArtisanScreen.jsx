@@ -21,7 +21,7 @@ export default function NewArtisanScreen({ navigation }) {
   const token = useSelector((state) => state.user.userInfos.token)
 
 const createArtisan = () => {
-                                 
+    //console.log(email, phoneNumber, job, name)      
     fetch(`${ipString}/artisans/newArtisan/${token}`,{         //fetch vers la route newArtisan pour creer un nouveau artisan.
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -59,7 +59,7 @@ const createArtisan = () => {
             style={styles.input}
             placeholder="Nom de l'entreprise"
             value={name}
-            onChangeText={setName}
+            onChangeText={(value) => setName(value)}
           />
         </View>
         <View style={styles.border}></View>
@@ -68,7 +68,7 @@ const createArtisan = () => {
             style={styles.input}
             placeholder="Choisir un métier"
             value={job}
-            onChangeText={setJob}
+            onChangeText={(value) => setJob(value)}
           />
         </View>
         <View style={styles.border}></View>
@@ -77,7 +77,7 @@ const createArtisan = () => {
             style={styles.input}
             placeholder="Email"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(value) => setEmail(value)}
           />
         </View>
         <View style={styles.border}></View>
@@ -86,7 +86,7 @@ const createArtisan = () => {
             style={styles.input}
             placeholder="Numéro de telephone"
             value={phoneNumber}
-            onChangeText={setphoneNumber}
+            onChangeText={(value) => setphoneNumber(value)}
           />
         </View>
         <View style={styles.border}></View>

@@ -30,7 +30,10 @@ function ArtisanCard(props) {
         <Text style={styles.companyName}>{props.name}</Text>
       </View>
       <View>
-        <Text style={styles.fieldName}>{props.field}</Text>
+        <Text style={styles.fieldName}>{workToJobName[props.field].job}</Text>
+      </View>
+      <View>
+        <Text style={styles.icon}>{workToJobName[props.field].icon}</Text>
       </View>
       <View>
         <TouchableOpacity onPress={props.onPress}>
@@ -77,5 +80,11 @@ const styles = StyleSheet.create({
     height: 64.73,
     order: 1,
     flexGrow: 0,
+  },
+
+  icon: {
+    height:20,
+    width:20,
+    marginTop:10,
   },
 });

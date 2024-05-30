@@ -1,17 +1,17 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
   
 
-function AvatarCard(props) {
+function AvatarCard(props,navigation) { //onPress={props.onPress}
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.avatarName}>{props.name}</Text>
       </View>
       <View>
-        <TouchableOpacity onPress={props.onPress}>
+        <TouchableOpacity onPress={() => navigation.navigate("TeamScreen")}>
           <Image source={props.image} style={styles.avatarPicture}/>
         </TouchableOpacity>
-      </View>
+      </View>                           
     </View>
   );
 }

@@ -17,7 +17,8 @@ import FilledButton from "../../components/buttons/FilledButton";
 import Stars from "../../components/buttons/Stars";
 import TextWithRadioButton from "../../components/buttons/TextWithRadioButtons";
 import { useSelector } from 'react-redux';
-
+import UserPicture from "../../components/images/UserPicture";
+import ImageSelectorModal from "../../components/modal/ImageSelectorModal";
 const picture = require("../../assets/Gabin.jpg");
 const ipString = process.env.IP_ADDRESS;
 
@@ -48,6 +49,16 @@ export default function TeammateSkillsScreen({ navigation }) {
   const [text, setText] = useState("");
   const [skills, setSkills] = useState({});
   const token = useSelector((state) => state.user.userInfos.token)
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [avatar, setAvatar] = useState(null); 
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+};
+const handleImageSelect = (image) => {
+  // console.log('Image sélectionnée :', image);
+  setAvatar(image);
+};
 
   // Mise à jour de l'état lorsqu'une compétence est sélectionnée
   const handleSkillChange = (posteIndex, niveau) => {
@@ -89,6 +100,7 @@ export default function TeammateSkillsScreen({ navigation }) {
         },
         body: JSON.stringify({ 
                   name: text,
+                  avatar: avatar.uri,
                  }),
       });
 
@@ -165,7 +177,15 @@ export default function TeammateSkillsScreen({ navigation }) {
           <FontAwesome name="long-arrow-left" style={styles.arrowLeft} />
         </TouchableOpacity>
         <View>
-          <Image source={picture} style={styles.picture} />
+        <TouchableOpacity onPress={toggleModal}>
+                                <View style={styles.avatarWrapper}>
+                                    {avatar ? (
+                                        <Image source={avatar} style={styles.avatar} />
+                                    ) : (
+                                        <UserPicture/>
+                                    )}
+                                </View>
+                            </TouchableOpacity>
         </View>
       </View>
       <View style={styles.h1}>
@@ -202,12 +222,24 @@ export default function TeammateSkillsScreen({ navigation }) {
           full={true}
           onPress={() => createTeammate()}
         />
+                    <ImageSelectorModal 
+                isShow={isModalVisible} 
+                toggleModal={toggleModal} 
+                onSelectImage={handleImageSelect} 
+            />
       </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+
+  avatar: {
+    height:100,
+    width:100,
+    marginLeft:140,
+  },
+
   scrollableSection: {
     height: "50%",
   },
@@ -236,12 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  picture: {
-    width: 70,
-    height: 70,
-    borderRadius: 50,
-    marginLeft: 160,
-  },
+  
   h1: {
     flexDirection: "row",
     justifyContent: "center",
