@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
+        marginTop: 5,
     },
     avatarWrapper: {
         borderWidth: 1,
@@ -148,8 +149,11 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontSize: 24,
         lineHeight: 23,
-        letterSpacing: 0.15,
+        letterSpacing: -1.2,
         color: '#194852',
+        fontFamily: 'Inter',
+        fontStyle: 'normal',
+        fontWeight: '600',
     },
     titleContainer: {
         display: 'flex',
