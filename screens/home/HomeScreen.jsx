@@ -76,13 +76,8 @@ function HomeScreen({ navigation }) {
 
 // console.log('projects', projects)
 
-<<<<<<< HEAD
-    const projectName = projects?.map((data, i) => {
-        return <SmallProjectCard key={i} name={data.name} picture={data.picture} /> 
-=======
     const projectName = projects.map((data, i) => {
         return <SmallProjectCard key={i} name={data.name} picture={data.picture} projectId={data._id}/> 
->>>>>>> 0f2bb84246aa0dd838dc47cc9cc395fdf8da8cf4
     });
 
     const kpiData = {
