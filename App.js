@@ -13,9 +13,11 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import user from './reducers/user';
+import { LogBox } from 'react-native';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+  LogBox.ignoreAllLogs(); // Ignore all log notifications
 
   const store = configureStore({
     reducer: { user },
