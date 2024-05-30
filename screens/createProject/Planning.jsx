@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
@@ -7,7 +7,7 @@ import CustomInput from '../../components/inputs/CustomInput';
 import IconButton from '../../components/buttons/IconButton';
 import Toast from 'react-native-toast-message';
 import StepDisplay from '../../components/cards/StepDisplay';
-import { MyLightTheme } from '../../components/Theme';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -25,38 +25,45 @@ function PlanningScreen({ navigation, route }) {
     const [data, setData] = useState([]);
     const [checkedItems, setCheckedItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [reload, setReload] = useState(false); // Nouvel état pour gérer le reload
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${ipString}/projects/getProjectPlanning/${projectId}`);
-                const result = await response.json();
-                if (response.ok) {
-                    setData(result.Planning);
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: result.message,
-                    });
-                }
-            } catch (error) {
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`${ipString}/projects/getProjectPlanning/${projectId}`);
+            const result = await response.json();
+            if (response.ok) {
+                setData(result.Planning);
+            } else {
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
-                    text2: 'Erreur lors de la récupération des données',
+                    text2: result.message,
                 });
             }
-        };
-        fetchData();
-    }, [projectId]);
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Erreur lors de la récupération des données',
+            });
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [reload])
+    );
 
     const handleCheck = (itemId) => {
-        setCheckedItems(prevState =>
-            prevState.includes(itemId)
+        console.log(`Checking item: ${itemId}`);
+        setCheckedItems(prevState => {
+            const newState = prevState.includes(itemId)
                 ? prevState.filter(id => id !== itemId)
-                : [...prevState, itemId]
-        );
+                : [...prevState, itemId];
+            console.log('Updated checked items:', newState);
+            return newState;
+        });
     };
 
     const filteredData = data.map(step => ({
@@ -74,10 +81,10 @@ function PlanningScreen({ navigation, route }) {
                         <View style={styles.titleContainer}>
                             <ScreenTitle style={styles.screenTitle} text="Planification" />
                             <IconButton
-                                    style={styles.iconButtonRight}
-                                    onPress={() => console.log("click on filter")}
-                                    iconName="filter"
-                                />
+                                style={styles.iconButtonRight}
+                                onPress={() => console.log("click on filter")}
+                                iconName="filter"
+                            />
                         </View>
                         <CustomInput
                             placeholder="Rechercher ici"
@@ -94,7 +101,6 @@ function PlanningScreen({ navigation, route }) {
                         </View>
                     )}
                 </View>
-                
             </ScrollView>
         </SafeAreaView>
     );
