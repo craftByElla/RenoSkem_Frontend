@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { MyLightTheme } from '../../components/Theme'; // Importation du thème personnalisé
@@ -27,15 +27,17 @@ const RoomIcon = ({ type }) => {
 };
 
 const getBorderColor = (room) => {
-    const { grey, orange, lightGreen } = MyLightTheme.colors;
+    const { grey, lightGreen } = MyLightTheme.colors;
 
     let hasArtisanOrTeammates = false;
 
-    room.items.forEach(item => {
-        if (item.artisan !== null || (item.teammates && item.teammates.length > 0)) {
-            hasArtisanOrTeammates = true;
-        }
-    });
+    if (Array.isArray(room.items)) {
+        room.items.forEach(item => {
+            if (item.artisan !== null || (Array.isArray(item.teammates) && item.teammates.length > 0)) {
+                hasArtisanOrTeammates = true;
+            }
+        });
+    }
 
     if (hasArtisanOrTeammates) {
         return lightGreen;
@@ -116,31 +118,44 @@ const RoomsDisplayDIYPRO = ({ rooms, onRoomPress }) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity 
-                style={[styles.roofContainer, { width: triangleWidth }]} 
+                style={[styles.roofContainer, { width: hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth }]} 
                 onPress={() => hasGrenier && onRoomPress(grenierRoom._id)}
                 onLongPress={handleLongPressGrenier}
                 onPressOut={handlePressOutGrenier}
                 disabled={!hasGrenier}
             >
-                <Svg width={triangleWidth} height="37" viewBox={`0 0 ${triangleWidth} 37`} fill="none">
-                    <Path d={`M${triangleWidth / 2} 0.854419C${triangleWidth / 2 + 0.4051} 0.663417 ${triangleWidth / 2 + 0.8743} 0.663417 ${triangleWidth / 2 + 1.2794} 0.854418L${triangleWidth - 2.3494} 33.3932C${triangleWidth - 0.901} 34.0763 ${triangleWidth - 1.3874} 36.25 ${triangleWidth - 2.9891} 36.25H2.98907C1.38741 36.25 0.900654 34.0763 2.34938 33.3933L${triangleWidth / 2} 0.854419Z`} fill="white" stroke={getBorderColor(grenierRoom)} strokeWidth="1.5" />
+                <Svg width={hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth} height="37" viewBox={`0 0 ${hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth} 37`} fill="none">
+                    <Path d={`M${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) / 2} 0.854419C${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) / 2 + 0.4051} 0.663417 ${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) / 2 + 0.8743} 0.663417 ${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) / 2 + 1.2794} 0.854418L${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) - 2.3494} 33.3932C${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) - 0.901} 34.0763 ${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) - 1.3874} 36.25 ${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) - 2.9891} 36.25H2.98907C1.38741 36.25 0.900654 34.0763 2.34938 33.3933L${(hasGrenier && grid.flat().length === 0 ? 44 : triangleWidth) / 2} 0.854419Z`} fill="white" stroke={grenierRoom ? getBorderColor(grenierRoom) : MyLightTheme.colors.grey} strokeWidth="1.5" />
                 </Svg>
                 {hasGrenier && <Text style={styles.iconInRoof}>🕸️</Text>}
             </TouchableOpacity>
 
             {grid.map((row, rowIndex) => (
                 <View style={styles.row} key={rowIndex}>
-                    {row.map((room, colIndex) => (
-                        <TouchableOpacity 
-                            key={colIndex} 
-                            style={[styles.room, { borderColor: getBorderColor(room) }]} 
-                            onPress={() => onRoomPress(room._id)} 
-                            onLongPress={() => handleLongPress(room.type)} 
-                            onPressOut={handlePressOut}
-                        >
-                            <RoomIcon type={room.type} />
-                        </TouchableOpacity>
-                    ))}
+                    {row.map((room, colIndex) => {
+                        if (!room) {
+                            // console.log("Room is undefined at row:", rowIndex, "col:", colIndex);
+                            return null;
+                        }
+                        // Initialiser les propriétés par défaut si elles sont undefined
+                        room.name = room.name || '';
+                        room.surface = room.surface || 0;
+                        room.comment = room.comment || '';
+                        room.items = room.items || [];
+
+                        // console.log("Room data before getting border color:", room);
+                        return (
+                            <TouchableOpacity 
+                                key={colIndex} 
+                                style={[styles.room, { borderColor: getBorderColor(room) }]} 
+                                onPress={() => onRoomPress(room._id)} 
+                                onLongPress={() => handleLongPress(room.type)} 
+                                onPressOut={handlePressOut}
+                            >
+                                <RoomIcon type={room.type} />
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
             ))}
 

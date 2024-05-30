@@ -17,16 +17,17 @@ function ProjectIconSelectorModal({ isShow, toggleModal, onSelectImage }) {
   const handleImageSelect = (index) => {
     // console.log('Index sélectionné :', index, 'Image :', images[index].uri);
     setSelectedImage(index);
-  };
+};
 
-  const handleCloseModal = () => {
+const handleCloseModal = () => {
     if (selectedImage !== null) {
-      const imageUri = Image.resolveAssetSource(images[selectedImage].uri);
-      // console.log('Image confirmée :', imageUri);
-      onSelectImage(imageUri);
+        const selectedImageName = images[selectedImage].name;
+        // console.log('Image confirmée :', selectedImageName);
+        onSelectImage({ name: selectedImageName });
     }
     toggleModal();
-  };
+};
+
 
   return (
     <Modal

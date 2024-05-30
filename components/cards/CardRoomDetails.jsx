@@ -57,8 +57,6 @@ const getBorderColor = (room, colors) => {
 
     if (hasName && hasSurface && hasComment && hasItems) {
         return lightGreen;
-    } else if (hasName || hasSurface || hasComment || hasItems) {
-        return orange;
     } else {
         return grey;
     }

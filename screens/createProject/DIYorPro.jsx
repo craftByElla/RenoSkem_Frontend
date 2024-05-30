@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect } from '@react-navigation/native';
 import ScreenTitle from '../../components/text/ScreenTitle';
 import Toast from 'react-native-toast-message';
 import RoomsDisplayDIYPRO from '../../components/cards/RoomsDisplayDIYPRO';
 import CardRoomDetailsDIYPRO from '../../components/cards/CardRoomDetailsDIYPRO';
-
 import IconButton from "../../components/buttons/IconButton";
 import FilterModalDIYPRO from '../../components/modal/FilterModalDIYPRO';
+import RoomDetailsModalDIYPRO from '../../components/modal/RoomDetailsModalDIYPRO'; 
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -24,52 +24,71 @@ function DIYorProScreen({ navigation, route }) {
     const [isFilterModalVisible, setFilterModalVisible] = useState(false);
     const [filteredRooms, setFilteredRooms] = useState([]);
     const [filters, setFilters] = useState({ roomTypes: [], workTypes: [], diy: 'Voir tout' });
+    const [isRoomDetailsModalVisible, setRoomDetailsModalVisible] = useState(false); // State for RoomDetailsModal
+    const [selectedRoom, setSelectedRoom] = useState(null); // State for selected room
 
-    useEffect(() => {
-        const fetchRooms = async () => {
-            try {
-                const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
-                const response = await fetch(url);
-                const data = await response.json();
-    
-                if (response.ok) {
-                    setRooms(data.rooms);
-                    setFilteredRooms(data.rooms);
-    
-                    const roomTypesSet = new Set();
-                    const workTypesSet = new Set();
-                    data.rooms.forEach(room => {
-                        roomTypesSet.add(room.type);
-                        room.items.forEach(item => {
-                            workTypesSet.add(item.field);
-                        });
+    const initializeRoomProperties = (rooms) => {
+        return rooms.map(room => ({
+            ...room,
+            items: room.items || [],
+            name: room.name || '',
+            surface: room.surface || 0,
+            comment: room.comment || '',
+        }));
+    };
+
+    const fetchRooms = async () => {
+        try {
+            const url = `${ipString}/rooms/getRoomsByProject/${projectId}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (response.ok) {
+                const initializedRooms = initializeRoomProperties(data.rooms);
+                setRooms(initializedRooms);
+                setFilteredRooms(initializedRooms);
+
+                const roomTypesSet = new Set();
+                const workTypesSet = new Set();
+                initializedRooms.forEach(room => {
+                    roomTypesSet.add(room.type);
+                    room.items.forEach(item => {
+                        workTypesSet.add(item.field);
                     });
-    
-                    setRoomTypes([...roomTypesSet]);
-                    setWorkTypes([...workTypesSet]);
-                    setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'], diy: 'Voir tout' });
-    
-                    console.log("Rooms fetched: ", data.rooms);
-                    console.log("Room types: ", [...roomTypesSet]);
-                    console.log("Work types: ", [...workTypesSet]);
-                } else {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: data.message || 'Une erreur est survenue lors de la récupération des pièces'
-                    });
-                }
-            } catch (error) {
+                });
+
+                setRoomTypes([...roomTypesSet]);
+                setWorkTypes([...workTypesSet]);
+                setFilters({ roomTypes: [...roomTypesSet], workTypes: [...workTypesSet, 'Sans type'], diy: 'Voir tout' });
+
+                // console.log("Rooms fetched: ", initializedRooms);
+                // console.log("Room types: ", [...roomTypesSet]);
+                // console.log("Work types: ", [...workTypesSet]);
+            } else {
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
-                    text2: 'Une erreur est survenue lors de la récupération des pièces'
+                    text2: data.message || 'Une erreur est survenue lors de la récupération des pièces'
                 });
             }
-        };
-    
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Une erreur est survenue lors de la récupération des pièces'
+            });
+        }
+    };
+
+    useEffect(() => {
         fetchRooms();
     }, [projectId]);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchRooms();
+        }, [projectId])
+    );
 
     const toggleFilterModal = () => {
         setFilterModalVisible(!isFilterModalVisible);
@@ -78,23 +97,24 @@ function DIYorProScreen({ navigation, route }) {
     const applyFilters = (selectedFilters) => {
         const { roomTypes, workTypes, diy } = selectedFilters;
         setFilters(selectedFilters);
-    
+
         const filteredRooms = rooms.filter(room => {
             const roomTypeMatch = roomTypes.length === 0 || roomTypes.includes(room.type);
             const workTypeMatch = workTypes.includes('Sans type') ? (room.items.length === 0 || room.items.some(item => workTypes.includes(item.field))) : room.items.some(item => workTypes.includes(item.field));
             const diyMatch = diy === 'Voir tout' || (diy === 'DIY' && room.items.some(item => item.diy)) || (diy === 'PRO' && room.items.some(item => !item.diy));
-    
+
             return roomTypeMatch && workTypeMatch && diyMatch;
         });
-    
+
         setFilteredRooms(filteredRooms);
-    
-        console.log("Filters applied: ", selectedFilters);
-        console.log("Filtered rooms: ", filteredRooms);
+
+        // console.log("Filters applied: ", selectedFilters);
+        // console.log("Filtered rooms: ", filteredRooms);
     };
 
-    const handleRoomPress = (roomId) => {
-        console.log(`Click on room with id: ${roomId}`);
+    const handleRoomPress = (room) => {
+        setSelectedRoom(room);
+        setRoomDetailsModalVisible(true);
     };
 
     return (
@@ -118,7 +138,7 @@ function DIYorProScreen({ navigation, route }) {
                     <View style={styles.fondVert}>
                         <View style={styles.recapContainer}>
                             <View style={styles.recapTitle}>
-                                <ScreenTitle  text="Récapitulatif" />
+                                <ScreenTitle text="Récapitulatif" />
                                 <IconButton
                                     style={styles.iconButtonRight}
                                     onPress={toggleFilterModal}
@@ -126,7 +146,7 @@ function DIYorProScreen({ navigation, route }) {
                                 />
                             </View>
                             {filteredRooms.map(room => (
-                                <CardRoomDetailsDIYPRO key={room._id} room={room} onPress={() => handleRoomPress(room._id)} />
+                                <CardRoomDetailsDIYPRO key={room._id} room={room} onPress={() => handleRoomPress(room)} />
                             ))}
                         </View>
                     </View>
@@ -138,6 +158,10 @@ function DIYorProScreen({ navigation, route }) {
                     roomTypes={roomTypes}
                     workTypes={workTypes}
                     currentFilters={filters}
+                />
+                <RoomDetailsModalDIYPRO
+                    isShow={isRoomDetailsModalVisible}
+                    toggleModal={() => setRoomDetailsModalVisible(!isRoomDetailsModalVisible)}
                 />
             </ScrollView>
         </SafeAreaView>
@@ -182,7 +206,6 @@ const createStyles = (colors) => StyleSheet.create({
     },
     recapContainer: {
         width: '80%',
-        
     },
     recapTitle: {
         marginBottom: 20,
