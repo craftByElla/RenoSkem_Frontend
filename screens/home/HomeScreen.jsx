@@ -8,7 +8,8 @@ import { useDispatch } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
-import BudgetPieChart from '../../components/charts/BudgetPieChart';
+import KPIBox from '../../components/cards/KPIBox';
+import KPIColumnChart from '../../components/charts/KPIColumnChart';
 
 
 const ipString = process.env.IP_ADDRESS;
@@ -73,11 +74,16 @@ function HomeScreen({ navigation }) {
         }, [])
     );
 
-console.log('projects', projects)
+// console.log('projects', projects)
 
     const projectName = projects.map((data, i) => {
         return <SmallProjectCard key={i} name={data.name} picture={data.picture} projectId={data._id}/> 
     });
+
+    const kpiData = {
+        labels: ["Électricité ⚡", "Isolation ❄️", "Plomberie 💧", "Meuble 🪑"],
+        values: [12000, 8000, 2000, 5000]
+    };
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -98,10 +104,13 @@ console.log('projects', projects)
                 <Text style={styles.titleDashboard}>Dashboard</Text>
             </View>
             <View style={styles.dashboard}>
-                <BudgetPieChart 
-                    height={'20%'}
-                    width={'20%'}
-                /> 
+                <View style={styles.kpiContainer}>
+                        <KPIBox title="Projets en cours" value={projects.length} />
+                        <KPIBox title="Tâches complétées" value={`15/36`} />
+                </View>
+                <View style={styles.KPIColumnChartBox} >
+                    <KPIColumnChart  data={kpiData} title="Dépenses par poste de travail" />
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -188,5 +197,15 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
         backgroundColor: 'rgba(41, 157, 142, 0.2)',
+        alignItems: 'center',
     },
+    kpiContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 10,
+        width: '90%',
+    },
+    KPIColumnChartBox: {
+        width: '90%',
+    }
 });
