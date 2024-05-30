@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTheme } from '@react-navigation/native';
-import React, { useRef, useState } from 'react';
-import { Modal, StyleSheet, Text, TextInput, Keyboard, TouchableWithoutFeedback, SafeAreaView, ScrollView, View, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Modal, StyleSheet, Text, TextInput, TouchableWithoutFeedback, Keyboard, SafeAreaView, ScrollView, View, Pressable } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FillableIcons from '../buttons/FillableIcons';
 import FilledButton from '../buttons/FilledButton';
@@ -11,27 +11,40 @@ import { Picker } from '@react-native-picker/picker';
 import Toast from 'react-native-toast-message';
 const ipString = process.env.IP_ADDRESS;
 
-function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
+function UpdateArtisansScreenModal(props) {
     const { colors } = useTheme();
-    const styles = createStyles(colors, devis)
+    const styles = createStyles(colors, quote)
 
-    const [devis, setDevis] = useState(0);
+    const [quote, setQuote] = useState('');
     const [comment, setComment] = useState('');
-    const [chooseJob, setChooseJob] = useState('');
-    const [companyName, setCompanyName] = useState('');
-    const [artisanEmail, setArtisanEmail] = useState('');
-    const [artisanPhone, setArtisanPhone] = useState('');
-    const [trustLevel, setTrustLevel] = useState(0);
-    const [date, setDate] = useState(new Date());
-    // const [currentComment, setCurrentComment] = useState(comment);
-    console.log('DAAATE', date)
+    const [trustLevel, setTrustLevel] = useState('');
+    const [availability, setAvailability] = useState(new Date());
+    const [artisanId, setArtisanID] = useState('');
+    console.log('availability', typeof props.retrievedProjectCardInfos.availability, props.retrievedProjectCardInfos.availability)
+    console.log('new Date(availability)', typeof new Date(props.retrievedProjectCardInfos.availability), new Date(props.retrievedProjectCardInfos.availability))
+    console.log('compareDate', typeof new Date(), new Date());
+    console.log('quote', quote);
+    console.log('trustLevel', trustLevel);
+    //format de date à obtenir : 2024-05-23T00:49:00.000Z
+    useEffect(() => {
+        if(props.retrievedProjectCardInfos){
+            setComment(props.retrievedProjectCardInfos.comment || '');
+            setQuote(props.retrievedProjectCardInfos.quote || '1');
+            const availableDate = new Date(props.retrievedProjectCardInfos.availability)
+            if(!isNaN(availableDate)){
+                setAvailability(availableDate);
+            }
+            setTrustLevel(props.retrievedProjectCardInfos.trustLevel || '');
+            setArtisanID(props.retrievedProjectCardInfos.artisanId || '')
+        }
+    }, [props.retrievedProjectCardInfos])
+
     const updateTrustLevel = (stars) => {
         setTrustLevel(stars)
     }
 
     const handleClose = () => {
-        console.log('click')
-        toggleModal(setter, isShow);
+        props.toggleModal(props.setter, props.isShow);
     };
     
 
@@ -42,109 +55,99 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
 
     const onDateChange = (value, selectedDate) => {
         if (selectedDate) {
-            setDate(selectedDate)
+            setAvailability(selectedDate)
         }
     }
 
-    const addArtisanToProject = async () => {
-        const responseFromArtisanRoute = await fetch(`${ipString}/artisans/newArtisan`, {
-            method: 'POST',
+    const updateArtisanProject = async () => {
+        const response = await fetch(`${ipString}/projects/editProjectArtisan/${props.projectId}/${artisanId}`, {
+            method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                email: artisanEmail,
-                phone: artisanPhone,
-                field: chooseJob,
-                company: companyName,
+                availability: availability,
+                trustLevel: trustLevel,
+                comment: comment,
+                quote: quote,
             })
         });
-        const artisan = await responseFromArtisanRoute.json()
-        if (responseFromArtisanRoute.status === 500) {
+        const artisan = await response.json()
+        if (Response.status === 500) {
             return;
-        } else {
-            const responseFromProjectsRoute = await fetch(`${ipString}/projects/addArtisanToProject/`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    artisanId: artisan.artisan._id,
-                    availability: date,
-                    trustLevel: trustLevel,
-                    quote: devis,
-                    comment: comment,
-                    projectId: projectId,
-                }),
+        } if (response === 401){
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Artisan introuvable'
             });
-            if (responseFromProjectsRoute === 401){
-                Toast.show({
-                    type: 'error',
-                    text1: 'Erreur',
-                    text2: 'Projet introuvable'
-                });
-            }else if (responseFromProjectsRoute === 500) {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Erreur',
-                    text2: 'Erreur pendant l\'envoie'
-                });
-            }else {
-                Toast.show({
-                    type: 'success',
-                    text1: 'succès',
-                    text2: 'Artisan ajouté'
-                });
-            }
+        }else if (response === 500) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Erreur pendant l\'envoie'
+            });
+        }else {
+            Toast.show({
+                type: 'success',
+                text1: 'succès',
+                text2: 'Artisan modifié'
+            });
         }
     }
 
-
+    const removeArtisanFromProject = async () => {
+        const response = await fetch(`${ipString}/projects/removeArtisanFromProject/${props.projectId}/${artisanId}`, {
+            method: 'PUT',
+        });
+        const artisan = await response.json()
+        if (Response.status === 500) {
+            return;
+        } if (response === 401){
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Artisan introuvable'
+            });
+        }else if (response === 500) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Erreur pendant l\'envoie'
+            });
+        }else {
+            Toast.show({
+                type: 'success',
+                text1: 'succès',
+                text2: 'Artisan supprimé'
+            });
+        }
+    }
     
     return (
         <Modal
             transparent={true}
             animationType="slide"
-            visible={isShow}
+            visible={props.isShow}
         >
             
                 <Pressable style={styles.modalContainer} onPress={() => handleClose()}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.modal}>
                             <Text style={styles.textTitle}>Nouvel Artisan :</Text>
-                            <Picker
-                                selectedValue={chooseJob}
-                                onValueChange={(itemValue, itemIndex) => setChooseJob(itemValue)}
-                            >
-                                <Picker.Item label="Chauffage" value="Chauffage" />
-                                <Picker.Item label="Maçonnerie" value="Maçonnerie" />
-                                <Picker.Item label="Toiture" value="Toiture" />
-                                <Picker.Item label="Electricité" value="Electricité" />
-                                <Picker.Item label="Etanchéité" value="Etanchéité" />
-                                <Picker.Item label="Cloisonnement/Plâtrage" value="CloisonnementPlâtrage" />
-                                <Picker.Item label="Plomberie" value="Plomberie" />
-                                <Picker.Item label="Ventilation" value="Ventilation" />
-
-                            </Picker>
-                            <CustomInput placeholder="Entreprise" vaue={companyName} onChangeText={value => setCompanyName(value)}/>
-                            <CustomInput placeholder="Email" vaue={artisanEmail} onChangeText={value => setArtisanEmail(value)}/>
-                            <CustomInput
-                                placeholder="Téléphone" 
-                                value={artisanPhone} 
-                                keyboardType="numeric" 
-                                onChangeText={value => setArtisanPhone(value)}
-                            />
                             <View style={styles.indiceContainer}>
                                 <Text style={styles.text}>Indice de confiance</Text>
                                 <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
                                 <View style={styles.starsContainer}>
-                                    <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' updateTrustLevel={updateTrustLevel} />
+                                    <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' updateTrustLevel={updateTrustLevel} trustLevel = {trustLevel}/>
                                 </View>
                             </View>
                             <View style={styles.indiceContainer}>
                                 <Text style={styles.text}>Devis</Text>
                                 <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
-                                <View style={styles.inputDevis}>
+                                <View style={styles.inputquote}>
                                     <TextInput
                                         style={{width: 96}}
-                                        value={devis}
-                                        onChangeText={(value) => setDevis(value)}
+                                        value={quote.toString()}
+                                        onChangeText={(value) => setQuote(value)}
                                         keyboardType="numeric"
                                     />
                                     <FontAwesome name='euro' size={24} color={colors.deepGrey}/>
@@ -155,7 +158,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
                                 <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
                                 <View style={styles.dateContainer}>
                                     <DateTimePicker 
-                                        value={date}
+                                        value={typeof availability === 'object' ? availability : new Date()}
                                         locale='fr-FR'
                                         onChange={onDateChange}
                                     />
@@ -181,7 +184,10 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
                                     />
                                 </View>
                                 <View style={styles.buttonContainer}>
-                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => {addArtisanToProject(), handleClose()}}/>
+                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => {updateArtisanProject(), handleClose()}}/>
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                    <FilledButton text='Supprimer' full={true} background={colors.deepGreen} onPress={() => {removeArtisanFromProject(), handleClose()}}/>
                                 </View>
                             </View>
                         </View>
@@ -199,9 +205,9 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
     )
 }
 
-export default ArtisansScreenModal
+export default UpdateArtisansScreenModal
 
-const createStyles = (colors, devis) => StyleSheet.create({
+const createStyles = (colors, quote) => StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -253,8 +259,8 @@ const createStyles = (colors, devis) => StyleSheet.create({
         width: '50%',
         color: colors.deepGrey
     },
-    inputDevis: {
-        borderColor: devis ? colors.lightGreen : colors.lightGrey,
+    inputquote: {
+        borderColor: quote ? colors.lightGreen : colors.lightGrey,
         borderWidth: 1,
         width: 120,
         marginLeft: 15,

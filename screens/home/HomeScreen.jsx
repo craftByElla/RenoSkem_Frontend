@@ -57,7 +57,6 @@ function HomeScreen({ navigation }) {
                         dispatch(addUserInfosToStore({
                             name: userData.user.name,
                             avatar: getAvatarUrl(userData.user.avatar),
-                            skills: skills,
                             token: userData.user.token,
                         }));
                         setName(userData.user.name);
@@ -74,10 +73,10 @@ function HomeScreen({ navigation }) {
         }, [])
     );
 
-// console.log('projects', projects)
+console.log('projects', projects)
 
     const projectName = projects.map((data, i) => {
-        return <SmallProjectCard key={i} name={data.name} picture={data.picture} /> 
+        return <SmallProjectCard key={i} name={data.name} picture={data.picture} projectId={data._id}/> 
     });
 
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Platform, View, SafeAreaView as SafeAreaViewIOS, Image, Text } from 'react-native';
+import { StyleSheet, Platform, View, SafeAreaView as SafeAreaViewIOS, Image, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
 import IconButton from '../../components/buttons/IconButton';
 import PlainButton from '../../components/buttons/PlainButton';
@@ -26,8 +26,20 @@ function SkillsScreen({ navigation }) {
         setIsShowModal(!isShowModal);
     };
 
-    
+    const [skilledToSendOnPress, setSkilledToSendOnPress] = useState({})
 
+    const filterSkills = (works, skills) => {
+        const newSkills = {}
+        for (let work = 0; work < works.length; work++){
+            for (const skill in skills){
+                if (works[work] === skill) { 
+                    newSkills[skill] = skills[skill] 
+                }
+            }
+        }
+        setSkilledToSendOnPress(newSkills)
+        return newSkills
+    }
 //---------------------------FONCTION FETCH POUR VIDER LE LOCAL STORAGE, DECONNECTION--------------------------------
 
     const logOut = async() => {
@@ -85,8 +97,14 @@ function SkillsScreen({ navigation }) {
             <PlainButton text='Modifier' onPress={() => navigation.navigate('ChangeSkillsScreen', { skillsFromBack })}/> 
         </View>
         <SpiderChart 
-            skills={skillsFromBack}
+            skills={ skilledToSendOnPress ? skilledToSendOnPress : skillsFromBack }
         />
+        <TouchableOpacity onPress={() => {filterSkills(['Maçonnerie', 'Fondations', 'Toiture', 'Démolition'], skillsFromBack)}}><Text>Stucture et gros oeuvres</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => {filterSkills(['Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => {filterSkills(['Maçonnerie', 'Démolition', 'Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => {filterSkills(['Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => {filterSkills(['Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
+
         <SimpleModal 
             isShow={isShowModal}
             toggleModal={toggleModal}
