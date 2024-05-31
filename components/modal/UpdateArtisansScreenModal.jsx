@@ -150,7 +150,7 @@ function UpdateArtisansScreenModal(props) {
                                         onChangeText={(value) => setQuote(value)}
                                         keyboardType="numeric"
                                     />
-                                    <FontAwesome name='euro' size={24} color={colors.deepGrey}/>
+                                    <Text>€</Text>
                                 </View>
                             </View>
                             <View style={styles.indiceContainer}>
@@ -226,7 +226,8 @@ const createStyles = (colors, quote) => StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'space-around',
-        paddingBottom: 10
+        paddingBottom: 10,
+        marginTop: 10,
     },
     starsContainer: {
         display: 'flex',
@@ -260,26 +261,19 @@ const createStyles = (colors, quote) => StyleSheet.create({
         color: colors.deepGrey
     },
     inputquote: {
-        borderColor: quote ? colors.lightGreen : colors.lightGrey,
+        borderColor: colors.deepGreen,
         borderWidth: 1,
         width: 120,
+        height: 25,
         marginLeft: 15,
-        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     dateContainer: {
         width: 135,
         display: 'flex',
         alignItems: 'flex-end'
-    },
-    buttonContainer: {
-        marginLeft: 10,
-        width: '100%',
-        alignSelf: 'center'
-    },
-    commentSection: {
-        marginTop: 10,
     },
     commentLabel: {
         color: '#6F797B',
@@ -288,7 +282,9 @@ const createStyles = (colors, quote) => StyleSheet.create({
         fontWeight: '400',
         lineHeight: 21,
         letterSpacing: 0.15,
-        marginBottom: 5,
+    },
+    commentSection: {
+        paddingBottom: 10
     },
     commentBox: {
         padding: 10,
@@ -306,5 +302,11 @@ const createStyles = (colors, quote) => StyleSheet.create({
         width: '90%',
         borderRadius: 8,
         alignSelf: 'center',
+    },
+    buttonContainer: {
+        marginLeft: 10,
+        width: '100%',
+        alignSelf: 'center',
+        marginTop: 10,
     },
 })

@@ -25,7 +25,7 @@ function SpiderChart(props) {
       theme={VictoryTheme.material}
       domain={{ y: [0, 1] }}
     >
-      <VictoryGroup colorScale={['green']}
+      <VictoryGroup colorScale={[`${colors.lightGreen}`]}
         style={{ data: { fillOpacity: 0.2, strokeWidth: 1 } }}
       >
         {state.data.map((data, i) => {
@@ -37,9 +37,9 @@ function SpiderChart(props) {
           return (
             <VictoryPolarAxis key={i} dependentAxis
               style={{
-                axisLabel: { padding: 10, backgroundColor: 'red' },
+                axisLabel: { padding: 15, color: colors.deepGreen },
                 axis: { stroke: "none" },
-                grid: { stroke: "grey", strokeWidth: 0.25, opacity: 0.5 },
+                grid: { stroke: "none" },
               }}
               labelPlacement="perpendicular"
               axisValue={i + 1} label={key}
@@ -55,7 +55,7 @@ function SpiderChart(props) {
         tickFormat={() => ""}
         style={{
           axis: { stroke: "none" },
-          grid: { stroke: "grey", opacity: 0.5 }
+          grid: { stroke: colors.orange, opacity: 0.5 }
         }}
       />
     </VictoryChart>

@@ -120,7 +120,9 @@ function ChangeSkillsScreen({ navigation }) {
                     <LogoTransparent />
                 </View>
                 <ScreenTitle text="Paramétrer votre niveau d’expertise" />
-                <Stars style={styles.stars}  />
+                <View style={styles.stars}>
+                <Stars />
+                </View>
                 {/* Ajout des composants radio pour chaque compétence */}
                 <ScrollView style={styles.scrollableSection} contentContainerStyle={styles.scrollableContent}>
                     {postesTravaux.map((poste, index) => (
@@ -165,6 +167,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 50,
         position: 'relative',
+    },
+    stars: {
+        paddingRight: 12,
     },
     iconButton: {
         position: 'absolute', 

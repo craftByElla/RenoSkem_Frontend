@@ -34,10 +34,18 @@ function SimpleModal(props) {
               <Entypo name="cross" size={40} color={"#6F797B"} />
             </TouchableOpacity>
           </View>
+          <View style={styles.btnwrapper}>
           {props.button1}
+          </View>
+          <View style={styles.btnwrapper}>
           {props.button2}
+          </View>
+          <View style={styles.btnwrapper}>
           {props.button3}
+          </View>
+          <View style={styles.btnwrapper}>
           {props.button4}
+          </View>
         </View>
       </Pressable>
     </Modal>
@@ -80,4 +88,9 @@ const createStyles = (colors, props) =>
       letterSpacing: 0.25,
       color: "#194852",
     },
+    btnwrapper: {
+      marginBottom: 10,
+      alignItems: 'center',
+      width: '90%'
+    }
   });

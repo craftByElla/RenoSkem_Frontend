@@ -134,9 +134,15 @@ function ArtisanScreen({route}) {
                 <View style={styles.customInputnputContainer}>
                     <CustomInput placeholder='Rechercher' search={true} value={search} onChangeText={(value) => setSearch(value)}/>
                 </View>
-                <ScrollView style={styles.artisansContainer}>
-                    {artisansOnScreen}
-                </ScrollView>
+                {artisansOnScreen.length > 0 ? (
+                    <ScrollView style={styles.artisansContainer}>
+                        {artisansOnScreen}
+                    </ScrollView>
+                        ) : (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.workerIcon}>👷‍♀️</Text>
+                    </View>
+                )}
             </View>
             <ArtisansScreenModal 
                 isShow={isShowModal_2} 
@@ -187,5 +193,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         width: '100%',
         alignItems: 'center'
+    },
+    emptyContainer: {
+        marginTop: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    workerIcon: {
+        fontSize: 150,
     },
 })
