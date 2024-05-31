@@ -32,11 +32,11 @@ function ConnectionScreen({ navigation }) {
                     text="Créez un compte"
                     style={styles.btn} 
                 />
-                <PlainButton
+                {/* <PlainButton
                     onPress={() => navigation.navigate('TabNavigator', { screen: 'Accueil', params: { screen: 'HomeScreen' } })}
                     text="Go to Home"
                     style={styles.btn} 
-                />
+                /> */}
                
             </View>
             <Text style={styles.policyText}>

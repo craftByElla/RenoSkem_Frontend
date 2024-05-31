@@ -176,7 +176,9 @@ function SetSkills({ navigation }) {
               <TwoStep step={2} />
             </View>
             <ScreenTitle text="Paramétrer votre niveau d’expertise" />
-            <Stars style={styles.stars} />
+            <View style={styles.stars}>
+              <Stars  />
+            </View>
             <ScrollView
               style={styles.scrollableSection}
               contentContainerStyle={styles.scrollableContent}
@@ -243,7 +245,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  stars: {},
+  stars: {
+    paddingRight: 12,
+  },
   scrollableSection: {
     flexGrow: 1,
   },

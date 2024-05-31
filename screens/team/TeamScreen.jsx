@@ -141,7 +141,7 @@ export default function TeamScreen({ navigation }) {
         button1={
           <FilledButton
             text="Coéquipier"
-            onPress={() => navigation.navigate("NewCoworkerScreen")}
+            onPress={() => {navigation.navigate("NewCoworkerScreen"),toggleModal_2()}}
             background={colors.deepGreen}
             full={true}
           />
@@ -150,7 +150,7 @@ export default function TeamScreen({ navigation }) {
           <View style={styles.artisanButton}>
             <PlainButton
               text="Artisan"
-              onPress={() => navigation.navigate("NewArtisanScreen")}
+              onPress={() => {navigation.navigate("NewArtisanScreen"),toggleModal_2()}}
               background={colors.deepGreen}
               full={true}
             />

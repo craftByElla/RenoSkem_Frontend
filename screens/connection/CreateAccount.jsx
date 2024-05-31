@@ -267,7 +267,9 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(41, 157, 142, 1)',
         backgroundColor: 'rgba(217, 217, 217, 1)',
         borderRadius: 70, // Assurez-vous que la bordure soit toujours ronde
-        overflow: 'hidden', // Assurez-vous que l'image soit coupée aux bords
+        overflow: 'hidden', // Assurez-vous que l'image soit coupée aux bords,
+        width: 140,
+        height: 140,
     },
     avatar: {
         width: 140,

@@ -10,6 +10,7 @@ import SimpleModal from '../../components/modal/SimpleModal';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
+import { Picker } from '@react-native-picker/picker';
 const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -77,6 +78,15 @@ function SkillsScreen({ navigation }) {
         }
     }
 
+    const [pickerSelectedValue, setPickerSelectedValue] = useState([]);
+    const pickerValues = [
+        [],
+        ['Maçonnerie', 'Fondations', 'Toiture', 'Démolition', "Cloisonnement/Plâtrage"],
+        ['Revêtements extérieurs', 'Isolation', 'Façade', 'Revêtements muraux', 'Revêtements sol' ],
+        ['Chauffage', 'Électricité', 'Étanchéité', 'Plomberie', 'Ventilation', 'Étanchéité'],
+        ['Installation cuisine/SDB', 'Montage de meuble', 'Menuiserie', 'Peinture', 'Revêtements muraux'],
+    ]
+
     return (
     <SafeAreaView style={{flex: 1}}>
         <View style={styles.header}>
@@ -96,20 +106,42 @@ function SkillsScreen({ navigation }) {
             <Text style={styles.title}>Mes compétences</Text>
             <PlainButton text='Modifier' onPress={() => navigation.navigate('ChangeSkillsScreen', { skillsFromBack })}/> 
         </View>
+        <View style=
+            {{                
+                borderWidth: 1,
+                borderColor: colors.deepGreen,
+                borderRadius: 10,
+                width: '90%',
+                alignSelf: 'center',
+                marginVertical: 20,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}
+        >
         <SpiderChart 
             skills={ skilledToSendOnPress ? skilledToSendOnPress : skillsFromBack }
         />
-        <TouchableOpacity onPress={() => {filterSkills(['Maçonnerie', 'Fondations', 'Toiture', 'Démolition'], skillsFromBack)}}><Text>Stucture et gros oeuvres</Text></TouchableOpacity>
-        <TouchableOpacity onPress={() => {filterSkills(['Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
-        <TouchableOpacity onPress={() => {filterSkills(['Maçonnerie', 'Démolition', 'Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
-        <TouchableOpacity onPress={() => {filterSkills(['Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
-        <TouchableOpacity onPress={() => {filterSkills(['Étanchéité', 'Isolation', 'Façade', 'Cloisonnement/Plâtrage'], skillsFromBack)}}><Text>Isolation et étanchéité</Text></TouchableOpacity>
-
+        </View>
+        <Picker
+            style={{backgroundColor: colors.deepGreen, width: '90%', borderRadius: 10, alignSelf: 'center'}}
+            itemStyle={{color: colors.modalBackgroundColor}}
+            selectedValue={pickerSelectedValue}
+            onValueChange={(itemValue, itemIndex) => {
+                setPickerSelectedValue(itemValue)
+                filterSkills(pickerValues[itemIndex], skillsFromBack)
+            }}
+        >
+            <Picker.Item label="Séléctionnez votre domaine" value="" />
+            <Picker.Item label="Structure et gros oeuvres" value={['Maçonnerie', 'Fondations', 'Toiture', 'Démolition', "Cloisonnement/Plâtrage"]} />
+            <Picker.Item label="Isolation et finitions" value={['Revêtements extérieurs', 'Isolation', 'Façade', 'Revêtements muraux', 'Revêtements sol']} />
+            <Picker.Item label="Installations techniques" value={['Chauffage', 'Électricité', 'Étanchéité', 'Plomberie', 'Ventilation', 'Étanchéité']} />
+            <Picker.Item label="Aménagement intérieur" value={['Installation cuisine/SDB', 'Montage de meuble', 'Menuiserie', 'Peinture', 'Revêtements muraux']} />
+        </Picker>
         <SimpleModal 
             isShow={isShowModal}
             toggleModal={toggleModal}
             button1={
-                <View style={{width: '90%'}}>
+                <View style={{width: '90%', marginBottom: 10}}>
                     <PlainButton 
                         text='Modifier mes informations'
                         onPress={() => {navigation.navigate('ChangeInformationsScreen'), toggleModal()}}
@@ -164,6 +196,5 @@ const createStyles = (colors) => StyleSheet.create({
         color: colors.deepGreen,
     },
 })
-
 
 

@@ -5,7 +5,7 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { addUserInfosToStore } from '../../reducers/user';
 import { useDispatch } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useTheme } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { SafeAreaView as SafeAreaViewANDR} from 'react-native-safe-area-context';
 import KPIBox from '../../components/cards/KPIBox';
@@ -17,7 +17,8 @@ const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
 function HomeScreen({ navigation }) {
     const dispatch = useDispatch();
-
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
     // console.log('userInfos', userInfos);
     const userInfos = useSelector((state) => state.user.userInfos);
     const [avatar, setAvatar] = useState(null);
@@ -101,9 +102,12 @@ function HomeScreen({ navigation }) {
                 <ScrollView contentContainerStyle={styles.projects} horizontal={true} showsHorizontalScrollIndicator={false}>
                     {projectName}
                 </ScrollView>
-                <Text style={styles.titleDashboard}>Dashboard</Text>
+                
+                { projectName.length > 0 ? <Text style={styles.titleDashboard}>Dashboard</Text> : <View></View>}
             </View>
-            <View style={styles.dashboard}>
+
+            { projectName.length > 0 ? 
+                <View style={styles.dashboard}>
                 <View style={styles.kpiContainer}>
                         <KPIBox title="Projets en cours" value={projects.length} />
                         <KPIBox title="Tâches complétées" value={`15/36`} />
@@ -112,13 +116,26 @@ function HomeScreen({ navigation }) {
                     <KPIColumnChart  data={kpiData} title="Dépenses par poste de travail" />
                 </View>
             </View>
+                :
+                <View style={{height: '60%', width: '100%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginTop: -120, position: 'relative'}}>
+    <View style={{flexDirection: 'row', zIndex: 1}}>
+        <Text style={styles.sloganEn}>Reno</Text>
+        <Text style={styles.sloganEnOrange}>Skem</Text>
+    </View>
+    <Text style={[styles.sloganFr, { zIndex: 1 }]}>Planifie la rénovation de ton bien en toute sérénité</Text>
+    <Image source={require('../../assets/tumbleweed.gif')} style={[styles.gif, { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', resizeMode: 'cover', marginTop: 110 }]} />
+</View>
+
+                
+                }
+            
         </SafeAreaView>
     );
 }
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
     main: {
         display: 'flex',
         width: '100%',
@@ -211,5 +228,38 @@ const styles = StyleSheet.create({
     },
     KPIColumnChartBox: {
         width: '90%',
-    }
+    },
+    sloganEn: {
+        flexShrink: 0,
+        color: colors.lightGreen,
+        fontFamily: 'Inter',  
+        fontSize: 36,
+        fontStyle: 'normal',
+        fontWeight: "800",
+        lineHeight: 36, 
+        letterSpacing: 0.15, 
+        textTransform: 'uppercase', 
+    },
+    sloganEnOrange: {
+        flexShrink: 0,
+        color: colors.orange,
+        fontFamily: 'Inter',  
+        fontSize: 36,
+        fontStyle: 'normal',
+        fontWeight: "800",
+        lineHeight: 36, 
+        letterSpacing: 0.15, 
+        textTransform: 'uppercase', 
+    },
+    sloganFr: {
+        width: '80%',
+        color: colors.deepGreen, 
+        textAlign: 'center', 
+        fontFamily: 'Inter',
+        fontSize: 24,
+        fontStyle: 'normal',
+        fontWeight: "400",
+        lineHeight: 30, 
+        marginTop: 20
+    },
 });

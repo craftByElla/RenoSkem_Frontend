@@ -114,7 +114,7 @@ function UpdateArtisansScreenModal(props) {
     };
 
     return (
-        <Modal
+    <Modal
             transparent={true}
             animationType="slide"
             visible={props.isShow}
@@ -122,65 +122,66 @@ function UpdateArtisansScreenModal(props) {
         >
             <Pressable style={styles.modalContainer} onPress={handleClose}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.modal}>
-                        <Text style={styles.textTitle}>Nouvel Artisan :</Text>
-                        <View style={styles.indiceContainer}>
-                            <Text style={styles.text}>Indice de confiance</Text>
-                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey} />
-                            <View style={styles.starsContainer}>
-                                <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' updateTrustLevel={updateTrustLevel} trustLevel={trustLevel} />
+                        <View style={styles.modal}>
+                            <Text style={styles.textTitle}>Nouvel Artisan :</Text>
+                            <View style={styles.indiceContainer}>
+                                <Text style={styles.text}>Indice de confiance</Text>
+                                <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
+                                <View style={styles.starsContainer}>
+                                    <FillableIcons plainIcon='star-o' filledIcon='star' color='orange' updateTrustLevel={updateTrustLevel} trustLevel = {trustLevel}/>
+                                </View>
                             </View>
-                        </View>
-                        <View style={styles.indiceContainer}>
-                            <Text style={styles.text}>Devis</Text>
-                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey} />
-                            <View style={styles.inputquote}>
-                                <TextInput
-                                    style={{ width: 96 }}
-                                    value={quote.toString()}
-                                    onChangeText={(value) => setQuote(value)}
-                                    keyboardType="numeric"
-                                />
-                                <FontAwesome name='euro' size={24} color={colors.deepGrey} />
+                            <View style={styles.indiceContainer}>
+                                <Text style={styles.text}>Devis</Text>
+                                <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
+                                <View style={styles.inputquote}>
+                                    <TextInput
+                                        style={{width: 96}}
+                                        value={quote.toString()}
+                                        onChangeText={(value) => setQuote(value)}
+                                        keyboardType="numeric"
+                                    />
+                                    <Text>€</Text>
+                                </View>
                             </View>
-                        </View>
-                        <View style={styles.indiceContainer}>
-                            <Text style={styles.text}>1ère disponibilité</Text>
-                            <FontAwesome name='caret-right' size={24} color={colors.deepGrey} />
-                            <View style={styles.dateContainer}>
-                                <DateTimePicker
-                                    value={typeof availability === 'object' ? availability : new Date()}
-                                    locale='fr-FR'
-                                    onChange={onDateChange}
-                                />
+                            <View style={styles.indiceContainer}>
+                                <Text style={styles.text}>1ère disponibilité</Text>
+                                <FontAwesome name='caret-right' size={24} color={colors.deepGrey}/>
+                                <View style={styles.dateContainer}>
+                                    <DateTimePicker 
+                                        value={typeof availability === 'object' ? availability : new Date()}
+                                        locale='fr-FR'
+                                        onChange={onDateChange}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                        <View>
-                            <View style={styles.commonContainer}>
-                                <Text style={styles.text}>Commentaire</Text>
-                                <FontAwesome name='caret-down' size={24} color={colors.deepGrey} />
+                            <View>
+                                <View style={styles.commonContainer}>
+                                    <Text style={styles.text}>Commentaire</Text>
+                                    <FontAwesome name='caret-down' size={24} color={colors.deepGrey}/>
+                                </View>
+                                <View style={styles.commentSection}>
+                                    {comment ? (
+                                        <View style={styles.commentBox}>
+                                            <Text style={styles.commentText}>{comment}</Text>
+                                        </View>
+                                    ) : null}
+                                    <FilledButton
+                                        text={comment ? 'Modifier le commentaire' : 'Ajouter un commentaire'}
+                                        background="#194852"
+                                        full={true}
+                                        onPress={toggleCommentModal}
+                                        style={styles.commentButton}
+                                    />
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => {updateArtisanProject(), handleClose()}}/>
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                    <FilledButton text='Supprimer' full={true} background={colors.deepGreen} onPress={() => {removeArtisanFromProject(), handleClose()}}/>
+                                </View>
                             </View>
-                            <View style={styles.commentSection}>
-                                {comment ? (
-                                    <View style={styles.commentBox}>
-                                        <Text style={styles.commentText}>{comment}</Text>
-                                    </View>
-                                ) : null}
-                                <FilledButton
-                                    text={comment ? 'Modifier le commentaire' : 'Ajouter un commentaire'}
-                                    background="#194852"
-                                    full={true}
-                                    onPress={toggleCommentModal}
-                                    style={styles.commentButton}
-                                />
-                            </View>
-                            <View style={styles.buttonContainer}>
-                                <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={updateArtisanProject} />
-                            </View>
-                            <View style={styles.buttonContainer}>
-                                <FilledButton text='Supprimer' full={true} background={colors.deepGreen} onPress={removeArtisanFromProject} />
-                            </View>
-                        </View>
+                        {/* </View> */}
                     </View>
                 </TouchableWithoutFeedback>
             </Pressable>
@@ -218,6 +219,7 @@ const createStyles = (colors, quote) => StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         paddingBottom: 10,
+        marginTop: 10,
     },
     starsContainer: {
         display: 'flex',
@@ -251,26 +253,19 @@ const createStyles = (colors, quote) => StyleSheet.create({
         color: colors.deepGrey,
     },
     inputquote: {
-        borderColor: quote ? colors.lightGreen : colors.lightGrey,
+        borderColor: colors.deepGreen,
         borderWidth: 1,
         width: 120,
+        height: 25,
         marginLeft: 15,
-        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     dateContainer: {
         width: 135,
         display: 'flex',
         alignItems: 'flex-end',
-    },
-    buttonContainer: {
-        marginLeft: 10,
-        width: '100%',
-        alignSelf: 'center',
-    },
-    commentSection: {
-        marginTop: 10,
     },
     commentLabel: {
         color: '#6F797B',
@@ -279,7 +274,9 @@ const createStyles = (colors, quote) => StyleSheet.create({
         fontWeight: '400',
         lineHeight: 21,
         letterSpacing: 0.15,
-        marginBottom: 5,
+    },
+    commentSection: {
+        paddingBottom: 10
     },
     commentBox: {
         padding: 10,
@@ -298,4 +295,10 @@ const createStyles = (colors, quote) => StyleSheet.create({
         borderRadius: 8,
         alignSelf: 'center',
     },
-});
+    buttonContainer: {
+        marginLeft: 10,
+        width: '100%',
+        alignSelf: 'center',
+        marginTop: 10,
+    },
+})
