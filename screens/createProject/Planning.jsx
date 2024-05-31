@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform, SafeAreaView as SafeAreaViewIOS } from 'react-native';
 import { SafeAreaView as SafeAreaViewANDR } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
@@ -7,102 +7,71 @@ import CustomInput from '../../components/inputs/CustomInput';
 import IconButton from '../../components/buttons/IconButton';
 import Toast from 'react-native-toast-message';
 import StepDisplay from '../../components/cards/StepDisplay';
-import { MyLightTheme } from '../../components/Theme';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
-
-const mockData = [
-    {
-        step: 1,
-        items: [
-            {
-                id: '1',
-                field: "Démolition",
-                type: "Cuisine",
-                name: null,
-                diy: true,
-                artisan: null,
-                teammates: ["Gael","Cedric","Martin","Ella"],
-            },
-            {
-                id: '2',
-                field: "Cloisonnement/Plâtrage",
-                type: "Salon",
-                name: null,
-                diy: false,
-                artisan: "C D'LA BALL AGENCEMENT",
-                teammates: [],
-            },
-        ],
-    },
-    {
-        step: 2,
-        items: [
-            {
-                id: '3',
-                field: "Électricité",
-                type: "Chambre",
-                name: "Chambre de bébé",
-                diy: true,
-                artisan: null,
-                teammates: ["Gael","Cedric","Martin","Ella"],
-            },
-            {
-                id: '4',
-                field: "Plomberie",
-                type: "Salle de bain",
-                name: null,
-                diy: false,
-                artisan: "MariEau",
-                teammates: [],
-            },
-        ],
-    },
-    {
-        step: 3,
-        items: [
-            {
-                id: '5',
-                field: "Peinture",
-                type: "Bureau",
-                name: null,
-                diy: true,
-                artisan: null,
-                teammates: [],
-            },
-        ],
-    },
-];
-
 
 const removeAccents = (str) => {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };
+
+const ipString = process.env.IP_ADDRESS;
 
 function PlanningScreen({ navigation, route }) {
     const { colors } = useTheme();
     const styles = createStyles(colors);
     const { projectId } = route.params;
 
+    const [data, setData] = useState([]);
     const [checkedItems, setCheckedItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [reload, setReload] = useState(false); // Nouvel état pour gérer le reload
 
-    const handleCheck = (itemId) => {
-        setCheckedItems(prevState =>
-            prevState.includes(itemId)
-                ? prevState.filter(id => id !== itemId)
-                : [...prevState, itemId]
-        );
+    const fetchData = async () => {
+        try {
+            const response = await fetch(`${ipString}/projects/getProjectPlanning/${projectId}`);
+            const result = await response.json();
+            if (response.ok) {
+                setData(result.Planning);
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erreur',
+                    text2: result.message,
+                });
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Erreur lors de la récupération des données',
+            });
+        }
     };
 
-    const filteredData = mockData.map(step => ({
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [reload])
+    );
+
+    const handleCheck = (itemId) => {
+        console.log(`Checking item: ${itemId}`);
+        setCheckedItems(prevState => {
+            const newState = prevState.includes(itemId)
+                ? prevState.filter(id => id !== itemId)
+                : [...prevState, itemId];
+            console.log('Updated checked items:', newState);
+            return newState;
+        });
+    };
+
+    const filteredData = data.map(step => ({
         ...step,
         items: step.items.filter(item =>
             removeAccents(`${item.field} ${item.name || item.type}`).toLowerCase().includes(removeAccents(searchQuery).toLowerCase())
         )
     })).filter(step => step.items.length > 0);  // Filter out steps with no items
-
-   
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -112,10 +81,10 @@ function PlanningScreen({ navigation, route }) {
                         <View style={styles.titleContainer}>
                             <ScreenTitle style={styles.screenTitle} text="Planification" />
                             <IconButton
-                                    style={styles.iconButtonRight}
-                                    onPress={console.log("click on filter")}
-                                    iconName="filter"
-                                />
+                                style={styles.iconButtonRight}
+                                onPress={() => console.log("click on filter")}
+                                iconName="filter"
+                            />
                         </View>
                         <CustomInput
                             placeholder="Rechercher ici"
@@ -132,7 +101,6 @@ function PlanningScreen({ navigation, route }) {
                         </View>
                     )}
                 </View>
-                
             </ScrollView>
         </SafeAreaView>
     );

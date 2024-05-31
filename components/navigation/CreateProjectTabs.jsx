@@ -62,7 +62,7 @@ export default function CreateProjectTabs({ navigation, route }) {
     };
 
     const imageUrl = getProjectImageUrl(projectImage);
-    console.log(`Image URL: ${imageUrl}`);
+    // console.log(`Image URL: ${imageUrl}`);
 
 
     return (

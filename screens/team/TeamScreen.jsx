@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, TextInput, Button } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, Button, ScrollView } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AvatarCard from "../../components/cards/AvatarCard";
 import IconButton from "../../components/buttons/IconButton";
@@ -12,6 +12,7 @@ import PlainButton from "../../components/buttons/PlainButton";
 import { useState, useEffect } from "react";
 import { useTheme } from "@react-navigation/native";
 import { useSelector } from 'react-redux';
+import ArtisanCard from "../../components/cards/ArtisanCard";
 
 const logo = require("../../assets/splash.png");
 const ipString = process.env.IP_ADDRESS;
@@ -19,17 +20,58 @@ const ipString = process.env.IP_ADDRESS;
 
 export default function TeamScreen({ navigation }) {
   const { colors } = useTheme();
-  /*const avatarsData = [
-    { name: "martin", image: require("../../assets/Martin.jpg") },
-    { name: "jc", image: require("../../assets/jc.jpg") },
-    { name: "ella", image: require("../../assets/Ella.jpg") },
-    { name: "gaël", image: require("../../assets/henry.jpg") },
-    { name: "cece", image: require("../../assets/Gabin.jpg") },
-  ];*/
+  const [teammatesData, setTeammatesData] = useState([]);
+  const [artisansData, setArtisansData] = useState([]);
+  const token = useSelector((state) => state.user.userInfos.token)    // recuperation du token dans redux
+  
 
-  const avatars = avatarsData.map((data, i) => {
-    return <AvatarCard key={i} name={data.name} image={data.image} onPress={() => navigation.navigate("TeammateSkillsScreen")} />;
-  });
+  useEffect(() => {                                                   //fetch pour recuperer tout les teammates de l'utilisateur
+    fetch(`${ipString}/users/getUserTeammates/${token}`,{
+       headers:{'Content-Type':'application.json'},
+    })
+        .then (response => response.json())
+        .then(data => {  
+          if (data) {
+          console.log(data.teammates); //  => on recupere bien la data
+          setTeammatesData(data.teammates); // Mettre à jour l'état avec les données récupérées
+      } else {
+          console.log("Data is undefined or empty");
+      }
+      })
+        .catch ((error) => console.log("error:",error));
+  },[ipString, token]);
+
+
+  const avatars = Array.isArray(teammatesData) && teammatesData.length > 0
+    ? teammatesData.map((data, i) => (
+        <AvatarCard
+          key={i}
+          name={data.name}
+          image={data.avatar}
+          onPress={() => navigation.navigate("TeammateSkillsScreen")}
+        />
+      ))
+      : <Text>No teammates found.</Text>;
+
+
+  useEffect(() => {
+    fetch(`${ipString}/users/getUserArtisans/${token}`)               // fetch pour recuperer tout les artisans de l'utilisateur
+        .then(response => response.json())
+        .then (data => setArtisansData(data.artisans))
+    },[ipString, token]);
+
+
+    const artisans = Array.isArray(artisansData) && artisansData.length > 0
+    ? artisansData.map((data, i) => (                                  // .map pour afficher les artisans sur teamScreen
+    <ArtisanCard 
+      key={i} 
+      name={data.company} 
+      field={data.field} 
+      onPress={() => navigation.navigate("ConfigureExpertiseScreen")} 
+      />
+  ))
+  : <Text>No teammates found.</Text>;
+
 
   const [isShowModal, setIsShowModal] = useState(false);
   const toggleModal = () => {
@@ -41,13 +83,7 @@ export default function TeamScreen({ navigation }) {
     setIsShowModal_2(!isShowModal_2);
   };
 
-  const token = useSelector((state) => state.user.userInfos.token)
-
-  useEffect(() => {
-    fetch(`${ipString}/users/getUserTeammates/${token}`) //fetch pour recuperer tout les teammates de l'utilisateur
-      .then((response) => response.json())
-      .catch((error) => console.error("Error:", error));
-  }, []);
+ 
 
   return (
     <View style={styles.Teammates}>
@@ -67,7 +103,16 @@ export default function TeamScreen({ navigation }) {
       <View style={styles.searchContainer}>
         <CustomInput placeholder="Rechercher" search={true} />
       </View>
-      <View style={styles.avatarContainer}>{avatars}</View>
+      <ScrollView contentContainerStyle={styles.avatarContainer}>
+      {avatars.length > 0 && artisans.length > 0 ? (
+        <View style={styles.avatarContainer}>
+        {avatars}
+        {artisans}
+    </View>
+  ) : (
+    <Image source={require('../../assets/giphy.gif')} style={styles.curly} />
+  )}
+      </ScrollView>
       <SimpleModal
         isShow={isShowModal}
         toggleModal={toggleModal}
@@ -124,11 +169,8 @@ const styles = StyleSheet.create({
   },
 
   Teammates: {
-    position: "relative",
-    width: 375,
-    height: 812,
-    backgroundColor: "#EFECEA",
-    borderRadius: 50,
+   flex:1,
+
   },
 
   logo: {
@@ -164,11 +206,18 @@ const styles = StyleSheet.create({
   searchContainer: {
     marginTop: 50,
     marginLeft: 35,
+    paddingTop:20,
   },
 
   avatarContainer: {
-    marginTop: 50,
+    marginTop: 10,
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+
+  curly: {
+    width:400,
+    height:400,
+
   },
 });

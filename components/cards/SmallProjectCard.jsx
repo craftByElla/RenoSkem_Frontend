@@ -28,13 +28,13 @@ function SmallProjectCard(props) {
     };
 
     const imageUrl = getProjectImageUrl(props.picture);
-    console.log(`Image URL: ${imageUrl}`);
+    // console.log(`Image URL: ${imageUrl}`);
 
 
     return (
         <TouchableOpacity style={styles.projectContainer} onPress={() => toggleModal()}>
             <Image source={{ uri: imageUrl }} width={50} height={50}/>
-            <Text style={styles.projectName}>{props.name}</Text>
+            <Text style={styles.projectName} numberOfLines={1} ellipsizeMode="tail">{props.name}</Text>
             <SimpleModal 
                 isShow={isShowModal} 
                 toggleModal={toggleModal}
@@ -94,7 +94,9 @@ const createStyles = (colors) => StyleSheet.create({
         fontWeight: 'bold',
         color: colors.deepGrey,
         letterSpacing: 0.5,
-        lineHeight: 19 
+        lineHeight: 19 ,
+        paddingHorizontal: 10,
+        marginTop: -10,
     },
     btn: {
         width: '90%',

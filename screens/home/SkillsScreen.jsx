@@ -84,7 +84,7 @@ function SkillsScreen({ navigation }) {
         ['Maçonnerie', 'Fondations', 'Toiture', 'Démolition', "Cloisonnement/Plâtrage"],
         ['Revêtements extérieurs', 'Isolation', 'Façade', 'Revêtements muraux', 'Revêtements sol' ],
         ['Chauffage', 'Électricité', 'Étanchéité', 'Plomberie', 'Ventilation', 'Étanchéité'],
-        ['Installation cuisine/SDB', 'Montage de meuble', 'Menuiserie', 'Peiture', 'Revêtements muraux'],
+        ['Installation cuisine/SDB', 'Montage de meuble', 'Menuiserie', 'Peinture', 'Revêtements muraux'],
     ]
 
     return (
@@ -135,7 +135,7 @@ function SkillsScreen({ navigation }) {
             <Picker.Item label="Structure et gros oeuvres" value={['Maçonnerie', 'Fondations', 'Toiture', 'Démolition', "Cloisonnement/Plâtrage"]} />
             <Picker.Item label="Isolation et finitions" value={['Revêtements extérieurs', 'Isolation', 'Façade', 'Revêtements muraux', 'Revêtements sol']} />
             <Picker.Item label="Installations techniques" value={['Chauffage', 'Électricité', 'Étanchéité', 'Plomberie', 'Ventilation', 'Étanchéité']} />
-            <Picker.Item label="Aménagement intérieur" value={['Installation cuisine/SDB', 'Montage de meuble', 'Menuiserie', 'Peinture', 'Revêtements murraux']} />
+            <Picker.Item label="Aménagement intérieur" value={['Installation cuisine/SDB', 'Montage de meuble', 'Menuiserie', 'Peinture', 'Revêtements muraux']} />
         </Picker>
         <SimpleModal 
             isShow={isShowModal}

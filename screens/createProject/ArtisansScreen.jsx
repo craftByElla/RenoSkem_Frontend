@@ -9,6 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ArtisansProjectCard from '../../components/cards/ArtisansProjectCard';
 import UpdateArtisansScreenModal from '../../components/modal/UpdateArtisansScreenModal';
 import Toast from 'react-native-toast-message';
+
 const ipString = process.env.IP_ADDRESS;
 const SafeAreaView = Platform.OS === 'ios' ? SafeAreaViewIOS : SafeAreaViewANDR;
 
@@ -19,11 +20,16 @@ function ArtisanScreen({route}) {
     const [artisans, setArtisans] = useState([]);
     const [search, setSearch] = useState('');
     const [filteredArtisans, setFilteredArtisans] = useState([])
-    const toggleModal = (setter, showModal) => {
-        setter(!showModal);
+    const [reload, setReload] = useState(false); // Nouvel état pour gérer le reload
+    const [retrievedProjectCardInfos, setRetrievedProjectCardInfos] = useState({});
+
+    // const toggleModal = (setter, showModal) => {
+    //     setter(!showModal);
+    // };
+    const toggleModal = (setter) => {
+        setter(prev => !prev);
     };
-    const [retrievedProjectCardInfos, setRetrievedProjectCardInfos] = useState({})
-    let test;
+
     const retrieveProjectCardInfos = (availability, quote, comment, trustLevel, artisanId, isShow) => {
         setRetrievedProjectCardInfos({
             availability: availability,
@@ -33,39 +39,37 @@ function ArtisanScreen({route}) {
             artisanId: artisanId,
             isShow: isShow,
         })
-        test = {
-            availability: availability,
-            quote: quote,
-            comment: comment,
-            trustLevel: trustLevel,
-        }
-        return {retrievedProjectCardInfos, test};
+        return {retrievedProjectCardInfos};
     };
 
-    useFocusEffect(
-        useCallback(() => { //permet d'optimiser les performances. A voir dans la doc pour plus de précision en vrai 
-            (async () => {
-                const response = await fetch(`${ipString}/projects/getProjectArtisans/${projectId}`);
-                const data = await response.json();
-                if (response.status === 500){
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'Erreur pendant l\'envoie'
-                    });
-                }else if (response.status === 401) {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Erreur',
-                        text2: 'Projet introuvable'
-                    });
-                }else {
-                    setArtisans(data.artisans)
-                }
-            })();
-        }, [isShowModal, isShowModal_2, retrieveProjectCardInfos?.isShow])
-    );
+   
+    const fetchData = async () => {
+        const response = await fetch(`${ipString}/projects/getProjectArtisans/${projectId}`);
+        const data = await response.json();
+        if (response.status === 500) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Erreur pendant l\'envoi'
+            });
+        } else if (response.status === 401) {
+            Toast.show({
+                type: 'error',
+                text1: 'Erreur',
+                text2: 'Projet introuvable'
+            });
+        } else {
+            setArtisans(data.artisans);
+        }
+    };
+   
     // console.log('artisans', artisans)
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [reload])
+    );
 
     const workToJobName = {
         Chauffage: "Chauffagiste",
@@ -92,8 +96,10 @@ function ArtisanScreen({route}) {
     useEffect(() => {
         if(search !== ''){
             const searchPattern = new RegExp(search, 'i')
-            const filter = artisans.filter(artisan => searchPattern.test(artisan.artisanId.company) || searchPattern.test(workToJobName[artisan.artisanId.field]))
-            console.log('filter', searchPattern)
+            const filter = artisans.filter(artisan => 
+                searchPattern.test(artisan.artisanId.company) || searchPattern.test(workToJobName[artisan.artisanId.field])
+            );
+            // console.log('filter', searchPattern)
             setFilteredArtisans(filter)
         }else{
             setFilteredArtisans(artisans)
@@ -101,24 +107,24 @@ function ArtisanScreen({route}) {
     }, [search, artisans])
 
     const artisansOnScreen = filteredArtisans?.map((artisan, i) => {
-        return <ArtisansProjectCard 
-                    key={i} 
-                    availability={artisan.availability} 
-                    quote={artisan.quote} 
-                    comment={artisan.comment}
-                    company={artisan.artisanId.company} 
-                    field={artisan.artisanId.field} 
-                    trustLevel = {artisan.trustLevel}
-                    artisanId = {artisan._id}
-                    retrieveProjectCardInfos={retrieveProjectCardInfos}
-                    isShow={isShowModal}
-                    setter={setIsShowModal}
-                    toggleModal={toggleModal}
-                    // onPress={() => {console.log('retrieve', retrieveProjectCardInfos(artisan.availability)), retrieveProjectCardInfos(artisan.availability, artisan.quote), toggleModal(setIsShowModal, isShowModal)}}
-                />
+        return (
+            <ArtisansProjectCard 
+                key={i} 
+                availability={artisan.availability} 
+                quote={artisan.quote} 
+                comment={artisan.comment}
+                company={artisan.artisanId.company} 
+                field={artisan.artisanId.field} 
+                trustLevel = {artisan.trustLevel}
+                artisanId = {artisan._id}
+                retrieveProjectCardInfos={retrieveProjectCardInfos}
+                isShow={isShowModal}
+                setter={setIsShowModal}
+                toggleModal={toggleModal}
+                // onPress={() => {console.log('retrieve', retrieveProjectCardInfos(artisan.availability)), retrieveProjectCardInfos(artisan.availability, artisan.quote), toggleModal(setIsShowModal, isShowModal)}}
+            />
+        )
     })
-
- 
 
     return (
         <SafeAreaView style={styles.main}>  
@@ -149,6 +155,8 @@ function ArtisanScreen({route}) {
                 setter={setIsShowModal_2} 
                 toggleModal={toggleModal} 
                 projectId={projectId}
+                onClose={() => setReload(prev => !prev)}
+                reloadData={fetchData}            
             />
             <UpdateArtisansScreenModal 
                 isShow={isShowModal}
@@ -156,6 +164,8 @@ function ArtisanScreen({route}) {
                 toggleModal={toggleModal}
                 retrievedProjectCardInfos={retrievedProjectCardInfos}
                 projectId={projectId}
+                onClose={() => setReload(prev => !prev)}
+                reloadData={fetchData}           
             />
         </SafeAreaView>
     )

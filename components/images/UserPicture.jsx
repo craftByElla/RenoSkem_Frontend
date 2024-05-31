@@ -25,6 +25,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
+    marginLeft:120,
+    borderRadius:10,
   },
   icon: {
     fontSize: 70,

@@ -43,9 +43,7 @@ const RoomsDisplay = ({ rooms, onRoomPress }) => {
     
         if (hasName && hasSurface && hasComment && hasItems) {
             return lightGreen;
-        } else if (hasName || hasSurface || hasComment || hasItems) {
-            return orange;
-        } else {
+        } else  {
             return grey;
         }
     };

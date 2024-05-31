@@ -12,9 +12,9 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 const ipString = process.env.IP_ADDRESS;
 
-function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
+function ArtisansScreenModal({ isShow, toggleModal, setter, projectId, onClose }) {
     const { colors } = useTheme();
-    const styles = createStyles(colors, devis)
+    const styles = createStyles(colors, devis);
 
     const token = useSelector((state) => state.user.userInfos.token)
     const [devis, setDevis] = useState(0);
@@ -25,28 +25,26 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
     const [artisanPhone, setArtisanPhone] = useState('');
     const [trustLevel, setTrustLevel] = useState(0);
     const [date, setDate] = useState(new Date());
-    // const [currentComment, setCurrentComment] = useState(comment);
-    console.log('DAAATE', date)
+
     const updateTrustLevel = (stars) => {
-        setTrustLevel(stars)
-    }
+        setTrustLevel(stars);
+    };
 
     const handleClose = () => {
-        console.log('click')
         toggleModal(setter, isShow);
+        onClose(); // Assurez-vous que le callback onClose est appelé lors de la fermeture
     };
-    
 
     const [isCommentModalVisible, setCommentModalVisible] = useState(false);
     const toggleCommentModal = () => {
         setCommentModalVisible(!isCommentModalVisible);
     };
 
-    const onDateChange = (value, selectedDate) => {
+    const onDateChange = (event, selectedDate) => {
         if (selectedDate) {
-            setDate(selectedDate)
+            setDate(selectedDate);
         }
-    }
+    };
 
     const addArtisanToProject = async () => {
         const responseFromArtisanRoute = await fetch(`${ipString}/artisans/newArtisan/${token}`, {
@@ -59,7 +57,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
                 company: companyName,
             })
         });
-        const artisan = await responseFromArtisanRoute.json()
+        const artisan = await responseFromArtisanRoute.json();
         if (responseFromArtisanRoute.status === 500) {
             return;
         } else {
@@ -75,26 +73,28 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
                     projectId: projectId,
                 }),
             });
-            if (responseFromProjectsRoute === 401){
+            if (responseFromProjectsRoute.status === 401) {
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
                     text2: 'Projet introuvable'
                 });
-            }else if (responseFromProjectsRoute === 500) {
+            } else if (responseFromProjectsRoute.status === 500) {
                 Toast.show({
                     type: 'error',
                     text1: 'Erreur',
-                    text2: 'Erreur pendant l\'envoie'
+                    text2: 'Erreur pendant l\'envoi'
                 });
-            }else {
+            } else {
                 Toast.show({
                     type: 'success',
-                    text1: 'succès',
+                    text1: 'Succès',
                     text2: 'Artisan ajouté'
                 });
+                handleClose(); // Appel de handleClose pour fermer la modale et relancer le fetch
             }
         }
+    
         setDevis(0);
         setComment('');
         setChooseJob('');
@@ -103,7 +103,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
         setArtisanPhone('');
         setTrustLevel(0);
         setDate(new Date());
-    }
+    };
 
     const patternEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
     const patternPhone = /^\d{10}/
@@ -113,6 +113,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
             transparent={true}
             animationType="slide"
             visible={isShow}
+            onRequestClose={handleClose} // Utilisez onRequestClose pour gérer la fermeture
         >
             
                 <View style={styles.modalContainer} onPress={() => handleClose()}>
@@ -260,7 +261,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId }) {
                 }}
             />
         </Modal>
-    )
+    );
 }
 
 export default ArtisansScreenModal;
@@ -306,14 +307,14 @@ const createStyles = (colors, devis) => StyleSheet.create({
     starsContainer: {
         display: 'flex',
         flexDirection: 'row',
-        width: 120, 
+        width: 120,
         justifyContent: 'space-around',
         marginLeft: 15,
     },
-    commonContainer:{
+    commonContainer: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     textInput: {
         width: '100%',
@@ -332,7 +333,7 @@ const createStyles = (colors, devis) => StyleSheet.create({
     },
     text: {
         width: '50%',
-        color: colors.deepGrey
+        color: colors.deepGrey,
     },
     inputDevis: {
         borderColor: devis ? colors.lightGreen : colors.lightGrey,
@@ -348,13 +349,12 @@ const createStyles = (colors, devis) => StyleSheet.create({
     dateContainer: {
         width: 135,
         display: 'flex',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
     },
     buttonContainer: {
         marginLeft: 10,
         width: '100%',
         alignSelf: 'center',
-        marginBottom: 20,
     },
     commentSection: {
         marginTop: 10,
@@ -387,4 +387,4 @@ const createStyles = (colors, devis) => StyleSheet.create({
         borderRadius: 8,
         alignSelf: 'center',
     },
-})
+});
