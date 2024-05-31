@@ -225,7 +225,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId, onClose }
                                     />
                                 </View>
                             </View>
-                            <View>
+                            <View style={styles.maxiContainer}>
                                 <View style={styles.commonContainer}>
                                     <Text style={styles.text}>Commentaire</Text>
                                     <FontAwesome name='caret-down' size={24} color={colors.deepGrey}/>
@@ -386,5 +386,8 @@ const createStyles = (colors, devis) => StyleSheet.create({
         width: '90%',
         borderRadius: 8,
         alignSelf: 'center',
+    },
+    maxiContainer : {
+        marginBottom: 20
     },
 });
