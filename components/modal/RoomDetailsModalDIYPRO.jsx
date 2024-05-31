@@ -6,25 +6,37 @@ import PropTypes from 'prop-types';
 
 const postesTravaux = [
   {
-    poste: "Peinture",
-    type: "DIY",
-    teamates: ["Alban", "Andrea", "Apu"],
+    poste: "Chauffage",
+    type: "PRO",
+    artisans: ["HotShow", "CaliPouet"],
   },
   {
-    poste: "Plomberie",
+    poste: "Isolation",
     type: "PRO",
-    artisans: ["Jean", "Pierre", "Jacques"],
+    artisans: ["Isoltout", "VMK"],
   },
   {
     poste: "Électricité",
-    type: "DIY",
-    teamates: ["Cedric", "Ella", "Gael"],
-  },
-  {
-    poste: "Maçonnerie",
     type: "PRO",
-    artisans: ["Martin", "Melanie", "Nathan"],
+    artisans: ["PikaChoc", "ZapLink"],
+  }
+  ,
+  // {
+  //   poste: "Plomberie",
+  //   type: "DIY",
+  //   teamates: ["Alban", "Andrea", "Apu"],
+  // },
+  // {
+  //   poste: "Montage de meuble",
+  //   type: "DIY",
+  //   teamates: ["Cedric", "Ella", "Gael"],
+  // },
+  {
+    poste: "Démolition",
+    type: "DIY",
+    teamates: ["JeanPierre", "Martin", "Nathan","Alban", "Andrea", "Apu"],
   },
+  
 ];
 
 const avatars = {
@@ -81,7 +93,7 @@ const RoomDetailsModalDIYPRO = ({ isShow, toggleModal }) => {
             <View style={styles.header}>
               <View style={styles.titleContainer}>
                 <Text style={styles.modalTitle}>Qui fait quoi ?</Text>
-                <Text style={styles.modalSubtitle}>Chambre 1</Text>
+                <Text style={styles.modalSubtitle}>Espace de travail</Text>
               </View>
               <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
                 <FontAwesome name="close" size={24} color={colors.deepGrey} />
