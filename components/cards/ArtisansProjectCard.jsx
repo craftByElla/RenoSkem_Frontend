@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { useTheme, useNavigation } from '@react-navigation/native';
-import SimpleModal from '../modal/SimpleModal';
-import PlainButton from '../buttons/PlainButton';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 function ArtisansProjectCard(props) {
@@ -12,26 +8,26 @@ function ArtisansProjectCard(props) {
     const styles = createStyles(colors)
 
     const workToJobName = {
-        Chauffage: {job: "Chauffagiste", icon: <MaterialCommunityIcons name='snowflake' size={24} color={colors.deepGreen}/>},
-        CloisonnementPlâtrage: {job: "Plaquiste", icon: 'test'},
-        Démolition: { job: "Maçon", icon: <MaterialCommunityIcons  name='hammer' size={24} color={colors.deepGreen}/>},
-        Électricité: {job: "Electricien", icon: <MaterialCommunityIcons name='lignting-bolt' size={24} color={colors.deepGreen}/> },
-        Étanchéité: {job: "Etencheur", icon: <MaterialCommunityIcons name='lignting-bolt' size={24} color={colors.deepGreen}/> },
-        // Façade: ,
-        // Fondations: ,
-        // InstallationCuisineSDB: ,
-        // Isolation: ,
-        Maçonnerie: { job: "Maçon", icon: <MaterialCommunityIcons  name='hammer' size={24} color={colors.deepGreen}/>},
-        // Menuiserie: ,
-        // MontageDeMeuble: ,
-        // Peinture: ,
-        Plomberie: { job: "Plombier", icon : <MaterialCommunityIcons name='pipe' size={24} color={colors.deepGreen}/> },
-        // RevêtementsMuraux : ,
-        // RevêtementsSol: ,
-        // RevêtementsExtérieurs: ,
-        Toiture: { job: "Couvreur", icon: <MaterialCommunityIcons  name='hammer' size={24} color={colors.deepGreen}/>},
-        Ventilation: { job: "Couvreur", icon: <MaterialCommunityIcons  name='hammer' size={24} color={colors.deepGreen}/>},
-    };
+        "Chauffage": {job: "Chauffagiste", icon: "🔥"},
+        "Cloisonnement/Plâtrage": {job: "Plaquiste", icon: "📏"},
+        "Démolition": { job: "Maçon", icon: "💣"},
+        "Électricité": {job: "Electricien", icon: "⚡"},
+        "Étanchéité": {job: "Etancheur", icon:"☔" },
+        "Façade": {job: "Façadier", icon: "🏢"},
+        "Fondations": {job: "Maçon", icon: "🏗️"},
+        "Installation cuisine/SDB": {job: "Installateur", icon:  "🚰"},
+        "Isolation": {job: "Plaquiste", icon: "📏"},
+        "Maçonnerie": { job: "Maçon", icon:"🧱"},
+        "Menuiserie": { job: "Menuisier", icon: "🪚"},
+        "Montage de meuble": {job: "Installateur", icon: "🪑"},
+        "Peinture": {job: "Peintre", icon: "🎨"},
+        "Plomberie": { job: "Plombier", icon : "💧" },
+        "Revêtements muraux" : { job: "peintre", icon : "🖼️"},
+        "Revêtements sol": { job: "Carreleur", icon : "🦶🏾"},
+        "Revêtements extérieurs": { job: "Façadier", icon : "🏡"},
+        "Toiture": { job: "Couvreur", icon: "🛠️"},
+        "Ventilation": { job: "Couvreur", icon: "🌬️"},
+    }
 
     const [isShowModal, setIsShowModal] = useState(false);
     const toggleModal = () => {
@@ -60,7 +56,7 @@ function ArtisansProjectCard(props) {
     return (
         
     <TouchableOpacity style={styles.card} onPress={() => {console.log('ava', props.availability), props.retrieveProjectCardInfos(props.availability, props.quote, props.comment, props.trustLevel, props.artisanId, props.isShow), handleClose()}}>
-        {workToJobName[props.field].icon}
+        <Text>{workToJobName[props.field].icon}</Text>
         <View style={{ width: '35%', display: 'flex', justifyContent: 'center' }}>
                 <Text>{workToJobName[props.field].job}</Text>
                 <Text>{props.company}</Text>
@@ -73,14 +69,19 @@ function ArtisansProjectCard(props) {
                 <FontAwesome  name='caret-down' size={24} color={colors.deepGrey}/>
                 <Text style={{marginLeft: 5}}>Devis</Text>
             </View>
-            <Text>{props.quote}</Text>
+            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'flex-end', alignItems: 'center', borderWidth: 0.5, borderColor: colors.lightGreen, borderRadius: 5}}>
+                <Text>{props.quote}</Text>
+                <Text>€</Text>
+            </View>
         </View>
         <View style={styles.dispo}>
             <View style={{flexDirection:'row', alignItems: 'center'}}>
                 <FontAwesome  name='caret-down' size={24} color={colors.deepGrey}/>
                 <Text style={{marginLeft: 5}}>Dispo</Text>
             </View>
-            <Text>{extractedDate}</Text>
+            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'flex-end', alignItems: 'center', borderWidth: 0.5, borderColor: colors.lightGreen, borderRadius: 5}}>
+                <Text>{extractedDate}</Text>
+            </View>
         </View>
         
     </TouchableOpacity>
@@ -112,10 +113,12 @@ createStyles = (colors) => StyleSheet.create({
         justifyContent: 'flex-start',
         alignSelf: 'flex-start',
         alignItems: 'flex-end',
+        width: '20%'
     },
     dispo: {
         justifyContent: 'flex-start',
         alignSelf: 'flex-start',
         alignItems: 'flex-end',
+        width: '30%'
     },
 })

@@ -245,7 +245,7 @@ function ArtisansScreenModal({ isShow, toggleModal, setter, projectId, onClose }
                                     />
                                 </View>
                                 <View style={styles.buttonContainer}>
-                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => {addArtisanToProject(), handleClose()}}/>
+                                    <FilledButton text='Enregistrer' full={true} background={colors.deepGreen} onPress={() => {addArtisanToProject()}}/>
                                 </View>
                             </View>
                         </ScrollView>
